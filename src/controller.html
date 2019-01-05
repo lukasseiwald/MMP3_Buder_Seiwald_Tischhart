@@ -8,6 +8,34 @@
     <meta name="MobileOptimized" content="320">
     <meta http-equiv="cleartype" content="on">
     <meta name="format-detection" content="telephone=no">
+
+      <script type="text/javascript">
+    navigator.vibrate = (navigator.vibrate ||
+                         navigator.webkitVibrate ||
+                         navigator.mozVibrate ||
+                         navigator.msVibrate);
+    var airconsole;
+    //Sets up the communication to the screen.
+
+    function init() {
+      airconsole = new AirConsole({"orientation": "landscape"});
+      //Checks if this device is part of the active game.
+      
+      airconsole.onMessage = function(from, data) {
+        if (from == AirConsole.SCREEN && data.vibrate) {
+          navigator.vibrate(data.vibrate);
+          console.log("Vibrating: " + data.vibrate);
+        }
+      };
+    }
+ 
+    function move(direction) {
+      airconsole.message(AirConsole.SCREEN, {move: direction})
+    }
+
+  </script>
+
+
     <style>
         html,
         body {
@@ -17,11 +45,29 @@
             width: 100vw;
             background-color: green;
         }
+        #button_one {
+          height: 50vh;
+          width: 100vh;
+          top: 0;
+          background: blue;
+        }
+
+        #button_two {
+          height: 50vh;
+          width: 100vh;
+          bottom: 0;
+          background: red;
+        }
     </style>
 </head>
 
-<body>
-    <div id="content"></div>
+<body onload="init()">
+    <div id="content">
+      <div id="button_one" ontouchstart="move('left')" ontouchend="move('')" onmousedown="move('left')" onmouseup="move('')">
+      </div>
+      <div id="button_two" ontouchstart="move('right')" ontouchend="move('')" onmousedown="move('right')" onmouseup="move('')">
+      </div>
+    </div>
     <script type="text/javascript" src="https://www.airconsole.com/api/airconsole-1.7.0.js"></script>
 </body>
 </html>

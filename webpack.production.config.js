@@ -18,14 +18,18 @@ module.exports = {
   entry: {
     app: [
       'babel-polyfill',
-      path.resolve(__dirname, 'src/main.js')
+      path.resolve(__dirname, 'src/js/screen.js')
+    ],
+    controller: [
+      'babel-polyfill',
+      path.resolve(__dirname, 'src/js/controller.js')
     ],
     vendor: ['pixi', 'p2', 'phaser', 'webfontloader']
   },
   output: {
-    path: path.resolve(__dirname, 'build'),
-    publicPath: './',
-    filename: 'js/bundle.js'
+    pathinfo: true,
+    path: path.resolve(__dirname, './build/js/'),
+    filename: '[name].bundle.js'
   },
   plugins: [
     definePlugin,
@@ -38,10 +42,10 @@ module.exports = {
         comments: false
       }
     }),
-    new webpack.optimize.CommonsChunkPlugin({ name: 'vendor' /* chunkName= */ , filename: 'js/vendor.bundle.js' /* filename= */ }),
+    new webpack.optimize.CommonsChunkPlugin({ name: 'vendor' /* chunkName= */ , filename: 'vendor.bundle.js' /* filename= */ }),
     new HtmlWebpackPlugin({
-      filename: 'index.html', // path.resolve(__dirname, 'build', 'index.html'),
-      template: './src/index.html',
+      filename: '../screen.html',
+      template: './src/screen.html',
       chunks: ['vendor', 'app'],
       chunksSortMode: 'manual',
       minify: {
@@ -56,8 +60,25 @@ module.exports = {
       },
       hash: true
     }),
+    new HtmlWebpackPlugin({
+      filename: '../controller.html',
+      template: './src/controller.html',
+      chunks: ['vendor', 'controller'],
+      chunksSortMode: 'manual',
+      minify: {
+        removeAttributeQuotes: true,
+        collapseWhitespace: true,
+        html5: true,
+        minifyCSS: true,
+        minifyJS: true,
+        minifyURLs: true,
+        removeComments: true,
+        removeEmptyAttributes: true
+      },
+      hash: true
+    }),
     new CopyWebpackPlugin([
-      { from: 'assets', to: 'assets' }
+      { from: 'src/assets', to: '../assets' }
     ])
   ],
   module: {

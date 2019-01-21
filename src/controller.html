@@ -16,29 +16,39 @@
             padding: 0;
             height: 100vh;
             width: 100vw;
-            background-color: green;
         }
-        #button_one {
+        .button--left {
           height: 50vh;
           width: 100vh;
           top: 0;
           background: blue;
         }
 
-        #button_two {
+        .button--right {
           height: 50vh;
           width: 100vh;
           bottom: 0;
           background: red;
+        }
+
+        .button--jump {
+          position: absolute;
+          right: 25vh;
+          bottom: 50vh;
+          height: 50px;
+          width: 50px;
+          background: pink;
         }
     </style>
 </head>
 
 <body>
     <div id="content">
-      <div id="button_one" data-direction="left">
+      <div class="button button--left" data-direction="left">
       </div>
-      <div id="button_two" data-direction="right">
+      <div class="button button--right" data-direction="right">
+      </div>
+      <div class="button button--jump" data-direction="up">
       </div>
     </div>
     <script type="text/javascript" src="https://www.airconsole.com/api/airconsole-1.7.0.js"></script>

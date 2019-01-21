@@ -15,21 +15,15 @@ function move(e) {
   airConsole.message(AirConsole.SCREEN, {move: target.dataset.direction});
 }
 
-let left = document.getElementById('button_one');
-let right = document.getElementById('button_two');
+let buttons = document.getElementsByClassName('button');
+console.log(buttons);
 
-left.addEventListener("click", function(e){
-  move(e);
-});
+for (let button of buttons) {
+  button.addEventListener("click", function(e){
+    move(e);
+  });
 
-left.addEventListener("touchstart", function(e){
-  move(e);
-});
-
-right.addEventListener("click", function(e){
-  move(e);
-});
-
-right.addEventListener("touchstart", function(e){
-  move(e);
-});
+  button.addEventListener("touchstart", function(e){
+    move(e);
+  });
+}

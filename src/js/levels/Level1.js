@@ -54,6 +54,10 @@ export default class extends Phaser.State {
         player.facingRight = false;
         player.x -= player.v ;
       }
+      else if (data.move !== undefined && data.move === 'up') {
+        player.animations.play('jump');
+        player.y -= player.v ;
+      }
       else
       {
           player.body.velocity.setTo(0, player.body.velocity.y);
@@ -151,7 +155,7 @@ export default class extends Phaser.State {
 
   render() {
     if (__DEV__) {
-      
+
     }
   }
 }

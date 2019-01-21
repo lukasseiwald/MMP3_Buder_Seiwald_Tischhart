@@ -7,10 +7,11 @@ export default class extends Phaser.State {
   init() { }
   preload() {
     this.load.spritesheet('dude', '../../assets/dude.png', 48, 48, 48); 
+    this.load.spritesheet('tileSet', 'assets/images/tileSet.png', 48, 48, 2);
   }
 
   create() {
-    this.airconsole = new AirConsole()
+    this.airconsole = new AirConsole();
 
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -19,57 +20,69 @@ export default class extends Phaser.State {
     this.players.enableBody = true;
 
     //Player 1
-    this.player1 = this.createPlayer(800, 550, 'dude', false, 650, 210);  //x, y, skin, facingRight?, jump (jumpHeight), velocity (runningSpeed)
+    this.player1 = this.createPlayer(800, 550, 'dude', false, 650, 5);  //x, y, skin, facingRight?, jump (jumpHeight), velocity (runningSpeed)
     this.player1.enableBody = true;
 
-    // console.log(this.player)
+    //Platform
+    this.platforms = this.game.add.physicsGroup();
+    this.platforms.enableBody = true;
 
-    // this.player.animations.add({
-    //     key: 'left',
-    //     frames: [ { key: 'dude', frame: 4 } ],
-    //     frameRate: 10,
-    //     repeat: -1
-    // });
-
-    // this.player.animations.add({
-    //     key: 'turn',
-    //     frames: [ { key: 'dude', frame: 4 } ],
-    //     frameRate: 20
-    // });
-
-    // this.player.animations.add({
-    //     key: 'right',
-    //     frames: [ { key: 'dude', frame: 4 } ],
-    //     frameRate: 10,
-    //     repeat: -1
-    // });
+    //Tiles
+    this.tiles = this.game.add.physicsGroup();
+    this.tiles.enableBody = true;
+    this.createPlatforms();
   }
 
   update() {
-    //let mushroom = this.mushroom
-    let player = this.player1
+    this.playersUpdate(); 
+    let player = this.player1;
 
     this.airconsole.onMessage = function(device_id, data) {
+      // if(data.move !== undefined && this.game.physics.arcade.collide(player, this.tiles, this.collidingWithTiles, this.processHandler, this )) {
+      // }
+      // else { //normal collide
+      //   this.game.physics.arcade.collide(player, this.tiles)
+      // }
       // let player = airconsole.convertDeviceIdToPlayerNumber(device_id);
       if (data.move !== undefined && data.move === 'right') {
-        //player.animations.play('left');
-        player.facingRight = false; 
-        player.body.velocity.x = -player.v;
-        // player.animations.play('right', true);
+        player.animations.play('right');
+        player.facingRight = true;
+        player.x += player.v;
       }
       else if (data.move !== undefined && data.move === 'left') {
-        //player.animations.play('right');
-        player.facingRight = true; 
-        player.body.velocity.x = player.v;
-        // player.animations.play('left', true);
+        player.animations.play('left');
+        player.facingRight = false;
+        player.x -= player.v ;
       }
       else
       {
           player.body.velocity.setTo(0, player.body.velocity.y);
-          // player.animations.play('turn');
+          if(player.facingRight) {
+             player.animations.play('idleRight');
+          }
+          else {
+            player.animations.play('idleLeft');
+          }
       }
-      console.log(player.body.velocity)
     };
+  }
+
+  playersUpdate() {
+    //Coliding Player with Platform
+    this.game.physics.arcade.collide(this.players, this.platforms );
+    //Colliding Players
+    //this.game.physics.arcade.collide(this.players, this.players );
+  }
+
+  processHandler (player, tile) {
+    return true;
+  }
+
+  //To check if Player is close to tile ---> in order to destroying it
+  collidingWithTiles(player, tile) {
+    if(tile.frame == 1) {
+      tile.kill();
+    }
   }
 
   createPlayer(x,y,skin,facingRight,jump,velocity) {
@@ -101,6 +114,39 @@ export default class extends Phaser.State {
     player.animations.play('idleRight');
 
     return player;
+  }
+
+  createPlatforms() {
+    //cover floor with tiles
+    for(var i = 0; i < this.game.width; i += 30) {
+      var ground = this.platforms.create(i, this.game.world.height - 20, 'tileSet', 0);
+      ground.body.immovable = true;
+    }
+
+    var tileSet = 0;
+    var randomNumber;
+
+    for(var i = 0; i < this.game.width; i += 50) {
+      for(var j = 0; j < this.game.height - 50; j += 50) {
+        randomNumber = Math.floor((Math.random() * 100) + 1);
+        if(tileSet > 1) {
+          if(randomNumber < 50) { 
+            var tile = this.tiles.create(i, j - 20, 'tileSet', 0);
+            tile.body.setSize(30, 30);
+            tile.body.immovable = true;
+          }
+          if(tileSet > 4) {
+            tileSet = 0;
+          }
+        }
+        if(randomNumber < 10) {
+          tileSet += 1;
+          var tile = this.tiles.create(i, j - 20, 'tileSet', 1);
+          tile.body.setSize(30, 30);
+          tile.body.immovable = true;
+        }
+      }
+    }
   }
 
   render() {

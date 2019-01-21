@@ -6,7 +6,7 @@ import lang from '../lang'
 export default class extends Phaser.State {
   init() { }
   preload() {
-    this.load.spritesheet('dude', '../../assets/dude.png', { frameWidth: 32, frameHeight: 48 }); 
+    this.load.spritesheet('dude', '../../assets/dude.png', { frameWidth: 32, frameHeight: 48 });
   }
 
   create() {
@@ -17,56 +17,29 @@ export default class extends Phaser.State {
 
     this.player.body.collideWorldBounds = true;
     this.player.body.bounce.set(0.9);
-
-    // console.log(this.player)
-
-    // this.player.animations.add({
-    //     key: 'left',
-    //     frames: [ { key: 'dude', frame: 4 } ],
-    //     frameRate: 10,
-    //     repeat: -1
-    // });
-
-    // this.player.animations.add({
-    //     key: 'turn',
-    //     frames: [ { key: 'dude', frame: 4 } ],
-    //     frameRate: 20
-    // });
-
-    // this.player.animations.add({
-    //     key: 'right',
-    //     frames: [ { key: 'dude', frame: 4 } ],
-    //     frameRate: 10,
-    //     repeat: -1
-    // });
   }
 
   update() {
     let mushroom = this.mushroom
     let player = this.player
     this.airconsole.onMessage = function(device_id, data) {
-      console.log(player)
-      // let player = airconsole.convertDeviceIdToPlayerNumber(device_id);
+
       if (data.move !== undefined && data.move === 'right') {
         player.x += 4
-        // player.animations.play('right', true);
       }
       else if (data.move !== undefined && data.move === 'left') {
         player.x -= 4
-        // player.animations.play('left', true);
       }
       else
       {
-          player.body.velocity.setTo(0, player.body.velocity.y);
-          // player.animations.play('turn');
+        player.body.velocity.setTo(0, player.body.velocity.y);
       }
-      console.log(player.body.velocity)
     };
   }
 
   render() {
     if (__DEV__) {
-      
+
     }
   }
 }

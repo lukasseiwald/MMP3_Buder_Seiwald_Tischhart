@@ -2,55 +2,119 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Phaser - ES6 - Webpack</title>
+    <title>Soul Collector - Controller</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
     <meta http-equiv="cleartype" content="on">
     <meta name="format-detection" content="telephone=no">
-
     <style>
         html,
         body {
-            margin: 0;
-            padding: 0;
             height: 100vh;
             width: 100vw;
         }
-        .button--left {
-          height: 50vh;
-          width: 100vh;
-          top: 0;
-          background: blue;
+        * {
+          margin: 0;
+        	padding: 0;
+        	border: 0;
+        	font-size: 100%;
+        	font: inherit;
+        	vertical-align: baseline;
+          box-sizing: border-box;
         }
 
-        .button--right {
-          height: 50vh;
-          width: 100vh;
-          bottom: 0;
-          background: red;
+        .controller {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          background: lightgrey;
+          display: flex;
+          align-items: flex-end;
+        }
+
+        .button {
+          font-family: sans-serif;
+          border-radius: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 70px;
+          height: 70px;
+        }
+
+        .button--shoot {
+          background-color: red;
+          position: absolute;
+          right: 5vw;
+          bottom: 40vh;
         }
 
         .button--jump {
           position: absolute;
-          right: 25vh;
-          bottom: 50vh;
-          height: 50px;
-          width: 50px;
-          background: pink;
+          right: calc(70px + 5vw);
+          bottom: 30vh;
+          background: blue;
         }
+
+        .button--left {
+          height: 100vh;
+          width: 25vw;
+          background: green;
+          border-radius: 0;
+        }
+        .button--right {
+          height: 100vh;
+          width: 25vw;
+          background: lightgreen;
+          border-radius: 0;
+        }
+
+        .movement {
+          background-color: darkgrey;
+          width: 120px;
+          height: 120px;
+          border-radius: 100%;
+          position: relative;
+          margin-left: 50px;
+          margin-bottom: 20vh;
+        }
+
+        .movement__stick {
+          width: 60px;
+          height: 60px;
+          background: grey;
+          border-radius: 100%;
+          position: absolute;
+          left: 0;
+          right: 0;
+          margin: 0 auto;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+
     </style>
 </head>
 
 <body>
-    <div id="content">
-      <div class="button button--left" data-direction="left">
+  <div class="controller">
+    <!-- <div class="controller__movement movement">
+      <div class="movement__stick">
       </div>
-      <div class="button button--right" data-direction="right">
-      </div>
-      <div class="button button--jump" data-direction="up">
-      </div>
+    </div> -->
+    <div class="controller__button button button--left" data-direction="left">
+      left
     </div>
-    <script type="text/javascript" src="https://www.airconsole.com/api/airconsole-1.7.0.js"></script>
+    <div class="controller__button button button--right" data-direction="right">
+      right
+    </div>
+    <div class="controller__button button button--jump" data-direction="jump">
+      A
+    </div>
+    <div class="controller__button button button--shoot" data-direction="shoot">
+      B
+    </div>
+  </div>
+  <script type="text/javascript" src="https://www.airconsole.com/api/airconsole-1.7.0.js"></script>
 </body>
 </html>

@@ -71,10 +71,8 @@
         }
 
         .movement {
-          background-color: darkgrey;
-          width: 120px;
-          height: 120px;
-          border-radius: 100%;
+          width: 150px;
+          height: 150px;
           position: relative;
           margin-left: 50px;
           margin-bottom: 20vh;
@@ -93,21 +91,46 @@
           transform: translateY(-50%);
         }
 
+        .movement__outer-area {
+          width: 100%;
+          position: absolute;
+          height: 100%;
+          background-color: limegreen;
+          border-radius: 150px;
+        }
+
+        .movement__inner-area {
+          background: pink;
+          position: absolute;
+          left: 0;
+          right: 0;
+          margin: 0 auto;
+          width: 110px;
+          height: 110px;
+          top: 50%;
+          transform: translateY(-50%);
+          border-radius: 100%;
+        }
+
     </style>
 </head>
 
 <body>
   <div class="controller">
-    <!-- <div class="controller__movement movement">
+    <div class="controller__movement movement">
+      <div class="movement__outer-area">
+      </div>
+      <div class="movement__inner-area">
+      </div>
       <div class="movement__stick">
       </div>
-    </div> -->
-    <div class="controller__button button button--left" data-direction="left">
+    </div>
+    <!-- <div class="controller__button button button--left" data-direction="left">
       left
     </div>
     <div class="controller__button button button--right" data-direction="right">
       right
-    </div>
+    </div> -->
     <div class="controller__button button button--jump" data-direction="jump">
       A
     </div>

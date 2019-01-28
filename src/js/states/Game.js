@@ -4,7 +4,9 @@ import Mushroom from '../sprites/Mushroom'
 import lang from '../lang'
 
 export default class extends Phaser.State {
-  init() { }
+  init() {
+  }
+
   preload() { }
 
   create() {
@@ -30,7 +32,6 @@ export default class extends Phaser.State {
 
   render() {
     if (__DEV__) {
-      this.game.debug.spriteInfo(this.mushroom, 32, 32)
     }
   }
 }

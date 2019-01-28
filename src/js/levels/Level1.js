@@ -15,7 +15,6 @@ export default class extends Phaser.State {
   }
 
   create() {
-    this.airconsole = new AirConsole();
 
     this.game.physics.startSystem(Phaser.Physics.P2JS);
     this.game.physics.p2.gravity.y = 4000;
@@ -43,13 +42,17 @@ export default class extends Phaser.State {
     this.tiles.physicsBodyType = Phaser.Physics.P2JS;
     this.createPlatforms();
 
+    this.players = new Array();
+
     //Player 1
     this.player1 = new Player();
     this.player1.spawnPlayer(600, 600, 'egyptian', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, false, 820, 10);
+    this.players.push(this.player1);
 
     //Player 2
     this.player2 = new Player();
     this.player2.spawnPlayer(100, 900, 'egyptian', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, false, 820, 10);
+    this.players.push(this.player2);
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
@@ -67,7 +70,7 @@ export default class extends Phaser.State {
 
     let player = this.player1;
 
-    this.airconsole.onMessage = function(device_id, data) {
+    window.game.global.airConsole.onMessage = function(device_id, data) {
       if(this.player1 !== null) {
         switch(data.action) {
           case 'right':
@@ -182,7 +185,6 @@ export default class extends Phaser.State {
       }
     }
   }
-
 
   render() {
     this.game.debug.text('FPS: ' + this.game.time.fps || '--', 20, 20);

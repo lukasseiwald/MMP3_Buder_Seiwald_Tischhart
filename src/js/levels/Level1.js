@@ -50,13 +50,13 @@ export default class extends Phaser.State {
 
     //Player 1
     this.player1 = new Player(this.game);
-    this.player1.spawnPlayer(600, 600, 'egyptian', this.game.physics.p2);
+    this.player1.spawnPlayer(600, 600, 'egyptian', this.game.physics.p2, this.players, this.playerCollisionGroup, this.tilesCollisionGroup, false, 820, 10);
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
   }
 
   update() {
-    this.playersUpdate(); 
+    this.updatePlayer(); 
 
     this.airconsole.onMessage = (device_id, data) => {
       // if(data.move !== undefined && this.game.physics.arcade.collide(player, this.tiles, this.collidingWithTiles, this.processHandler, this )) {
@@ -65,29 +65,59 @@ export default class extends Phaser.State {
       //   this.game.physics.arcade.collide(player, this.tiles)
       // }
       // let player = airconsole.convertDeviceIdToPlayerNumber(device_id);
-      if (data.move !== undefined && data.move === 'right') {
-        console.log("right");
+      if(this.player1 != null) {
+        if (data.move !== undefined && data.move === 'right') {
+          this.player1.moveToRight();
+        }
+        else if (data.move !== undefined && data.move === 'left') {
+          this.player1.moveToLeft();
+        }
+        else if (data.move !== undefined && data.move === 'up') {
+          this.player1.jump();
+        }
+        else
+        {
+          this.player1.body.velocity.setTo(0, this.player1.body.velocity.y);
+            if(this.player1.facingRight) {
+              this.player1.animations.play('idleRight');
+            }
+            else {
+              this.player1.animations.play('idleLeft');
+            }
+        }
       }
-      else if (data.move !== undefined && data.move === 'left') {
-        console.log("left");
-      }
-      else if (data.move !== undefined && data.move === 'up') {
-        console.log("jump");
-      }
-      else
-      {
-        console.log("idle");
+      else {
+        console.log("player is null");
       }
     };
   }
 
-  playersUpdate() {
-   
+  updatePlayer() {
+    if (this.cursors.left.isDown) {
+      this.player1.moveToLeft();
+    }
+    else if (this.cursors.right.isDown)
+    {
+    	this.player1.moveToRight();
+    }
+    else if (this.cursors.up.isDown)
+    {
+    	this.player1.jump();
+    }
+    else if (this.cursors.down.isDown)
+    {
+    	this.player1.slash();
+    }
+    else {
+      this.player1.idle();
+    }
   }
 
   processHandler (player, tile) {
     return true;
   }
+
+  hitTile() { }
 
   //To check if Player is close to tile ---> in order to destroying it
   collidingWithTiles(player, tile) {

@@ -33,7 +33,7 @@ export default class extends Phaser.State {
     //  This part is vital if you want the objects with their own collision groups to still collide with the world bounds
     //  (which we do) - what this does is adjust the bounds to use its own collision group.
     this.game.physics.p2.updateBoundsCollisionGroup();
-    
+
     //Platform
     // this.platforms = this.game.add.physicsGroup();
     // this.platforms.enableBody = true;
@@ -49,41 +49,29 @@ export default class extends Phaser.State {
     // this.players.physicsBodyType = Phaser.Physics.P2JS;
 
     //Player 1
-    this.player1 = new Player(this.game);
-    this.player1.spawnPlayer(600, 600, 'egyptian', this.game.physics.p2, this.players, this.playerCollisionGroup, this.tilesCollisionGroup, false, 820, 10);
+    this.player1 = new Player();
+    this.player1.spawnPlayer(600, 600, 'egyptian', this.game.physics.p2, this.players, this.playerCollisionGroup, this.tilesCollisionGroup, false, 820, 10, this.game);
 
-    this.cursors = this.game.input.keyboard.createCursorKeys();
+    // this.cursors = this.game.input.keyboard.createCursorKeys();
   }
 
   update() {
-    this.updatePlayer(); 
+    let player = this.player1;
 
-    this.airconsole.onMessage = (device_id, data) => {
-      // if(data.move !== undefined && this.game.physics.arcade.collide(player, this.tiles, this.collidingWithTiles, this.processHandler, this )) {
-      // }
-      // else { //normal collide
-      //   this.game.physics.arcade.collide(player, this.tiles)
-      // }
-      // let player = airconsole.convertDeviceIdToPlayerNumber(device_id);
-      if(this.player1 != null) {
-        if (data.move !== undefined && data.move === 'right') {
-          this.player1.moveToRight();
-        }
-        else if (data.move !== undefined && data.move === 'left') {
-          this.player1.moveToLeft();
-        }
-        else if (data.move !== undefined && data.move === 'up') {
-          this.player1.jump();
-        }
-        else
-        {
-          this.player1.body.velocity.setTo(0, this.player1.body.velocity.y);
-            if(this.player1.facingRight) {
-              this.player1.animations.play('idleRight');
-            }
-            else {
-              this.player1.animations.play('idleLeft');
-            }
+    this.airconsole.onMessage = function(device_id, data) {
+      if(this.player1 !== null) {
+        switch(data.action) {
+          case 'right':
+            player.moveToRight();
+            break;
+          case 'left':
+            player.moveToLeft();
+            break;
+          case 'jump':
+            player.jump();
+            break;
+          default:
+             player.idle()
         }
       }
       else {
@@ -92,26 +80,26 @@ export default class extends Phaser.State {
     };
   }
 
-  updatePlayer() {
-    if (this.cursors.left.isDown) {
-      this.player1.moveToLeft();
-    }
-    else if (this.cursors.right.isDown)
-    {
-    	this.player1.moveToRight();
-    }
-    else if (this.cursors.up.isDown)
-    {
-    	this.player1.jump();
-    }
-    else if (this.cursors.down.isDown)
-    {
-    	this.player1.slash();
-    }
-    else {
-      this.player1.idle();
-    }
-  }
+  // updatePlayer() {
+  //   if (this.cursors.left.isDown) {
+  //     this.player1.moveToLeft();
+  //   }
+  //   else if (this.cursors.right.isDown)
+  //   {
+  //   	this.player1.moveToRight();
+  //   }
+  //   else if (this.cursors.up.isDown)
+  //   {
+  //   	this.player1.jump();
+  //   }
+  //   else if (this.cursors.down.isDown)
+  //   {
+  //   	this.player1.slash();
+  //   }
+  //   else {
+  //     this.player1.idle();
+  //   }
+  // }
 
   processHandler (player, tile) {
     return true;
@@ -140,7 +128,7 @@ export default class extends Phaser.State {
       for(var j = 0; j < this.game.height - 50; j += 50) {
         randomNumber = Math.floor((Math.random() * 100) + 1);
         if(tileSet > 1) {
-          if(randomNumber < 50) { 
+          if(randomNumber < 50) {
             var tile = this.tiles.create(i, j - 20, 'tileSet', 0);
             tile.body.setSize(30, 30);
             tile.body.immovable = true;
@@ -161,6 +149,6 @@ export default class extends Phaser.State {
 
 
   render() {
-    //this.game.debug.text('FPS: ' + this.game.time.fps || '--', 20, 20);   
+    //this.game.debug.text('FPS: ' + this.game.time.fps || '--', 20, 20);
   }
 }

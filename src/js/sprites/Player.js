@@ -1,15 +1,14 @@
 import Phaser from 'phaser'
 
-export default class Player { 
-  
-    constructor (game) {
-        this.game = game;
+export default class Player {
+
+    constructor () {
         this.player = null
     }
 
-    spawnPlayer(x, y, asset, physics, group, collisionGroup, collidingWith, facingRight, jump, velocity) {
+    spawnPlayer(x, y, asset, physics, group, collisionGroup, collidingWith, facingRight, jump, velocity, game) {
 
-        this.player = this.game.add.sprite(x,y,asset, 'Idle_000');
+        this.player = game.add.sprite(x,y,asset, 'Idle_000');
         this.player.enableBody = true;
 
         //  Enable if for physics. This creates a default rectangular body.
@@ -36,7 +35,7 @@ export default class Player {
         this.player.animations.play('idle');
 
         this.player.anchor.set(0.5, 0.5);
-       
+
         return this.player;
     }
 
@@ -52,7 +51,7 @@ export default class Player {
         this.player.animations.play('run');
         this.player.body.moveRight(400);
     }
-    
+
     moveToLeft() {
         this.player.scale.x = -1; //-1 => facing Left
         this.player.body.setZeroVelocity();

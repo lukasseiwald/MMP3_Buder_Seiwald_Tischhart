@@ -7,10 +7,10 @@ export default class extends Phaser.State {
   init() { }
 
   preload() {
-    //this.game.time.advancedTiming = true; //For indicating FPS
+    this.game.time.advancedTiming = true; //For indicating FPS
 
-    //this.load.spritesheet('tileSet', 'assets/images/tileSet.png', 48, 48, 2);
-
+    this.load.spritesheet('tileSet', '../../assets/tiles/vulcanoTilesS.png', 66, 66, 3); 
+    this.load.image('bullet', '../../assets/characters/egyptian/egyptian_bullet.png');
     this.load.atlasJSONHash('egyptian', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
   }
 
@@ -21,50 +21,51 @@ export default class extends Phaser.State {
     this.game.physics.p2.gravity.y = 4000;
 
     //  little bouncey
-    game.physics.p2.defaultRestitution = 0.2;
+    this.game.physics.p2.defaultRestitution = 0.2;
 
     //  Turn on impact events for the world, without this we get no collision callbacks
-    game.physics.p2.setImpactEvents(true);
+    this.game.physics.p2.setImpactEvents(true);
 
     //  Create our collision groups. One for the player, one for the tiles
-    this.playerCollisionGroup = game.physics.p2.createCollisionGroup();
-    this.tilesCollisionGroup = game.physics.p2.createCollisionGroup();
+    this.playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
+    this.tilesCollisionGroup = this.game.physics.p2.createCollisionGroup();
+    this.bulletCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
-    //  This part is vital if you want the objects with their own collision groups to still collide with the world bounds
-    //  (which we do) - what this does is adjust the bounds to use its own collision group.
     this.game.physics.p2.updateBoundsCollisionGroup();
     
     //Platform
-    // this.platforms = this.game.add.physicsGroup();
-    // this.platforms.enableBody = true;
+    this.platforms = this.game.add.physicsGroup();
+    this.platforms.enableBody = true;
 
     //Tiles
-    // this.tiles = this.game.add.physicsGroup();
-    // this.tiles.enableBody = true;
-    //this.createPlatforms();
-
-    //Players
-    // this.players = this.game.add.group();
-    // this.players.enableBody = true;
-    // this.players.physicsBodyType = Phaser.Physics.P2JS;
+    this.tiles = this.game.add.group();
+    this.tiles.enableBody = true;
+    this.tiles.physicsBodyType = Phaser.Physics.P2JS;
+    this.createPlatforms();
 
     //Player 1
     this.player1 = new Player(this.game);
-    this.player1.spawnPlayer(600, 600, 'egyptian', this.game.physics.p2, this.players, this.playerCollisionGroup, this.tilesCollisionGroup, false, 820, 10);
+    this.player1.spawnPlayer(600, 600, 'egyptian', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, false, 820, 10);
+
+    //Player 2
+    this.player2 = new Player(this.game);
+    this.player2.spawnPlayer(100, 900, 'egyptian', this.game, this.playerCollisionGroup, this.tilesColldisionGroup, false, 820, 10);
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
+
+    this.wasd = {
+      up: this.game.input.keyboard.addKey(Phaser.Keyboard.W),
+      down: this.game.input.keyboard.addKey(Phaser.Keyboard.S),
+      left: this.game.input.keyboard.addKey(Phaser.Keyboard.A),
+      right: this.game.input.keyboard.addKey(Phaser.Keyboard.D),
+    };
   }
 
   update() {
     this.updatePlayer(); 
+    this.updatePlayer2();
 
     this.airconsole.onMessage = (device_id, data) => {
-      // if(data.move !== undefined && this.game.physics.arcade.collide(player, this.tiles, this.collidingWithTiles, this.processHandler, this )) {
-      // }
-      // else { //normal collide
-      //   this.game.physics.arcade.collide(player, this.tiles)
-      // }
-      // let player = airconsole.convertDeviceIdToPlayerNumber(device_id);
       if(this.player1 != null) {
         if (data.move !== undefined && data.move === 'right') {
           this.player1.moveToRight();
@@ -106,10 +107,31 @@ export default class extends Phaser.State {
     }
     else if (this.cursors.down.isDown)
     {
-    	this.player1.slash();
+    	this.player1.shoot(this.game, this.bulletCollisionGroup, this.playerCollisionGroup);
     }
     else {
       this.player1.idle();
+    }
+  }
+
+  updatePlayer2() {
+    if (this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
+      this.player2.moveToLeft();
+    }
+    else if (this.game.input.keyboard.isDown(Phaser.Keyboard.D))
+    {
+    	this.player2.moveToRight();
+    }
+    else if (this.game.input.keyboard.isDown(Phaser.Keyboard.W))
+    {
+    	this.player2.jump();
+    }
+    else if (this.game.input.keyboard.isDown(Phaser.Keyboard.S))
+    {
+    	this.player2.shoot(this.game, this.bulletCollisionGroup, this.playerCollisionGroupd);
+    }
+    else {
+      this.player2.idle();
     }
   }
 
@@ -128,22 +150,25 @@ export default class extends Phaser.State {
 
   createPlatforms() {
     //cover floor with tiles
-    for(var i = 0; i < this.game.width; i += 30) {
-      var ground = this.platforms.create(i, this.game.world.height - 20, 'tileSet', 0);
-      ground.body.immovable = true;
+    for(var i = 0; i < this.game.width; i += 66) {
+      var ground = this.platforms.create(i, this.game.world.height - 66, 'tileSet', 0);
+      ground.body.static = true;
     }
 
     var tileSet = 0;
     var randomNumber;
 
-    for(var i = 0; i < this.game.width; i += 50) {
-      for(var j = 0; j < this.game.height - 50; j += 50) {
+    for(var i = 0; i < this.game.width; i += 66) {
+      for(var j = 0; j < this.game.height - 66; j += 66) {
         randomNumber = Math.floor((Math.random() * 100) + 1);
         if(tileSet > 1) {
-          if(randomNumber < 50) { 
-            var tile = this.tiles.create(i, j - 20, 'tileSet', 0);
-            tile.body.setSize(30, 30);
-            tile.body.immovable = true;
+          if(randomNumber < 15) { 
+            var tile = this.tiles.create(i, j - 66, 'tileSet', 0);
+            tile.body.setCollisionGroup(this.tilesCollisionGroup);
+            tile.body.collides([this.tilesCollisionGroup, this.playerCollisionGroup]);
+            //tile.body.setSize(30, 30);
+            tile.body.fixedRotation = true;
+            tile.body.static = true;
           }
           if(tileSet > 4) {
             tileSet = 0;
@@ -151,9 +176,12 @@ export default class extends Phaser.State {
         }
         if(randomNumber < 10) {
           tileSet += 1;
-          var tile = this.tiles.create(i, j - 20, 'tileSet', 1);
-          tile.body.setSize(30, 30);
-          tile.body.immovable = true;
+          var tile = this.tiles.create(i, j - 66, 'tileSet', 1);
+          tile.body.setCollisionGroup(this.tilesCollisionGroup);
+          tile.body.collides([this.tilesCollisionGroup, this.playerCollisionGroup]);
+          //tile.body.setSize(30, 30);
+          tile.body.fixedRotation = true;
+          tile.body.static = true;
         }
       }
     }
@@ -161,6 +189,6 @@ export default class extends Phaser.State {
 
 
   render() {
-    //this.game.debug.text('FPS: ' + this.game.time.fps || '--', 20, 20);   
+    this.game.debug.text('FPS: ' + this.game.time.fps || '--', 20, 20);   
   }
 }

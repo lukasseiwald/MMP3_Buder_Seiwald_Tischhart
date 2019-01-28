@@ -8,7 +8,6 @@ export default class extends Phaser.State {
 
   preload() {
     this.game.time.advancedTiming = true; //For indicating FPS
-
     this.load.spritesheet('tileSet', '../../assets/tiles/vulcanoTilesS.png', 66, 66, 3);
     this.load.image('bullet', '../../assets/characters/egyptian/egyptian_bullet.png');
     this.load.atlasJSONHash('egyptian', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');

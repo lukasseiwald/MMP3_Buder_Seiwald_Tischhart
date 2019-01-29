@@ -7,7 +7,7 @@ airConsole.onReady = function() {
 }
 
 airConsole.onMessage = function(from, data) {
-
+  console.log("got data", data);
 }
 
 function sendToScreen(action) {

@@ -10,7 +10,7 @@ csm.setState('game', 'state--game');
 csm.startState('waiting');
 
 airConsole.onReady = function() {
-  let name = document.getElementsByClassName('player--name')[0];
+  let name = document.getElementsByClassName('waiting__name')[0];
   name.innerText = "You are " + airConsole.getNickname();
 }
 

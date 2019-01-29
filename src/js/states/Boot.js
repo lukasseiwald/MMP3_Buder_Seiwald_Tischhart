@@ -10,6 +10,9 @@ export default class extends Phaser.State {
   }
 
   preload() {
+    this.load.image('background', '../../assets/images/background/BG-1.png');
+    this.load.image('background2', '../../assets/images/background/BG-2.png');
+
     if (config.webfonts.length) {
       WebFont.load({
         google: {

@@ -8,21 +8,31 @@ export default class extends Phaser.State {
   }
 
   create () {
-    this.text = this.add.text(this.world.centerX, this.world.centerY, 'Waiting for players to join the game!', { font: '16px Bungee', fill: '#0000000', align: 'center' })
-    this.text.anchor.setTo(0.5, 0.5)
 
+    let bg = this.add.image(0, 0, 'background');
+    bg.width = this.world.width;
+    bg.height = this.world.height;
 
-    this.text3 = this.add.text(this.world.centerX, (this.world.centerY + 70), '', { font: '16px Sarabun', fill: '#0000000', align: 'center' })
-    this.text3.anchor.setTo(0.5, 0.5)
+    let bg2 = this.add.image(0, 0, 'background2');
+    bg2.width = this.world.width;
+    bg2.height = this.world.height;
+
+    this.headline = this.add.text(this.world.centerX, this.world.height * .3, 'Waiting for players to join the game!', { font: '35px Bungee', fill: '#000000', align: 'center' })
+    this.headline.anchor.setTo(0.5, 0.5)
 
     window.game.global.players = new Map();
     this.setConnectedPlayers();
 
-    this.text2 = this.add.text(this.world.centerX, (this.world.centerY + 20), window.game.global.players.size + '/4 players connected', { font: '16px Arial', fill: '#0000000', align: 'center' })
-    this.text2.anchor.setTo(0.5, 0.5)
+    this.text2 = this.add.text(this.world.centerX, (this.world.height * .35), window.game.global.players.size + '/4 players connected', { font: '16px Bungee', fill: '#0000000', align: 'center' });
+    this.text2.anchor.setTo(0.5, 0.5);
 
-    this.text4 = this.add.text(this.world.centerX, (this.world.centerY + 200), '', { font: '16px Sarabun', fill: '#0000000', align: 'center' })
-    this.text4.anchor.setTo(0.5, 0.5)
+    this.text3 = this.add.text(this.world.centerX, this.world.height * .5, '', { font: '16px Bungee', fill: '#0000000', align: 'center' });
+    this.text3.anchor.setTo(0.5, 0.5);
+
+    this.text4 = this.add.text(this.world.centerX, (this.world.centerY + 200), '', { font: '16px Bungee', fill: '#0000000', align: 'center' });
+    this.text4.anchor.setTo(0.5, 0.5);
+
+    this.timer = 0;
 
   }
 
@@ -64,19 +74,26 @@ export default class extends Phaser.State {
       updateScreen();
     }
 
-   if (window.game.global.players.size >= 3) {
+   if (window.game.global.players.size >= 2) {
      let master = window.game.global.airConsole.getMasterControllerDeviceId();
+     this.text4.text = "Master Player (" + window.game.global.players.get(master).nickname + ") please tap on Touchscreen to continue";
 
-     //this.text4.text = "Master Player (" + window.game.global.players.get(master).nickname + ") please press on Touchscreen to continue";
+    this.timer += this.time.elapsed;
+
+    if ( this.timer >= 1000 ) {
+       this.timer -= 1000;
+       this.text4.alpha = this.text4.alpha === .5 ? 1 : .5;
+     }
 
      //window.game.global.airConsole.message(master, 'test')
 
-     window.game.global.airConsole.broadcast('test')
+     //boradcast this to change screen on controllers
+     //window.game.global.airConsole.broadcast('test')
 
 
      //masterplayer has to press on the display to continue - save player device id + name in global scope
      // later start character selection - now game is starting instantly -> fixed characters
-     this.state.start('Level1')
+     //this.state.start('Level1')
    }
   }
 }

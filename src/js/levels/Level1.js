@@ -12,6 +12,9 @@ export default class extends Phaser.State {
 
     this.load.atlasJSONHash('egyptian', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
     this.load.atlasJSONHash('egyptian2', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
+
+    this.load.spritesheet('soul', '../../assets/characters/egyptian/egyptian_soul.png', 32, 32, 3);
+
     this.load.image('bullet', '../../assets/characters/egyptian/egyptian_bullet.png');
     this.load.image('bullet2', '../../assets/characters/egyptian/egyptian_bullet.png');
   }
@@ -31,6 +34,7 @@ export default class extends Phaser.State {
     this.playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
     this.tilesCollisionGroup = this.game.physics.p2.createCollisionGroup();
     this.bulletCollisionGroup = this.game.physics.p2.createCollisionGroup();
+    //this.soulCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
     this.game.physics.p2.updateBoundsCollisionGroup();
 
@@ -44,12 +48,10 @@ export default class extends Phaser.State {
     this.tiles.physicsBodyType = Phaser.Physics.P2JS;
     this.createPlatforms();
 
-    console.log(window.game.global.players);
     let x = 120;
     let y = 120;
 
     for (let [deviceId, value] of window.game.global.players) {
-      console.log(value)
       let player = new Player();
       player.spawnPlayer(x, y, 'egyptian', 'bullet', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
       window.game.global.players.set(deviceId, {
@@ -63,11 +65,19 @@ export default class extends Phaser.State {
 
     //Player 1
     this.player1 = new Player();
-    this.player1.spawnPlayer(600, 600, 'egyptian', 'bullet', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
+    this.player1.spawnPlayer(1360, 650, 'egyptian', 'bullet', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
 
     //Player 2
     this.player2 = new Player();
-    this.player2.spawnPlayer(100, 900, 'egyptian2', 'bullet2', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
+    this.player2.spawnPlayer(50, 650, 'egyptian2', 'bullet2', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
+
+    //Player 3
+    // this.player3 = new Player();
+    // this.player3.spawnPlayer(1360, 50, 'skin3', 'bullet3', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
+
+    //Player 4
+    // this.player3 = new Player();
+    // this.player3.spawnPlayer(50, 50, 'skin4', 'bullet3', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
@@ -80,13 +90,12 @@ export default class extends Phaser.State {
   }
 
   update() {
-    this.updatePlayer();
-    this.updatePlayer2();
+    //this.updatePlayer();
+    //this.updatePlayer2();
 
-    let player = this.player1;
+    //let player = this.player1;
 
     window.game.global.airConsole.onMessage = function(deviceId, data) {
-      console.log(window.game.global.players.get(deviceId));
       let player = window.game.global.players.get(deviceId).player;
       if(player !== null) {
         switch(data.action) {
@@ -126,7 +135,7 @@ export default class extends Phaser.State {
     }
     else if (this.cursors.down.isDown)
     {
-    	this.player1.shoot(this.game, this.bulletCollisionGroup, this.playerCollisionGroup);
+    	this.player1.shoot();
     }
     else {
       this.player1.idle();

@@ -65,7 +65,7 @@ export default class extends Phaser.State {
       updateScreen();
     }
 
-   if (window.game.global.players.size >= 4) {
+   if (window.game.global.players.size >= 3) {
      let master = window.game.global.airConsole.getMasterControllerDeviceId();
 
      //this.text4.text = "Master Player (" + window.game.global.players.get(master).nickname + ") please press on Touchscreen to continue";

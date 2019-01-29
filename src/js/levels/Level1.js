@@ -10,8 +10,11 @@ export default class extends Phaser.State {
     this.game.time.advancedTiming = true; //For indicating FPS
 
     this.load.spritesheet('tileSet', '../../assets/tiles/vulcanoTilesS.png', 66, 66, 3);
-    this.load.image('bullet', '../../assets/characters/egyptian/egyptian_bullet.png');
+    
     this.load.atlasJSONHash('egyptian', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
+    this.load.atlasJSONHash('egyptian2', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
+    this.load.image('bullet', '../../assets/characters/egyptian/egyptian_bullet.png');
+    this.load.image('bullet2', '../../assets/characters/egyptian/egyptian_bullet.png');
   }
 
   create() {
@@ -45,11 +48,11 @@ export default class extends Phaser.State {
 
     //Player 1
     this.player1 = new Player();
-    this.player1.spawnPlayer(600, 600, 'egyptian', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, false, 820, 10);
+    this.player1.spawnPlayer(600, 600, 'egyptian', 'bullet', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
 
     //Player 2
     this.player2 = new Player();
-    this.player2.spawnPlayer(100, 900, 'egyptian', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, false, 820, 10);
+    this.player2.spawnPlayer(100, 900, 'egyptian2', 'bullet2', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
@@ -62,8 +65,8 @@ export default class extends Phaser.State {
   }
 
   update() {
-    //this.updatePlayer();
-    //this.updatePlayer2();
+    this.updatePlayer();
+    this.updatePlayer2();
 
     let player = this.player1;
 
@@ -124,7 +127,7 @@ export default class extends Phaser.State {
     }
     else if (this.game.input.keyboard.isDown(Phaser.Keyboard.S))
     {
-    	this.player2.shoot(this.game, this.bulletCollisionGroup, this.playerCollisionGroupd);
+    	this.player2.shoot(this.game, this.bulletCollisionGroup, this.playerCollisionGroup);
     }
     else {
       this.player2.idle();
@@ -161,7 +164,7 @@ export default class extends Phaser.State {
           if(randomNumber < 15) {
             var tile = this.tiles.create(i, j - 66, 'tileSet', 0);
             tile.body.setCollisionGroup(this.tilesCollisionGroup);
-            tile.body.collides([this.tilesCollisionGroup, this.playerCollisionGroup]);
+            tile.body.collides([this.tilesCollisionGroup, this.playerCollisionGroup, this.bulletCollisionGroup]);
             //tile.body.setSize(30, 30);
             tile.body.fixedRotation = true;
             tile.body.static = true;
@@ -174,7 +177,7 @@ export default class extends Phaser.State {
           tileSet += 1;
           var tile = this.tiles.create(i, j - 66, 'tileSet', 1);
           tile.body.setCollisionGroup(this.tilesCollisionGroup);
-          tile.body.collides([this.tilesCollisionGroup, this.playerCollisionGroup]);
+          tile.body.collides([this.tilesCollisionGroup, this.playerCollisionGroup, this.bulletCollisionGroup]);
           //tile.body.setSize(30, 30);
           tile.body.fixedRotation = true;
           tile.body.static = true;

@@ -65,16 +65,19 @@ export default class extends Phaser.State {
       updateScreen();
     }
 
-   if (window.game.global.players.size >= 2) {
+   if (window.game.global.players.size >= 4) {
      let master = window.game.global.airConsole.getMasterControllerDeviceId();
 
-     this.text4.text = "Master Player (" + window.game.global.players.get(master).nickname + ") please press on Touchscreen to continue";
+     //this.text4.text = "Master Player (" + window.game.global.players.get(master).nickname + ") please press on Touchscreen to continue";
 
-     window.game.global.airConsole.message(master, {message: 'Waiting Done'})
+     //window.game.global.airConsole.message(master, 'test')
+
+     window.game.global.airConsole.broadcast('test')
+
 
      //masterplayer has to press on the display to continue - save player device id + name in global scope
      // later start character selection - now game is starting instantly -> fixed characters
-     //this.state.start('Level1')
+     this.state.start('Level1')
    }
   }
 }

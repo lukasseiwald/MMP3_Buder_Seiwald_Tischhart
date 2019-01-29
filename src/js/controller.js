@@ -1,13 +1,24 @@
 import {isTouchDevice} from './utils';
+import CSM from './controllerStateManager';
 
 let airConsole = new AirConsole({"orientation": "landscape"});
 
-airConsole.onReady = function() {
+let csm = new CSM('stage');
 
+csm.setState('waiting', 'state--waiting');
+csm.setState('game', 'state--game');
+csm.startState('waiting');
+
+
+airConsole.onReady = function() {
+  let name = document.getElementsByClassName('player--name')[0];
+  name.innerText = "You are " + airConsole.getNickname();
 }
 
 airConsole.onMessage = function(from, data) {
-  console.log("got data", data);
+  if (data === 'test') {
+    csm.startState('game');
+  }
 }
 
 function sendToScreen(action) {

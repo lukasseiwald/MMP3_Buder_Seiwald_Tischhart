@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import Soul from './Soul'
 
 export default class Player {
 
@@ -19,8 +20,13 @@ export default class Player {
         this.player.body.setZeroDamping();
         this.player.body.fixedRotation = true;
 
+        //few Player properties
         this.player.fireRate = 100;
         this.player.nextFire = 0;
+        this.player.hasEnemySoul = false;
+        
+        //Event Listener
+        this.player.events.onKilled.add(this.playerDied, this);
 
         this.player.animations.add('idle', ['Idle_000','Idle_001','Idle_002','Idle_003','Idle_004','Idle_005','Idle_006','Idle_007','Idle_008','Idle_009','Idle_010','Idle_011','Idle_012','Idle_013','Idle_014','Idle_015','Idle_016','Idle_017',], 18, true);
         this.player.animations.add('run', ['Running_000','Running_001','Running_002','Running_003','Running_004','Running_005','Running_006','Running_007','Running_008','Running_009','Running_010','Running_011'], 30, true);
@@ -28,7 +34,7 @@ export default class Player {
         this.player.animations.add('slash', ['Slashing_000','Slashing_001','Slashing_002','Slashing_003','Slashing_004','Slashing_005','Slashing_006','Slashing_007','Slashing_008','Slashing_009','Slashing_010','Slashing_011'], 20, false);
         this.player.animations.add('shoot', ['Throwing_000','Throwing_001','Throwing_002','Throwing_003','Throwing_004','Throwing_005','Throwing_006','Throwing_007','Throwing_008','Throwing_009','Throwing_010','Throwing_011'], 20, true);
         this.player.animations.add('hurt', ['Hurt_000','Hurt_001','Hurt_002','Hurt_003','Hurt_004','Hurt_005','Hurt_006','Hurt_007','Hurt_008','Hurt_009','Hurt_010','Hurt_011'], 20, false);
-        this.player.animations.add('dying', ['Dying_000','Dying_001','Dying_002','Dying_003','Dying_004','Dying_005','Dying_006','Dying_007','Dying_008','Dying_009','Dying_010','Dying_011','Dying_012','Dying_013','Dying_014'], 20, false);
+        //this.player.animations.add('dying', ['Dying_000','Dying_001','Dying_002','Dying_003','Dying_004','Dying_005','Dying_006','Dying_007','Dying_008','Dying_009','Dying_010','Dying_011','Dying_012','Dying_013','Dying_014'], 17, false);
         this.player.animations.play('idle');
 
         this.player.anchor.set(0.5, 0.5);
@@ -43,18 +49,8 @@ export default class Player {
         this.bullets.setAll('outOfBoundsKill', true);
         this.bullets.setAll('checkWorldBounds', true);
 
-        // this.bullets.children.forEach((child)=> {
-        //     console.log(child);
-        // })
-
-        this.bullets.hash = {
-            id: this.player.body.sprite.key
-        }
-
-       // console.log(this.bullets.hash["id"]);
-
-
         this.bullets.forEach((bullet)=>{
+            //this = bullet
             bullet.body.setCollisionGroup(bulletCollisionGroup);
             bullet.body.collides(playerCollisionGroup);
             bullet.body.collides(tilesCollisionGroup);
@@ -65,7 +61,7 @@ export default class Player {
         //Collisions for Player
         this.player.body.setCollisionGroup(playerCollisionGroup);
         this.player.body.collides(tilesCollisionGroup, this.hitTile(), this);
-        this.player.body.collides(playerCollisionGroup, this.hitPlayer(), this);
+        this.player.body.collides(playerCollisionGroup, this.hitTile(), this);
 
         game.physics.p2.setPostBroadphaseCallback(this.filterCollisions, this);
         this.player.body.collides(bulletCollisionGroup);
@@ -80,7 +76,6 @@ export default class Player {
             || (body2.sprite.key === "egyptian" && body1.sprite.key === "bullet") ||
             (body2.sprite.key === "egyptian2" && body1.sprite.key === "bullet2" ) 
         ){
-            console.log("hapüening");
            return false
         }
         return true;
@@ -89,45 +84,43 @@ export default class Player {
     hitTile() { }
 
     hitPlayer(body) {
-        console.log(this);
         if(body) {
+            var bullet = this.body.sprite;
             if (body.sprite.key == "egyptian") {
-                //body.sprite.kill();
-                this.body.sprite.kill();
+                bullet.kill();
                 body.sprite.animations.play('hurt', 10, false);
-                if(body.sprite.health > 0.5) {
-                    body.sprite.health -= 0.2;
+                if(body.sprite.alive) {
+                    body.sprite.damage(0.4);
                 }
-                else {
-                    console.log(body.sprite.key + " is dead");
-                }
-                
             }
             else if (body.sprite.key == "egyptian2"){
-                //body.sprite.kill();
-                this.body.sprite.kill();
+                bullet.kill();
+
                 body.sprite.animations.play('hurt', 10, false);
-                if(body.sprite.health > 0.5) {
-                    body.sprite.health -= 0.2;
-                }
-                else {
-                    console.log(body.sprite.key + " is dead");
+                if(body.sprite.alive) {
+                    body.sprite.damage(0.4);
                 }
             }
             else if (body.sprite.key == "tileSet") {
-                this.body.sprite.kill();
+                bullet.kill();
             }
         }
     }
 
-    hitPlayerBullet() {
-        console.log("hitting");
+    playerDied() {
+        this.spawnDeadBodyWithSoul();
     }
 
-    deleteBullet(bullet) {
-        bullet.kill();
+    spawnDeadBodyWithSoul() {
+        this.deadBody = window.game.add.sprite(this.player.x-35, this.player.y-35, 'egyptian');
+        this.deadBody.animations.add('dying', ['Dying_000','Dying_001','Dying_002','Dying_003','Dying_004','Dying_005','Dying_006','Dying_007','Dying_008','Dying_009','Dying_010','Dying_011','Dying_012','Dying_013','Dying_014'], 17, false);
+        this.deadBody.animations.play("dying");
+        
+        this.soul = new Soul();
+        this.soul.spawnSoul(this.player.x, this.player.y - 30, 'soul');
     }
 
+    //Player Update Functions
     idle() {
         if(this.player.animations.name === 'hurt') {
             this.player.animations.killOnComplete;
@@ -189,30 +182,4 @@ export default class Player {
             } 
         }
     }
-
-    // createBullet(game, collisionGroup, collidingWith) {
-
-    //     //bullet to left
-    //     if(this.player.scale.x < 0) {
-    //         this.bullet = game.add.sprite(this.player.x - 100, this.player.y - 20, 'bullet');
-    //         this.bullet.enableBody = true;
-    //         game.physics.p2.enable(this.bullet);
-    //         this.bullet.body.fixedRotation = true;
-    //         this.bullet.physicsBodyType = Phaser.Physics.P2JS;
-    //         this.bullet.body.setCollisionGroup(collisionGroup);
-    //         this.bullet.body.moveLeft(100);
-    //     }
-    //     //bullet to right
-    //     else { 
-    //         this.bullet = game.add.sprite(this.player.x + 100, this.player.y - 20, 'bullet');
-    //         this.bullet.enableBody = true;
-    //         game.physics.p2.enable(this.bullet);
-    //         this.bullet.body.fixedRotation = true;
-    //         this.bullet.physicsBodyType = Phaser.Physics.P2JS;
-    //         this.bullet.body.setCollisionGroup(collisionGroup);
-    //         this.bullet.body.moveRight(100);
-    //     }
-
-    //     this.bullet.body.collides(collidingWith, this.hitPlayerBullet(this.bullet), this);
-    // }
 }

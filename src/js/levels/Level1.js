@@ -12,6 +12,9 @@ export default class extends Phaser.State {
     
     this.load.atlasJSONHash('egyptian', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
     this.load.atlasJSONHash('egyptian2', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
+    
+    this.load.spritesheet('soul', '../../assets/characters/egyptian/egyptian_soul.png', 32, 32, 3);
+
     this.load.image('bullet', '../../assets/characters/egyptian/egyptian_bullet.png');
     this.load.image('bullet2', '../../assets/characters/egyptian/egyptian_bullet.png');
   }
@@ -71,7 +74,7 @@ export default class extends Phaser.State {
     let player = this.player1;
 
     window.game.global.airConsole.onMessage = function(device_id, data) {
-      if(this.player1 !== null) {
+      if(this.player1 !== null && this.player1.body.sprite.health > 0.5) {
         switch(data.action) {
           case 'right':
             player.moveToRight();

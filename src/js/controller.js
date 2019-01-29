@@ -9,7 +9,6 @@ csm.setState('waiting', 'state--waiting');
 csm.setState('game', 'state--game');
 csm.startState('waiting');
 
-
 airConsole.onReady = function() {
   let name = document.getElementsByClassName('player--name')[0];
   name.innerText = "You are " + airConsole.getNickname();
@@ -23,7 +22,6 @@ airConsole.onMessage = function(from, data) {
 }
 
 function sendToScreen(action) {
-  console.log(action);
   airConsole.message(AirConsole.SCREEN, {action: action});
 }
 

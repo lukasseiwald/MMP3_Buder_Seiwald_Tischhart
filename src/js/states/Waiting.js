@@ -32,7 +32,6 @@ export default class extends Phaser.State {
         nickname: window.game.global.airConsole.getNickname(deviceId)
       })
     }
-    console.log(window.game.global.players);
   }
 
   update() {

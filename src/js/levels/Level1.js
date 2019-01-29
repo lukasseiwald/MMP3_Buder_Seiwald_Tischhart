@@ -8,7 +8,6 @@ export default class extends Phaser.State {
 
   preload() {
     this.game.time.advancedTiming = true; //For indicating FPS
-
     this.load.spritesheet('tileSet', '../../assets/tiles/vulcanoTilesS.png', 66, 66, 3);
     
     this.load.atlasJSONHash('egyptian', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
@@ -18,7 +17,6 @@ export default class extends Phaser.State {
   }
 
   create() {
-    this.airconsole = new AirConsole();
 
     this.game.physics.startSystem(Phaser.Physics.P2JS);
     this.game.physics.p2.gravity.y = 4000;
@@ -46,6 +44,8 @@ export default class extends Phaser.State {
     this.tiles.physicsBodyType = Phaser.Physics.P2JS;
     this.createPlatforms();
 
+    this.players = new Array();
+
     //Player 1
     this.player1 = new Player();
     this.player1.spawnPlayer(600, 600, 'egyptian', 'bullet', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
@@ -70,7 +70,7 @@ export default class extends Phaser.State {
 
     let player = this.player1;
 
-    this.airconsole.onMessage = function(device_id, data) {
+    window.game.global.airConsole.onMessage = function(device_id, data) {
       if(this.player1 !== null) {
         switch(data.action) {
           case 'right':
@@ -185,7 +185,6 @@ export default class extends Phaser.State {
       }
     }
   }
-
 
   render() {
     this.game.debug.text('FPS: ' + this.game.time.fps || '--', 20, 20);

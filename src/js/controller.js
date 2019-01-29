@@ -3,13 +3,11 @@ import {isTouchDevice} from './utils';
 let airConsole = new AirConsole({"orientation": "landscape"});
 
 airConsole.onReady = function() {
-  //do airconsole stuff
+
 }
 
 airConsole.onMessage = function(from, data) {
-  // var test = document.createElement('DIV');
-  // test.innerHTML = "device_id: " + data;
-  // document.body.appendChild(test);
+
 }
 
 function sendToScreen(action) {

@@ -6,6 +6,19 @@ export default class Player {
   constructor () {
     this.player = null
     window.game.souls = [];
+    this.movingTo = null;
+  }
+
+  move() {
+    switch (this.movingTo) {
+      case 'right':
+        this.moveToRight();
+        break;
+      case 'left':
+        this.moveToLeft();
+        break;
+      default:
+    }
   }
 
   spawnPlayer(x, y, asset, bulletAsset, playerCollisionGroup, tilesCollisionGroup , bulletCollisionGroup, soulCollisionGroup) {
@@ -27,7 +40,7 @@ export default class Player {
     this.player.fireRate = 100;
     this.player.nextFire = 0;
     this.player.hasEnemySoul = false;
-    
+
     //Event Listener
     this.player.events.onKilled.add(this.playerDied, this);
 
@@ -65,16 +78,16 @@ export default class Player {
     this.player.body.collides(soulCollisionGroup, this.obtainedSoul, this);
 
     window.game.physics.p2.setPostBroadphaseCallback(this.filterCollisions, this);
-    
+
     return this.player;
   }
 
   //pre-check in order to prevent collision of player with its own bullets
   filterCollisions(body1, body2) {
     if((body1.sprite.key === "egyptian" && body2.sprite.key === "bullet") ||
-      (body1.sprite.key === "egyptian2" && body2.sprite.key === "bullet2" ) 
+      (body1.sprite.key === "egyptian2" && body2.sprite.key === "bullet2" )
       || (body2.sprite.key === "egyptian" && body1.sprite.key === "bullet") ||
-      (body2.sprite.key === "egyptian2" && body1.sprite.key === "bullet2" ) 
+      (body2.sprite.key === "egyptian2" && body1.sprite.key === "bullet2" )
     ){
       return false
     }
@@ -204,7 +217,7 @@ export default class Player {
           this.bullet.lifespan = 1000;
         }
         this.player.nextFire = window.game.time.now + 900;
-      } 
+      }
     }
   }
 

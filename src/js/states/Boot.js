@@ -7,9 +7,15 @@ export default class extends Phaser.State {
     this.stage.backgroundColor = '#EDEEC9';
     this.fontsReady = false;
     this.fontsLoaded = this.fontsLoaded.bind(this);
+
+    //stop game from pausing when game window is not in focus
+    this.stage.disableVisibilityChange = true;
   }
 
   preload() {
+    this.load.image('background', '../../assets/images/background/BG-1.png');
+    this.load.image('background2', '../../assets/images/background/BG-2.png');
+
     if (config.webfonts.length) {
       WebFont.load({
         google: {

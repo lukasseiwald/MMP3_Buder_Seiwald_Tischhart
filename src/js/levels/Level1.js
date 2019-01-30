@@ -7,12 +7,13 @@ export default class extends Phaser.State {
   init() { }
 
   preload() {
+
     this.game.time.advancedTiming = true; //For indicating FPS
     this.load.spritesheet('tileSet', '../../assets/tiles/vulcanoTilesS.png', 66, 66, 3);
-    
+
     this.load.atlasJSONHash('egyptian', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
     this.load.atlasJSONHash('egyptian2', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
-    
+
     this.load.spritesheet('soul', '../../assets/characters/egyptian/egyptian_soul.png', 32, 32, 3);
 
     this.load.image('bullet', '../../assets/characters/egyptian/egyptian_bullet.png');
@@ -48,7 +49,20 @@ export default class extends Phaser.State {
     this.tiles.physicsBodyType = Phaser.Physics.P2JS;
     //this.createPlatforms();
 
-    this.players = new Array();
+    let x = 120;
+    let y = 120;
+
+    for (let [deviceId, value] of window.game.global.players) {
+      let player = new Player();
+      player.spawnPlayer(x, y, 'egyptian', 'bullet', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
+      window.game.global.players.set(deviceId, {
+        nickname: value.nickname,
+        player: player
+      });
+
+      x += 100;
+      y +=100;
+    }
 
     //Player 1
     this.player1 = new Player();
@@ -77,13 +91,14 @@ export default class extends Phaser.State {
   }
 
   update() {
-    this.updatePlayer();
-    this.updatePlayer2();
+    //this.updatePlayer();
+    //this.updatePlayer2();
 
-    let player = this.player1;
+    //let player = this.player1;
 
-    window.game.global.airConsole.onMessage = function(device_id, data) {
-      if(this.player1 !== null && this.player1.body.sprite.health > 0.5) {
+    window.game.global.airConsole.onMessage = function(deviceId, data) {
+      let player = window.game.global.players.get(deviceId).player;
+      if(player !== null) {
         switch(data.action) {
           case 'right':
             player.moveToRight();
@@ -93,6 +108,9 @@ export default class extends Phaser.State {
             break;
           case 'jump':
             player.jump();
+            break;
+          case 'shoot':
+            player.shoot();
             break;
           default:
              player.idle()

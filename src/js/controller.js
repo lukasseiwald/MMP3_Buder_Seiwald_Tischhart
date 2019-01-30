@@ -9,21 +9,42 @@ csm.setState('waiting', 'state--waiting');
 csm.setState('game', 'state--game');
 csm.startState('waiting');
 
-
 airConsole.onReady = function() {
-  let name = document.getElementsByClassName('player--name')[0];
+  let name = document.getElementsByClassName('waiting__name')[0];
   name.innerText = "You are " + airConsole.getNickname();
 }
 
+function handleWaiting(data){
+  switch (data.action) {
+    case 'touch_to_continue':
+      let waiting = document.getElementById('state--waiting');
+      waiting.addEventListener('click', function(){
+        airConsole.message(AirConsole.SCREEN,
+          {
+            screen: 'waiting',
+            action: 'start_game'
+          });
+      })
+      break;
+    case 'change_to_controller':
+      csm.startState('game');
+      setUpController();
+      break;
+  }
+}
+
 airConsole.onMessage = function(from, data) {
-  if (data === 'test') {
-    csm.startState('game');
-    setUpController();
+  switch (data.screen) {
+    case 'waiting':
+      handleWaiting(data);
+      break;
+    case 'game':
+      handleGame(data);
+      break;
   }
 }
 
 function sendToScreen(action) {
-  console.log(action);
   airConsole.message(AirConsole.SCREEN, {action: action});
 }
 

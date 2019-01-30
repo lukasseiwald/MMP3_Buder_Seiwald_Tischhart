@@ -8,6 +8,7 @@
     <meta name="MobileOptimized" content="320">
     <meta http-equiv="cleartype" content="on">
     <meta name="format-detection" content="telephone=no">
+    <link href="https://fonts.googleapis.com/css?family=Bungee" rel="stylesheet">
     <style>
         html,
         body {
@@ -15,6 +16,7 @@
             width: 100vw;
         }
         * {
+          font-family: 'Bungee', sans-serif;
           margin: 0;
         	padding: 0;
         	border: 0;
@@ -25,6 +27,7 @@
         }
 
         .state {
+          position: relative;
           width: 100vw;
           height: 100vh;
           background: white;
@@ -99,6 +102,27 @@
           transform: translateY(-50%);
         }
 
+        .waiting__name {
+          position: absolute;
+          text-align: center;
+          left: 0;
+          right: 0;
+          object-fit: cover;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 2;
+          font-family: 'Bungee', cursive;
+        }
+
+        .waiting__background {
+          z-index: 1;
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 0;
+          bottom: 0;
+        }
+
     </style>
 </head>
 
@@ -107,10 +131,12 @@
 
     <!-- WAITING STATE -->
 
-    <div id="state--waiting" class="state">
+    <div id="state--waiting" class="state waiting">
       waiting for players to join game
-      <p class="player--name">
+      <p class="waiting__name">
       </p>
+
+      <image class="waiting__background" src="./assets/images/background/BG-1.png"/>
 
     </div>
 

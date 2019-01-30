@@ -7,6 +7,9 @@ export default class extends Phaser.State {
     this.stage.backgroundColor = '#EDEEC9';
     this.fontsReady = false;
     this.fontsLoaded = this.fontsLoaded.bind(this);
+
+    //stop game from pausing when game window is not in focus
+    this.stage.disableVisibilityChange = true;
   }
 
   preload() {

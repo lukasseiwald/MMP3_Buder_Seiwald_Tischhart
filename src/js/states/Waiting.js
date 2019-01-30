@@ -20,9 +20,6 @@ export default class extends Phaser.State {
     this.headline = this.add.text(this.world.centerX, this.world.height * .3, 'Waiting for players to join the game!', { font: '35px Bungee', fill: '#000000', align: 'center' })
     this.headline.anchor.setTo(0.5, 0.5)
 
-    window.game.global.players = new Map();
-    this.setConnectedPlayers();
-
     this.text2 = this.add.text(this.world.centerX, (this.world.height * .35), window.game.global.players.size + '/4 players connected', { font: '16px Bungee', fill: '#0000000', align: 'center' });
     this.text2.anchor.setTo(0.5, 0.5);
 
@@ -33,6 +30,9 @@ export default class extends Phaser.State {
     this.text4.anchor.setTo(0.5, 0.5);
 
     this.timer = 0;
+
+    window.game.global.players = new Map();
+    this.setConnectedPlayers();
 
   }
 

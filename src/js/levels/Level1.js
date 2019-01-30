@@ -34,7 +34,7 @@ export default class extends Phaser.State {
     this.playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
     this.tilesCollisionGroup = this.game.physics.p2.createCollisionGroup();
     this.bulletCollisionGroup = this.game.physics.p2.createCollisionGroup();
-    //this.soulCollisionGroup = this.game.physics.p2.createCollisionGroup();
+    this.soulCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
     this.game.physics.p2.updateBoundsCollisionGroup();
 
@@ -46,25 +46,25 @@ export default class extends Phaser.State {
     this.tiles = this.game.add.group();
     this.tiles.enableBody = true;
     this.tiles.physicsBodyType = Phaser.Physics.P2JS;
-    this.createPlatforms();
+    //this.createPlatforms();
 
     this.players = new Array();
 
     //Player 1
     this.player1 = new Player();
-    this.player1.spawnPlayer(1360, 650, 'egyptian', 'bullet', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
+    this.player1.spawnPlayer(1360, 650, 'egyptian', 'bullet', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup);
 
     //Player 2
     this.player2 = new Player();
-    this.player2.spawnPlayer(50, 650, 'egyptian2', 'bullet2', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
+    this.player2.spawnPlayer(50, 650, 'egyptian2', 'bullet2', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup);
 
     //Player 3
     // this.player3 = new Player();
-    // this.player3.spawnPlayer(1360, 50, 'skin3', 'bullet3', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
+    // this.player3.spawnPlayer(1360, 50, 'skin3', 'bullet3', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
 
     //Player 4
     // this.player3 = new Player();
-    // this.player3.spawnPlayer(50, 50, 'skin4', 'bullet3', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
+    // this.player3.spawnPlayer(50, 50, 'skin4', 'bullet3', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 

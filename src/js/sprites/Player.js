@@ -5,15 +5,16 @@ export default class Player {
 
   constructor () {
     this.player = null
+    window.game.souls = [];
   }
 
-  spawnPlayer(x, y, asset, bulletAsset, game, playerCollisionGroup, tilesCollisionGroup , bulletCollisionGroup) {
+  spawnPlayer(x, y, asset, bulletAsset, playerCollisionGroup, tilesCollisionGroup , bulletCollisionGroup, soulCollisionGroup) {
 
-    this.player = game.add.sprite(x,y,asset, 'Idle_000');
+    this.player = window.game.add.sprite(x,y,asset, 'Idle_000');
     this.player.enableBody = true;
 
     //  Enable if for physics. This creates a default rectangular body.
-    game.physics.p2.enable(this.player);
+    window.game.physics.p2.enable(this.player);
     this.player.physicsBodyType = Phaser.Physics.P2JS;
 
     //  Modifying a few body properties
@@ -42,7 +43,7 @@ export default class Player {
     this.player.anchor.set(0.5, 0.5);
 
     //Buletts
-    this.bullets = game.add.group();
+    this.bullets = window.game.add.group();
     this.bullets.enableBody = true;
     this.bullets.physicsBodyType = Phaser.Physics.P2JS;
     this.bullets.createMultiple(50, bulletAsset);
@@ -54,24 +55,21 @@ export default class Player {
     this.bullets.forEach((bullet)=>{
         //this = bullet
         bullet.body.setCollisionGroup(bulletCollisionGroup);
-        bullet.body.collides(playerCollisionGroup);
-        bullet.body.collides(tilesCollisionGroup);
-        bullet.body.collides(bulletCollisionGroup);
+        bullet.body.collides([playerCollisionGroup, tilesCollisionGroup, bulletCollisionGroup]);
         bullet.body.onBeginContact.add(this.hitPlayer, bullet);
     });
 
     //Collisions for Player
     this.player.body.setCollisionGroup(playerCollisionGroup);
-    this.player.body.collides(tilesCollisionGroup, this.hitTile(), this);
-    this.player.body.collides(playerCollisionGroup, this.hitTile(), this);
+    this.player.body.collides([tilesCollisionGroup, playerCollisionGroup, bulletCollisionGroup]);
+    this.player.body.collides(soulCollisionGroup, this.obtainedSoul, this);
 
-    game.physics.p2.setPostBroadphaseCallback(this.filterCollisions, this);
-    this.player.body.collides(bulletCollisionGroup);
+    window.game.physics.p2.setPostBroadphaseCallback(this.filterCollisions, this);
     
     return this.player;
   }
 
-  //use a custom "ownerId" value to check if both come from the same entity (player/npc)
+  //pre-check in order to prevent collision of player with its own bullets
   filterCollisions(body1, body2) {
     if((body1.sprite.key === "egyptian" && body2.sprite.key === "bullet") ||
       (body1.sprite.key === "egyptian2" && body2.sprite.key === "bullet2" ) 
@@ -82,8 +80,6 @@ export default class Player {
     }
     return true;
   }
-
-  hitTile() { }
 
   hitPlayer(body) {
     if(body) {
@@ -97,7 +93,6 @@ export default class Player {
       }
       else if (body.sprite.key == "egyptian2"){
         bullet.kill();
-
         body.sprite.animations.play('hurt', 10, false);
         if(body.sprite.alive) {
             body.sprite.damage(0.4);
@@ -110,18 +105,15 @@ export default class Player {
   }
 
   playerDied() {
-
+    //Style of Respawn Counter
     let style = { font: "65px Bungee", fill: "#000000", align: "center" };
-
+    //Time
     let countdown = 6;
 
     let text = window.game.add.text(this.player.spawnPointX , this.player.spawnPointY, 5, style);
-
     let respawnTimer = setInterval(function() {
       countdown = --countdown <= 0 ? 5 : countdown;
-
       text.setText(countdown - 1);
-      console.log(countdown);
       if(countdown < 2) {
         clearInterval(respawnTimer);
         text.kill();
@@ -129,23 +121,25 @@ export default class Player {
     }, 1000);
 
     window.game.time.events.add(Phaser.Timer.SECOND * 5, this.respawnPlayer, this);
-
     this.spawnDeadBodyWithSoul();
   }
 
   respawnPlayer() {
     this.player.reset(this.player.spawnPointX, this.player.spawnPointY);
+    this.player.obtainedSoul = null;
   }
 
   spawnDeadBodyWithSoul() {
-    this.deadBody = window.game.add.sprite(this.player.x-35, this.player.y-35, 'egyptian');
+    //Spawning dead body just to play its dying animation
+    this.deadBody = window.game.add.sprite(this.player.x - 35, this.player.y - 35, 'egyptian');
     this.deadBody.animations.add('dying', ['Dying_000','Dying_001','Dying_002','Dying_003','Dying_004','Dying_005','Dying_006','Dying_007','Dying_008','Dying_009','Dying_010','Dying_011','Dying_012','Dying_013','Dying_014'], 17, false);
     this.deadBody.animations.play("dying");
-
     window.game.time.events.add(Phaser.Timer.SECOND * 5, this.deleteDeadBody, this);
-    
+
+    //Spawning
     this.soul = new Soul();
-    this.soul.spawnSoul(this.player.x, this.player.y - 30, 'soul');
+    this.soul.spawnSoul(this.player, 'soul');
+    window.game.souls.push(this.soul);
   }
 
   deleteDeadBody() {
@@ -154,6 +148,7 @@ export default class Player {
 
   //Player Update Functions
   idle() {
+    this.moveSoulWithPlayer();
     if(this.player.animations.name === 'hurt') {
       this.player.animations.killOnComplete;
     }
@@ -165,6 +160,7 @@ export default class Player {
   moveToRight() {
     this.player.scale.x = 1; //1 => facing Right
     this.player.body.setZeroVelocity();
+    this.moveSoulWithPlayer();
     this.player.animations.play('run');
     this.player.body.moveRight(400);
   }
@@ -172,12 +168,14 @@ export default class Player {
   moveToLeft() {
     this.player.scale.x = -1; //-1 => facing Left
     this.player.body.setZeroVelocity();
+    this.moveSoulWithPlayer();
     this.player.animations.play('run');
     this.player.body.moveLeft(400);
   }
 
   jump() {
     this.player.body.setZeroVelocity();
+    this.moveSoulWithPlayer();
     this.player.animations.play('jump');
     this.player.body.moveUp(400);
   }
@@ -207,6 +205,24 @@ export default class Player {
         }
         this.player.nextFire = window.game.time.now + 900;
       } 
+    }
+  }
+
+  obtainedSoul(player, soul) {
+    if(this.player.obtainedSoul == null) {
+      if(!soul.alreadyObtained) {
+        this.player.obtainedSoul = soul;
+        this.player.obtainedSoul.alreadyObtained = true;
+        this.player.obtainedSoul.x = this.player.x;
+        this.player.obtainedSoul.y = this.player.y - 100;
+      }
+    }
+  }
+
+  moveSoulWithPlayer() {
+    if(this.player.obtainedSoul) {
+      this.player.obtainedSoul.x = this.player.x;
+      this.player.obtainedSoul.y = this.player.y - 100;
     }
   }
 }

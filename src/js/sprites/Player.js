@@ -8,7 +8,7 @@ export default class Player {
     window.game.souls = [];
   }
 
-  spawnPlayer(x, y, asset, bulletAsset, playerCollisionGroup, tilesCollisionGroup , bulletCollisionGroup, soulCollisionGroup) {
+  spawnPlayer(x, y, asset, playerCollisionGroup, tilesCollisionGroup , bulletCollisionGroup, soulCollisionGroup, baseCollisionGroup) {
 
     this.player = window.game.add.sprite(x,y,asset, 'Idle_000');
     this.player.enableBody = true;
@@ -27,6 +27,8 @@ export default class Player {
     this.player.fireRate = 100;
     this.player.nextFire = 0;
     this.player.hasEnemySoul = false;
+    this.player.bulletAsset = this.player.key + '_bullet';
+    this.player.soulAsset = this.player.key + '_soul';
     
     //Event Listener
     this.player.events.onKilled.add(this.playerDied, this);
@@ -41,12 +43,16 @@ export default class Player {
     this.player.animations.play('idle');
 
     this.player.anchor.set(0.5, 0.5);
+     //make Player face right direction
+    if(x > 600) {
+      this.player.scale.x = -1;
+    }
 
     //Buletts
     this.bullets = window.game.add.group();
     this.bullets.enableBody = true;
     this.bullets.physicsBodyType = Phaser.Physics.P2JS;
-    this.bullets.createMultiple(50, bulletAsset);
+    this.bullets.createMultiple(50, this.player.bulletAsset);
     this.bullets.setAll('anchor.x', 0.5);
     this.bullets.setAll('anchor.y', 0.5);
     this.bullets.setAll('outOfBoundsKill', true);
@@ -63,6 +69,7 @@ export default class Player {
     this.player.body.setCollisionGroup(playerCollisionGroup);
     this.player.body.collides([tilesCollisionGroup, playerCollisionGroup, bulletCollisionGroup]);
     this.player.body.collides(soulCollisionGroup, this.obtainedSoul, this);
+    this.player.body.collides(baseCollisionGroup, this.inBase, this);
 
     window.game.physics.p2.setPostBroadphaseCallback(this.filterCollisions, this);
     
@@ -71,10 +78,10 @@ export default class Player {
 
   //pre-check in order to prevent collision of player with its own bullets
   filterCollisions(body1, body2) {
-    if((body1.sprite.key === "egyptian" && body2.sprite.key === "bullet") ||
-      (body1.sprite.key === "egyptian2" && body2.sprite.key === "bullet2" ) 
-      || (body2.sprite.key === "egyptian" && body1.sprite.key === "bullet") ||
-      (body2.sprite.key === "egyptian2" && body1.sprite.key === "bullet2" ) 
+    if((body2.sprite.key.includes(body1.sprite.key)) ||
+      (body2.sprite.key.includes(body1.sprite.key)) 
+      || (body1.sprite.key.includes(body2.sprite.key))  ||
+      (body1.sprite.key.includes(body2.sprite.key))  
     ){
       return false
     }
@@ -91,7 +98,7 @@ export default class Player {
             body.sprite.damage(0.4);
         }
       }
-      else if (body.sprite.key == "egyptian2"){
+      else if (body.sprite.key == "knight"){
         bullet.kill();
         body.sprite.animations.play('hurt', 10, false);
         if(body.sprite.alive) {
@@ -105,6 +112,10 @@ export default class Player {
   }
 
   playerDied() {
+    //remove obtained soul of dead player
+    if(this.player.obtainedSoul) {
+      this.player.obtainedSoul.sprite.kill(); 
+    }
     //Style of Respawn Counter
     let style = { font: "65px Bungee", fill: "#000000", align: "center" };
     //Time
@@ -138,7 +149,7 @@ export default class Player {
 
     //Spawning
     this.soul = new Soul();
-    this.soul.spawnSoul(this.player, 'soul');
+    this.soul.spawnSoul(this.player, this.player.soulAsset);
     window.game.souls.push(this.soul);
   }
 
@@ -224,5 +235,9 @@ export default class Player {
       this.player.obtainedSoul.x = this.player.x;
       this.player.obtainedSoul.y = this.player.y - 100;
     }
+  }
+
+  inBase() {
+    console.log("in base");
   }
 }

@@ -1,5 +1,6 @@
 /* globals __DEV__ */
 import Phaser from 'phaser'
+import Base from '../sprites/Base'
 import Player from '../sprites/Player'
 import lang from '../lang'
 
@@ -11,13 +12,22 @@ export default class extends Phaser.State {
     this.game.time.advancedTiming = true; //For indicating FPS
     this.load.spritesheet('tileSet', '../../assets/tiles/vulcanoTilesS.png', 66, 66, 3);
 
+    //Bases
+    this.load.image('egyptian_base', '../../assets/bases/egyptian_base.png');
+    this.load.image('knight_base', '../../assets/bases/knight_base.png');
+
+
+    //Players
     this.load.atlasJSONHash('egyptian', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
-    this.load.atlasJSONHash('egyptian2', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
+    this.load.atlasJSONHash('knight', '../../assets/characters/knight/knight.png', '../../assets/characters/knight/knight.json');
 
-    this.load.spritesheet('soul', '../../assets/characters/egyptian/egyptian_soul.png', 32, 32, 3);
+    //Souls
+    this.load.spritesheet('egyptian_soul', '../../assets/characters/egyptian/egyptian_soul.png', 32, 32, 3);
+    this.load.spritesheet('knight_soul', '../../assets/characters/knight/knight_soul.png', 32, 32, 3);
 
-    this.load.image('bullet', '../../assets/characters/egyptian/egyptian_bullet.png');
-    this.load.image('bullet2', '../../assets/characters/egyptian/egyptian_bullet.png');
+     //Bullets
+    this.load.image('egyptian_bullet', '../../assets/characters/egyptian/egyptian_bullet.png');
+    this.load.image('knight_bullet', '../../assets/characters/knight/knight_bullet.png');
   }
 
   create() {
@@ -36,6 +46,7 @@ export default class extends Phaser.State {
     this.tilesCollisionGroup = this.game.physics.p2.createCollisionGroup();
     this.bulletCollisionGroup = this.game.physics.p2.createCollisionGroup();
     this.soulCollisionGroup = this.game.physics.p2.createCollisionGroup();
+    this.baseCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
     this.game.physics.p2.updateBoundsCollisionGroup();
 
@@ -49,28 +60,39 @@ export default class extends Phaser.State {
     this.tiles.physicsBodyType = Phaser.Physics.P2JS;
     this.createPlatforms();
 
+    //Bases
+    this.baseEgyptian = new Base();
+    this.baseEgyptian.x = 75;
+    this.baseEgyptian.y = 720;
+    this.baseEgyptian.createBase(this.baseEgyptian.x, this.baseEgyptian.y, 'egyptian_base');
+
+    this.baseKnight = new Base();
+    this.baseKnight.x = 1370;
+    this.baseKnight.y = 720;
+    this.baseKnight.createBase(this.baseKnight.x, this.baseKnight.y, 'knight_base');
+
     let x = 120;
     let y = 120;
 
-    for (let [deviceId, value] of window.game.global.players) {
-      let player = new Player();
-      player.spawnPlayer(x, y, 'egyptian', 'bullet', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup);
-      window.game.global.players.set(deviceId, {
-        nickname: value.nickname,
-        player: player
-      });
+    // for (let [deviceId, value] of window.game.global.players) {
+    //   let player = new Player();
+    //   player.spawnPlayer(x, y, 'egyptian', 'bullet', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup);
+    //   window.game.global.players.set(deviceId, {
+    //     nickname: value.nickname,
+    //     player: player
+    //   });
 
-      x += 100;
-      y +=100;
-    }
+    //   x += 100;
+    //   y +=100;
+    // }
 
     //Player 1
     this.player1 = new Player();
-    this.player1.spawnPlayer(1360, 650, 'egyptian', 'bullet', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup);
+    this.player1.spawnPlayer(this.baseKnight.x, this.baseKnight.y, 'knight', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
 
     //Player 2
     this.player2 = new Player();
-    this.player2.spawnPlayer(50, 650, 'egyptian2', 'bullet2', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup);
+    this.player2.spawnPlayer(this.baseEgyptian.x, this.baseEgyptian.y, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
 
     //Player 3
     // this.player3 = new Player();
@@ -91,8 +113,8 @@ export default class extends Phaser.State {
   }
 
   update() {
-    //this.updatePlayer();
-    //this.updatePlayer2();
+    this.updatePlayer();
+    this.updatePlayer2();
 
     //let player = this.player1;
 

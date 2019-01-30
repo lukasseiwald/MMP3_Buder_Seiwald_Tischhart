@@ -17,11 +17,14 @@ export default class Soul {
     //Collisions for Souls
     let soulCollisionGroup = window.game.physics.p2.createCollisionGroup();
     soulCollisionGroup.mask = 32;
+    let baseCollisionGroup = window.game.physics.p2.createCollisionGroup();
+    baseCollisionGroup.mask = 64;
     let playerCollisionGroup = window.game.physics.p2.createCollisionGroup();
     playerCollisionGroup.mask = 4;
 
     this.soul.body.setCollisionGroup(soulCollisionGroup);
-    this.soul.body.collides(playerCollisionGroup, this.collectedSoul, this);
+    this.soul.body.collides(playerCollisionGroup);
+    this.soul.body.collides(baseCollisionGroup, this.basedSoul, this);
 
     this.soul.animations.add('souling', [1,2,3], 10, true);
     this.soul.animations.play('souling');
@@ -30,6 +33,10 @@ export default class Soul {
     this.soul.isLost = false;
     //this.soul.body.static = true;
     this.soul.body.data.gravityScale = 0;
-    //this.soul.lifespan = 20000; //Souls last for 20 seconds
+    this.soul.lifespan = 18000; //Souls last for 30 seconds
+  }
+
+  basedSoul() {
+    this.soul.kill();
   }
 }

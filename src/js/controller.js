@@ -1,14 +1,28 @@
 import {isTouchDevice} from './utils';
+
+/* INIT CONTROLLER */
+
+class Stick {
+  constructor() {
+    console.log('Stick initialized');
+  }
+}
+
 let Draggable = require ('Draggable');
 
 let stick = document.getElementsByClassName('movement__stick')[0];
 
-document.getElementsByClassName('controller')[0].addEventListener('touchmove', function(event) {
-  for (var i = 0; i < event.targetTouches; i++) {
-    var touch = event.targetTouches[i];
+stick.addEventListener('touchmove', function(event) {
+  for (var i = 0; i < event.targetTouches.length; i++) {
+    var touch = event.targetTouches.item(i);
     console.log('touched ' + touch.identifier);
+    // var info = document.createElement('div');
+    // info.innerHTML = touch.identifier;
+    // document.body.appendChild(info);
+    // airConsole.message(AirConsole.SCREEN, {action: null, move: "right"});
   }
 }, false);
+
 
 let options = {
   limit: function (
@@ -44,13 +58,7 @@ let options = {
 
 new Draggable(stick, options);
 
-
-
-class Stick {
-  constructor() {
-    console.log('Stick initialized');
-  }
-}
+/* AIR CONSOLE */
 
 let airConsole = new AirConsole({"orientation": "landscape"});
 
@@ -64,35 +72,71 @@ airConsole.onMessage = function(from, data) {
   // document.body.appendChild(test);
 }
 
-function sendToScreen(action) {
-  airConsole.message(AirConsole.SCREEN, {action: action});
+/* HANDLE CONTROLLER INTERACTION */
+
+// function sendToScreen(event) {
+//   airConsole.message(AirConsole.SCREEN, {action: {}, move: "right"});
+// }
+
+function jumpHandler(e) {
+  touchstartHandler(e);
+  // airConsole.message(AirConsole.SCREEN, {action: null, move: "right"});
 }
 
-let buttons = document.getElementsByClassName('button');
+function shootHandler(e) {
+  touchstartHandler(e);
+  // airConsole.message(AirConsole.SCREEN, {action: null, move: "left"});
+}
+
+function touchstartHandler(e) {
+  e.stopPropagation();
+}
+
+function touchendHandler(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  airConsole.message(AirConsole.SCREEN, {action: "idle"});
+}
+
+let buttonjump = document.getElementsByClassName("button")[0];
+let buttonshoot = document.getElementsByClassName("button")[1];
+let buttons = document.getElementsByClassName("button")
 
 if (isTouchDevice()) {
-  for (let button of buttons) {
-    button.addEventListener("touchstart", function(e){
-      e.preventDeault();
-      e.stopPropagation();
-      sendToScreen(e.currentTarget.dataset.direction);
-    },{passive: true});
-    button.addEventListener("touchend", function(e){
-      e.preventDeault();
-      e.stopPropagation();
-      sendToScreen('idle');
-    });
-  }
+  buttonjump.addEventListener("touchstart", jumpHandler, {passive: true});
+  buttonjump.addEventListener("touchend", touchendHandler);
+
+  buttonshoot.addEventListener("touchstart", shootHandler, {passive: true});
+  buttonshoot.addEventListener("touchend", touchendHandler);
+
+  // for (let button of buttons) {
+  //   button.addEventListener("touchstart", function(e){
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     sendToScreen(e.currentTarget.dataset.direction);
+  //   },{passive: true});
+  //   button.addEventListener("touchend", function(e){
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     sendToScreen('idle');
+  //   });
+  // }
 }
 else {
-  for (let button of buttons) {
-    button.addEventListener("mousedown", function(e){
-      sendToScreen(e.currentTarget.dataset.direction);
-    });
-    button.addEventListener("mouseup", function(e){
-      sendToScreen('idle');
-    });
-  }
+  buttonjump.addEventListener("mouseup", jumpHandler, {passive: true});
+  buttonjump.addEventListener("mousedown", touchendHandler);
+
+  buttonshoot.addEventListener("mouseup", shootHandler, {passive: true});
+  buttonshoot.addEventListener("mousedown", touchendHandler);
+
+  // for (let button of buttons) {
+  //   button.addEventListener("mousedown", function(e){
+  //     sendToScreen(e.currentTarget.dataset.direction);
+  //   });
+  //   button.addEventListener("mouseup", function(e){
+  //     sendToScreen('idle');
+  //   });
+  // }
 }
 
 new Stick();

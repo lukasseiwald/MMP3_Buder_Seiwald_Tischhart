@@ -74,17 +74,18 @@ export default class extends Phaser.State {
     let x = 120;
     let y = 120;
 
-    // for (let [deviceId, value] of window.game.global.players) {
-    //   let player = new Player();
-    //   player.spawnPlayer(x, y, 'egyptian', 'bullet', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup);
-    //   window.game.global.players.set(deviceId, {
-    //     nickname: value.nickname,
-    //     player: player
-    //   });
+  for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
+    let character = new Player();
+    character.spawnPlayer(x, y, 'egyptian', 'bullet', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup);
+    // window.game.global.players.set(deviceId, {
+    //   nickname: value.nickname,
+    //   player: player
+    // });
+    window.game.global.playerManager.setCharacter(deviceId, character);
 
-    //   x += 100;
-    //   y +=100;
-    // }
+    x += 100;
+    y +=100;
+   }
 
     //Player 1
     this.player1 = new Player();
@@ -119,23 +120,23 @@ export default class extends Phaser.State {
     //let player = this.player1;
 
     window.game.global.airConsole.onMessage = function(deviceId, data) {
-      let player = window.game.global.players.get(deviceId).player;
-      if(player !== null) {
+      let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
+      if(character !== null) {
         switch(data.action) {
           case 'right':
-            player.moveToRight();
+            character.moveToRight();
             break;
           case 'left':
-            player.moveToLeft();
+            character.moveToLeft();
             break;
           case 'jump':
-            player.jump();
+            character.jump();
             break;
           case 'shoot':
-            player.shoot();
+            character.shoot();
             break;
           default:
-             player.idle()
+             character.idle()
         }
       }
       else {

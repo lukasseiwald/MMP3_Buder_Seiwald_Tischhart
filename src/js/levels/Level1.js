@@ -7,6 +7,7 @@ export default class extends Phaser.State {
   init() { }
 
   preload() {
+
     this.game.time.advancedTiming = true; //For indicating FPS
     this.load.spritesheet('tileSet', '../../assets/tiles/vulcanoTilesS.png', 66, 66, 3);
 

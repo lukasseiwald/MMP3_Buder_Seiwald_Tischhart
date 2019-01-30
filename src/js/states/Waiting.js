@@ -1,99 +1,100 @@
 import Phaser from 'phaser'
-import { centerGameObjects } from '../utils'
+import { centerGameObjects, addImage, getPlayerNicknames } from '../utils'
+import { headlineStyling, subheadlineStyling } from '../stylings'
 
 export default class extends Phaser.State {
   init () {}
 
-  preload () {
-  }
-
   create () {
-
-    let bg = this.add.image(0, 0, 'background');
-    bg.width = this.world.width;
-    bg.height = this.world.height;
-
-    let bg2 = this.add.image(0, 0, 'background2');
-    bg2.width = this.world.width;
-    bg2.height = this.world.height;
-
-    this.headline = this.add.text(this.world.centerX, this.world.height * .3, 'Waiting for players to join the game!', { font: '35px Bungee', fill: '#000000', align: 'center' })
-    this.headline.anchor.setTo(0.5, 0.5)
-
-    this.text2 = this.add.text(this.world.centerX, (this.world.height * .35), window.game.global.players.size + '/4 players connected', { font: '16px Bungee', fill: '#0000000', align: 'center' });
-    this.text2.anchor.setTo(0.5, 0.5);
-
-    this.text3 = this.add.text(this.world.centerX, this.world.height * .5, '', { font: '16px Bungee', fill: '#0000000', align: 'center' });
-    this.text3.anchor.setTo(0.5, 0.5);
-
-    this.text4 = this.add.text(this.world.centerX, (this.world.centerY + 200), '', { font: '16px Bungee', fill: '#0000000', align: 'center' });
-    this.text4.anchor.setTo(0.5, 0.5);
-
-    this.timer = 0;
-
     window.game.global.players = new Map();
-    this.setConnectedPlayers();
-
-  }
-
-  setConnectedPlayers() {
-    for (let deviceId of window.game.global.airConsole.getControllerDeviceIds()) {
-      window.game.global.players.set(deviceId, {
-        nickname: window.game.global.airConsole.getNickname(deviceId)
-      })
-    }
-  }
-
-  update() {
-
-    let text = this.text2;
-    let text2 = this.text3;
+    this.timer = 0;
     let that = this;
 
-    function updateScreen() {
-      that.setConnectedPlayers();
+    //IMAGES
 
-      text.text = window.game.global.players.size + '/4 players connected';
+    addImage(this, 0, 0, 'background', this.world.width, this.world.height);
+    addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
-      let names = new Array();
-      for (let playerId of window.game.global.airConsole.getControllerDeviceIds()) {
-        names.push(window.game.global.airConsole.getNickname(playerId))
-      }
+    //TEXT ELEMENTS
 
-      text2.text = names.toString();
-    }
+    this.headline = this.add.text(this.world.centerX, this.world.height * .3, 'Waiting for players to join the game!', headlineStyling)
+    this.headline.anchor.setTo(0.5, 0.5)
+
+    let playerNames = this.add.text(this.world.centerX, this.world.height * .5, '', subheadlineStyling);
+    playerNames.anchor.setTo(0.5, 0.5);
+
+    this.touchToContinue = this.add.text(this.world.centerX, this.world.centerY + 200, '', subheadlineStyling);
+    this.touchToContinue.anchor.setTo(0.5, 0.5);
+    let touchToContinue = this.touchToContinue;
+
+    let numberOfPlayers = this.add.text(this.world.centerX, this.world.height * .35, window.game.global.players.size + '/4 players connected', subheadlineStyling);
+    numberOfPlayers.anchor.setTo(0.5, 0.5);
+
+    //FUNCTIONS & LISTENERS
+
+    setConnectedPlayers();
 
     window.game.global.airConsole.onConnect = function(deviceId) {
+      setConnectedPlayers();
       updateScreen();
 
+      if (window.game.global.players.size >= 4) {
+        let master = window.game.global.airConsole.getMasterControllerDeviceId();
+        touchToContinue.text = "Master Player (" + window.game.global.players.get(master).nickname + ") please tap on Touchscreen to continue";
+        window.game.global.airConsole.message(master,
+          {
+            screen: 'waiting',
+            action: 'touch_to_continue'
+          }
+        );
+      }
     }
+
     window.game.global.airConsole.onDisconnect = function(deviceId) {
       if (window.game.global.players.has(deviceId)) {
         window.game.global.players.delete(deviceId)
       }
+      setConnectedPlayers();
       updateScreen();
+
+      //TODO: remove touch event from master device
     }
 
-   if (window.game.global.players.size >= 2) {
-     let master = window.game.global.airConsole.getMasterControllerDeviceId();
-     this.text4.text = "Master Player (" + window.game.global.players.get(master).nickname + ") please tap on Touchscreen to continue";
+    window.game.global.airConsole.onMessage = function(deviceId, data) {
+      switch (data.action) {
+        case 'start_game':
+          window.game.global.airConsole.broadcast(
+            {
+              screen: 'waiting',
+              action: 'change_to_controller'
+            })
+          that.state.start('Level1')
+          break;
+      }
+    }
 
-    this.timer += this.time.elapsed;
+    function setConnectedPlayers() {
+      for (let deviceId of window.game.global.airConsole.getControllerDeviceIds()) {
+        window.game.global.players.set(deviceId, {
+          nickname: window.game.global.airConsole.getNickname(deviceId)
+        })
+      }
+    }
 
-    if ( this.timer >= 1000 ) {
-       this.timer -= 1000;
-       this.text4.alpha = this.text4.alpha === .5 ? 1 : .5;
-     }
+    function updateScreen() {
+      numberOfPlayers.text = window.game.global.players.size + '/4 players connected';
+      playerNames.text = getPlayerNicknames().toString();
+    }
+  }
 
-     //window.game.global.airConsole.message(master, 'test')
-
-     //boradcast this to change screen on controllers
-     //window.game.global.airConsole.broadcast('test')
-
-
-     //masterplayer has to press on the display to continue - save player device id + name in global scope
-     // later start character selection - now game is starting instantly -> fixed characters
-     //this.state.start('Level1')
-   }
+  update() {
+    //blinking effect on screen
+    if (window.game.global.players.size >= 4) {
+      this.timer += this.time.elapsed;
+      if ( this.timer >= 1000 ) {
+        this.timer -= 1000;
+        this.touchToContinue.alpha = this.touchToContinue.alpha === .5 ? 1 : .5;
+      }
+    }
   }
 }

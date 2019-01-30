@@ -1,12 +1,14 @@
 import Phaser from 'phaser'
 import { centerGameObjects, addImage, getPlayerNicknames } from '../utils'
 import { headlineStyling, subheadlineStyling } from '../stylings'
+import PlayerManager from '../PlayerManager';
 
 export default class extends Phaser.State {
   init () {}
 
   create () {
-    window.game.global.players = new Map();
+    window.game.global.playerManager = new PlayerManager();
+
     this.timer = 0;
     let that = this;
 
@@ -27,21 +29,19 @@ export default class extends Phaser.State {
     this.touchToContinue.anchor.setTo(0.5, 0.5);
     let touchToContinue = this.touchToContinue;
 
-    let numberOfPlayers = this.add.text(this.world.centerX, this.world.height * .35, window.game.global.players.size + '/4 players connected', subheadlineStyling);
+    let numberOfPlayers = this.add.text(this.world.centerX, this.world.height * .35, window.game.global.playerManager.getConnectedPlayerNum() + '/4 players connected', subheadlineStyling);
     numberOfPlayers.anchor.setTo(0.5, 0.5);
 
     //FUNCTIONS & LISTENERS
 
-    setConnectedPlayers();
-
     window.game.global.airConsole.onConnect = function(deviceId) {
-      setConnectedPlayers();
+      window.game.global.playerManager.addPlayer(deviceId);
       updateScreen();
 
-      if (window.game.global.players.size >= 4) {
-        let master = window.game.global.airConsole.getMasterControllerDeviceId();
-        touchToContinue.text = "Master Player (" + window.game.global.players.get(master).nickname + ") please tap on Touchscreen to continue";
-        window.game.global.airConsole.message(master,
+      if (window.game.global.playerManager.getConnectedPlayerNum() >= 4) {
+        let masterId = window.game.global.playerManager.getMaster();
+        touchToContinue.text = "Master Player (" + window.game.global.playerManager.getNickname(masterId) + ") please tap on Touchscreen to continue";
+        window.game.global.airConsole.message(masterId,
           {
             screen: 'waiting',
             action: 'touch_to_continue'
@@ -51,10 +51,7 @@ export default class extends Phaser.State {
     }
 
     window.game.global.airConsole.onDisconnect = function(deviceId) {
-      if (window.game.global.players.has(deviceId)) {
-        window.game.global.players.delete(deviceId)
-      }
-      setConnectedPlayers();
+      window.game.global.playerManager.removePlayer(deviceId);
       updateScreen();
 
       //TODO: remove touch event from master device
@@ -73,23 +70,15 @@ export default class extends Phaser.State {
       }
     }
 
-    function setConnectedPlayers() {
-      for (let deviceId of window.game.global.airConsole.getControllerDeviceIds()) {
-        window.game.global.players.set(deviceId, {
-          nickname: window.game.global.airConsole.getNickname(deviceId)
-        })
-      }
-    }
-
     function updateScreen() {
-      numberOfPlayers.text = window.game.global.players.size + '/4 players connected';
-      playerNames.text = getPlayerNicknames().toString();
+      numberOfPlayers.text = window.game.global.playerManager.getConnectedPlayerNum() + '/4 players connected';
+      playerNames.text = window.game.global.playerManager.getAllNicknames().toString();
     }
   }
 
   update() {
     //blinking effect on screen
-    if (window.game.global.players.size >= 4) {
+    if (window.game.global.playerManager.getConnectedPlayerNum() >= 4) {
       this.timer += this.time.elapsed;
       if ( this.timer >= 1000 ) {
         this.timer -= 1000;

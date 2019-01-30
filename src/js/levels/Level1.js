@@ -47,14 +47,14 @@ export default class extends Phaser.State {
     this.tiles = this.game.add.group();
     this.tiles.enableBody = true;
     this.tiles.physicsBodyType = Phaser.Physics.P2JS;
-    //this.createPlatforms();
+    this.createPlatforms();
 
     let x = 120;
     let y = 120;
 
     for (let [deviceId, value] of window.game.global.players) {
       let player = new Player();
-      player.spawnPlayer(x, y, 'egyptian', 'bullet', this.game, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
+      player.spawnPlayer(x, y, 'egyptian', 'bullet', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup);
       window.game.global.players.set(deviceId, {
         nickname: value.nickname,
         player: player

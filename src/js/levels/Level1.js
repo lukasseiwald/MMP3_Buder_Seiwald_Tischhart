@@ -74,18 +74,14 @@ export default class extends Phaser.State {
     let x = 120;
     let y = 120;
 
-  for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
-    let character = new Player();
-    character.spawnPlayer(x, y, 'egyptian', 'bullet', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup);
-    // window.game.global.players.set(deviceId, {
-    //   nickname: value.nickname,
-    //   player: player
-    // });
-    window.game.global.playerManager.setCharacter(deviceId, character);
+    for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
+      let character = new Player();
+      character.spawnPlayer(x, y, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      window.game.global.playerManager.setCharacter(deviceId, character);
 
-    x += 100;
-    y +=100;
-   }
+      x += 100;
+      y +=100;
+    }
 
     //Player 1
     this.player1 = new Player();
@@ -119,15 +115,27 @@ export default class extends Phaser.State {
 
     //let player = this.player1;
 
+    //character.move() ->left ider right oder nix
+    //character handelt was move ist
+
+    //playermanager updaten
+
+    for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
+      let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
+      character.move();
+    }
+
     window.game.global.airConsole.onMessage = function(deviceId, data) {
       let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
       if(character !== null) {
+        console.log(data.action);
         switch(data.action) {
           case 'right':
             character.moveToRight();
+            character.movingTo = 'right';
             break;
           case 'left':
-            character.moveToLeft();
+            character.movingTo = 'left';
             break;
           case 'jump':
             character.jump();
@@ -136,7 +144,8 @@ export default class extends Phaser.State {
             character.shoot();
             break;
           default:
-             character.idle()
+            character.movingTo = null;
+            character.idle()
         }
       }
       else {

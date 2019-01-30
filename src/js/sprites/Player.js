@@ -6,6 +6,19 @@ export default class Player {
   constructor () {
     this.player = null
     window.game.souls = [];
+    this.movingTo = null;
+  }
+
+  move() {
+    switch (this.movingTo) {
+      case 'right':
+        this.moveToRight();
+        break;
+      case 'left':
+        this.moveToLeft();
+        break;
+      default:
+    }
   }
 
   spawnPlayer(x, y, asset, playerCollisionGroup, tilesCollisionGroup , bulletCollisionGroup, soulCollisionGroup, baseCollisionGroup) {
@@ -72,7 +85,7 @@ export default class Player {
     this.player.body.collides(baseCollisionGroup, this.inBase, this);
 
     window.game.physics.p2.setPostBroadphaseCallback(this.filterCollisions, this);
-    
+
     return this.player;
   }
 
@@ -215,7 +228,7 @@ export default class Player {
           this.bullet.lifespan = 1000;
         }
         this.player.nextFire = window.game.time.now + 900;
-      } 
+      }
     }
   }
 

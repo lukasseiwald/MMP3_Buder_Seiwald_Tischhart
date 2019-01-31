@@ -174,11 +174,7 @@ export default class Player {
   hitPlayer(hitTarget) {
     if(hitTarget) {
       var bullet = this.body.sprite;
-      if (hitTarget.sprite.key == "tiles") {
-        bullet.kill();
-        return;
-      }
-      else if (hitTarget.sprite.bulletAsset) {
+      if (hitTarget.sprite.bulletAsset) {
         hitTarget.sprite.animations.play('hurt', 10, false);
         if(hitTarget.sprite.alive) {
             hitTarget.sprite.damage(0.4);

@@ -13,8 +13,28 @@ export default class extends Phaser.State {
   }
 
   preload() {
-    this.load.image('background', '../../assets/images/background/BG-1.png');
+
+    //LOAD BACKGROUND
+
+    this.load.image('background1', '../../assets/images/background/BG-1.png');
     this.load.image('background2', '../../assets/images/background/BG-2.png');
+
+
+    this.load.spritesheet('tileSet', '../../assets/tiles/vulcanoTilesS.png', 66, 66, 3);
+
+    //LOAD TILEMAP
+
+    this.load.tilemap('map', '../../assets/tileMap/newTileMap.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.image('tiles', '../../assets/tileMap/tileSet.png');
+
+    //LOAD BASES
+
+    this.load.image('egyptian_base', '../../assets/bases/egyptian_base.png');
+    this.load.image('knight_base', '../../assets/bases/knight_base.png');
+    this.load.image('lucifer_base', '../../assets/bases/lucifer_base.png');
+    this.load.image('kickapoo_base', '../../assets/bases/kickapoo_base.png');
+
+    //LOADING FONTS
 
     if (config.webfonts.length) {
       WebFont.load({
@@ -25,8 +45,23 @@ export default class extends Phaser.State {
       });
     }
 
-    let text = this.add.text(this.world.centerX, this.world.centerY, 'loading fonts', { font: '16px Sarabun', fill: '#dddddd', align: 'center' });
-    text.anchor.setTo(0.5, 0.5);
+
+    //LOAD CHARACTERS
+
+    this.load.atlasJSONHash('egyptian', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
+    this.load.atlasJSONHash('knight', '../../assets/characters/knight/knight.png', '../../assets/characters/knight/knight.json');
+    //this.load.atlasJSONHash('lucifer', '../../assets/characters/lucifer/lucifer.png', '../../assets/characters/lucifer/lucifer.json');
+    //this.load.atlasJSONHash('knight', '../../assets/characters/kickapoo/kickapoo.png', '../../assets/characters/kickapoo/kickapoo.json');
+
+    //LOAD SOULS
+
+    this.load.spritesheet('egyptian_soul', '../../assets/characters/egyptian/egyptian_soul.png', 32, 32, 3);
+    this.load.spritesheet('knight_soul', '../../assets/characters/knight/knight_soul.png', 32, 32, 3);
+
+    // LOAD BULLETS
+
+    this.load.image('egyptian_bullet', '../../assets/characters/egyptian/egyptian_bullet.png');
+    this.load.image('knight_bullet', '../../assets/characters/knight/knight_bullet.png');
 
   }
 

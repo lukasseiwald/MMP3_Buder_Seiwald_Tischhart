@@ -30,7 +30,8 @@
           position: relative;
           width: 100vw;
           height: 100vh;
-          background: white;
+          background: #000;
+          overflow: hidden;
         }
 
         .controller {
@@ -121,6 +122,8 @@
           right: 0;
           top: 0;
           bottom: 0;
+          min-width: 100%;
+          min-height: 100%;
         }
 
     </style>
@@ -132,7 +135,7 @@
     <!-- WAITING STATE -->
 
     <div id="state--waiting" class="state waiting">
-      waiting for players to join game
+
       <p class="waiting__name">
       </p>
 

@@ -9,7 +9,6 @@ export default class extends Phaser.State {
   init() { }
 
   preload() {
-
     this.game.time.advancedTiming = true; //For indicating FPS
 
     //Background
@@ -95,22 +94,22 @@ export default class extends Phaser.State {
     let x = 120;
     let y = 120;
 
-    // for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
-    //   let character = new Player();
-    //   character.spawnPlayer(x, y, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
-    //   window.game.global.playerManager.setCharacter(deviceId, character);
+    for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
+      let character = new Player();
+      character.spawnPlayer(x, y, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      window.game.global.playerManager.setCharacter(deviceId, character);
 
-    //   x += 100;
-    //   y +=100;
-    // }
+      x += 100;
+      y +=100;
+    }
 
     //Player 1
-    this.player1 = new Player();
-    this.player1.spawnPlayer(this.baseKnight.x, this.baseKnight.y, 'knight', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
-
+    // this.player1 = new Player();
+    // this.player1.spawnPlayer(this.baseKnight.x, this.baseKnight.y, 'knight', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+    //
     //Player 2
-    this.player2 = new Player();
-    this.player2.spawnPlayer(this.baseEgyptian.x, this.baseEgyptian.y - 200, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+    // this.player2 = new Player();
+    // this.player2.spawnPlayer(this.baseEgyptian.x, this.baseEgyptian.y, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
 
     //Player 3
     // this.player3 = new Player();
@@ -131,8 +130,8 @@ export default class extends Phaser.State {
   }
 
   update() {
-    this.updatePlayer();
-    this.updatePlayer2();
+    // this.updatePlayer();
+    // this.updatePlayer2();
 
     for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
       let character = window.game.global.playerManager.getPlayerCharacter(deviceId);

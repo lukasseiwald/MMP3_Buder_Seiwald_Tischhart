@@ -37,8 +37,9 @@ export default class extends Phaser.State {
 
     // //Tiles
     this.tiles = this.game.add.group();
-    this.tiles.enableBody = true;
+    this.game.physics.p2.enable(this.tiles, true);
     this.tiles.physicsBodyType = Phaser.Physics.P2JS;
+
     this.createMap();
 
     //Bases
@@ -65,22 +66,22 @@ export default class extends Phaser.State {
     let x = 120;
     let y = 120;
 
-    // for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
-    //   let character = new Player();
-    //   character.spawnPlayer(x, y, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
-    //   window.game.global.playerManager.setCharacter(deviceId, character);
+    for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
+      let character = new Player();
+      character.spawnPlayer(x, y, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      window.game.global.playerManager.setCharacter(deviceId, character);
 
-    //   x += 100;
-    //   y +=100;
-    // }
+      x += 100;
+      y +=100;
+    }
 
     // Player 1
-    this.player1 = new Player();
-    this.player1.spawnPlayer(this.baseKnight.x, this.baseKnight.y -200, 'knight', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+    // this.player1 = new Player();
+    // this.player1.spawnPlayer(this.baseKnight.x, this.baseKnight.y -200, 'knight', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
     
-    // Player 2
-    this.player2 = new Player();
-    this.player2.spawnPlayer(this.baseEgyptian.x, this.baseEgyptian.y -200, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+    // // Player 2
+    // this.player2 = new Player();
+    // this.player2.spawnPlayer(this.baseEgyptian.x, this.baseEgyptian.y -200, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
 
     //Player 3
     // this.player3 = new Player();
@@ -101,13 +102,13 @@ export default class extends Phaser.State {
   }
 
   update() {
-    this.updatePlayer();
-    this.updatePlayer2();
+    // this.updatePlayer();
+    // this.updatePlayer2();
 
-    // for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
-    //   let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
-    //   character.move();
-    // }
+    for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
+      let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
+      character.move();
+    }
 
     window.game.global.airConsole.onMessage = function(deviceId, data) {
       let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
@@ -198,10 +199,39 @@ export default class extends Phaser.State {
         var tile = map.getTile(c, r);
 
         if (tile !== 0) { // 0 => empty tile
-          var collisionTile = this.tiles.create(c * map.tsize, r * map.tsize, 'tiles', tile -1);
+          var collisionTile = this.game.add.sprite(c * map.tsize, r * map.tsize, 'tiles', tile -1);
+          this.game.physics.p2.enable(collisionTile); // enable(collisionTile, true);  too see box
+          collisionTile.body.static = true;
+
+          collisionTile.body.clearShapes();
+          switch (tile) {
+            case 1:
+              collisionTile.body.addPolygon( {} , 10, 31  ,  4, 32  ,  32, 3  ,  32, 9     );
+              break;
+            case 2:
+              collisionTile.body.addPolygon( {} ,   1, 33  ,  1, 3  ,  32, 3  ,  32, 33   );
+              break;
+            case 3:
+              collisionTile.body.addPolygon( {} ,     24, 31  ,  2, 8  ,  2, 2  ,  32, 32 );
+              break;
+            case 4:
+              collisionTile.body.addPolygon( {} ,   28, 5  ,  28, 33  ,  10, 33  ,  2, 5  );
+              break;
+            case 5:
+              collisionTile.body.addPolygon( {} ,    1, 33  ,  1, 3  ,  32, 3  ,  32, 33  );
+              break;
+            case 6:
+              collisionTile.body.addPolygon( {} ,    1, 33  ,  1, 3  ,  32, 3  ,  32, 33  );
+              break;
+            case 7:
+              collisionTile.body.addPolygon( {} ,   22, 33  ,  4, 33  ,  4, 5  ,  31, 5  );
+              break;
+            default:
+              collisionTile.body.addPolygon( {} ,    0, 33  ,  0, 0  ,  33, 0  ,  33, 33  );
+          }
+
           collisionTile.body.setCollisionGroup(this.tilesCollisionGroup);
           collisionTile.body.collides([this.playerCollisionGroup, this.bulletCollisionGroup]);
-          collisionTile.body.static = true;
         }
       }
     }

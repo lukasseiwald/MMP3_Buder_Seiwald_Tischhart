@@ -78,7 +78,7 @@ export default class Player {
 
   jump() {
     this.jumpCount += 1;
-    if (this.jumpCount < 2) {
+    if (this.jumpCount < 200) {
       this.moveSoulWithPlayer();
       this.player.animations.play('jump');
       this.player.body.moveUp(1000);

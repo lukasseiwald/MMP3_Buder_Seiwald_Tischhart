@@ -73,6 +73,7 @@ export default class extends Phaser.State {
       character.spawnPlayer(characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
       window.game.global.playerManager.setCharacter(deviceId, character);
       index += 1;
+
     }
 
 

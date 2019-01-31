@@ -19,10 +19,10 @@ export default class Base {
 
     //make Base face right direction and size
     if(x > 600) {
-      this.base.scale.setTo(-0.72,0.72);
+      this.base.scale.setTo(-1,1);
     }
     else {
-      this.base.scale.setTo(0.72,0.72);
+      this.base.scale.setTo(1,1);
     }
 
     //Collisions for Souls

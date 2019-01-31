@@ -38,31 +38,29 @@ export default class extends Phaser.State {
 
     // //Tiles
     this.tiles = this.game.add.group();
-    this.game.physics.p2.enable(this.tiles, true);
+    this.game.physics.p2.enable(this.tiles);
     this.tiles.physicsBodyType = Phaser.Physics.P2JS;
-
-    this.createMap();
 
     let characterSettings = [
       {
         skin:'egyptian',
         x: 90,
-        y: 825
+        y: 842
       },
       {
         skin: 'knight',
         x: this.world.width - 90,
-        y: 825
+        y: 842
       },
       {
         skin: 'lucifer',
         x: 75,
-        y: 298
+        y: 313
       },
       {
         skin: 'kickapoo',
         x: this.world.width - 90,
-        y: 298
+        y: 313
       }
     ]
     let index = 0;
@@ -75,6 +73,8 @@ export default class extends Phaser.State {
       index += 1;
 
     }
+
+    this.createMap();
 
 
     // TODO: DELETE LATER ->

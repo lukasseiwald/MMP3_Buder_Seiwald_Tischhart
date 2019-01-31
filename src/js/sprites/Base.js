@@ -10,8 +10,12 @@ export default class Base {
     this.base.physicsBodyType = Phaser.Physics.P2JS;
 
     this.base.body.static = true;
-    this.base.collectedSouls = []; //maybe already write in player soul, and check if alreadyCollectedSoul != newSoul
+    this.base.body.immovable = true;
+    this.base.body.moves = false;
+    let skinName = asset.split("_")[0] + "_soul";
+    this.base.collectedSouls = [skinName]; //maybe already write in player soul, and check if alreadyCollectedSoul != newSoul
 
+    console.log(this.base.collectedSouls);
 
     //make Base face right direction and size
     if(x > 600) {
@@ -35,19 +39,32 @@ export default class Base {
   }
 
   basedSoul(base, soul) {
-    let soulName = soul.sprite.key;
-    if(!this.base.collectedSouls.includes(soulName)) {
-      this.winning();
+    if(base) {
+      console.log(base);
+      console.log(soul);
+      let soulName = soul.sprite.key;
 
-      // this.base.collectedSouls.push(soulName);
-      // if(this.base.collectedSouls > 0) {
-      //   let style = { font: "65px Bungee", fill: "#000000", align: "center" };
-      //   window.game.add.text(500, 500, "Player Won", style);
-      //   window.game.time.events.add(Phaser.Timer.SECOND * 5, this.winning, this);
-      // }
-    }
-    else {
-      console.log("soul already included");
+      
+      if(!base.sprite.collectedSouls.includes(soulName)) {
+        
+        this.player = soul.obtainedBy;
+        if(this.player.collectedSouls != undefined) {
+          this.player.collectedSouls.push(soulName); 
+          this.player.carryingSoul = 0;
+          base.sprite.collectedSouls.push(soulName);
+          soul.sprite.kill();
+        }
+        console.log("soul without player.... no go");
+      }
+      else {
+        console.log("soul already included");
+      }
+      if(base.sprite.collectedSouls.length > 3) { 
+        this.winning();
+        let style = { font: "65px Bungee", fill: "#000000", align: "center" };
+        window.game.add.text(500, 500, "Player Won", style);
+        window.game.time.events.add(Phaser.Timer.SECOND * 5, this.winning, this);
+      }
     }
   }
 

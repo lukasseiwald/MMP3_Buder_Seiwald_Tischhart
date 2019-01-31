@@ -90,13 +90,13 @@ export default class extends Phaser.State {
       y +=100;
     }
 
-    //Player 1
-    // this.player1 = new Player();
-    // this.player1.spawnPlayer(this.baseKnight.x, this.baseKnight.y, 'knight', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
-    //
-    //Player 2
-    // this.player2 = new Player();
-    // this.player2.spawnPlayer(this.baseEgyptian.x, this.baseEgyptian.y, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+    // Player 1
+    this.player1 = new Player();
+    this.player1.spawnPlayer(this.baseKnight.x, this.baseKnight.y, 'knight', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+
+    // Player 2
+    this.player2 = new Player();
+    this.player2.spawnPlayer(this.baseEgyptian.x, this.baseEgyptian.y, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
 
     //Player 3
     // this.player3 = new Player();
@@ -128,7 +128,6 @@ export default class extends Phaser.State {
     window.game.global.airConsole.onMessage = function(deviceId, data) {
       let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
       if(character !== null) {
-        console.log(data.action);
         switch(data.action) {
           case 'right':
             character.moveToRight();

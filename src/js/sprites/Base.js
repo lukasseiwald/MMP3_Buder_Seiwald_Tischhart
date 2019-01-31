@@ -2,12 +2,7 @@ import Phaser from 'phaser'
 
 export default class Base {
 
-  constructor () {
-    this.base = null
-  }
-
-  createBase(x, y, asset) {
-
+  constructor (x, y, asset) {
     this.base = game.add.sprite(x , y, asset);
     this.base.enableBody = true;
 
@@ -15,8 +10,8 @@ export default class Base {
     this.base.physicsBodyType = Phaser.Physics.P2JS;
 
     this.base.body.static = true;
-    this.base.collectedSouls = []; //maybe already write in player soul, and check if alreadyCollectedSoul != newSoul 
-    
+    this.base.collectedSouls = []; //maybe already write in player soul, and check if alreadyCollectedSoul != newSoul
+
 
     //make Base face right direction and size
     if(x > 600) {
@@ -43,7 +38,7 @@ export default class Base {
     let soulName = soul.sprite.key;
     if(!this.base.collectedSouls.includes(soulName)) {
       this.winning();
-      
+
       // this.base.collectedSouls.push(soulName);
       // if(this.base.collectedSouls > 0) {
       //   let style = { font: "65px Bungee", fill: "#000000", align: "center" };

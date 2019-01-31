@@ -38,6 +38,7 @@ export default class Player {
         this.moveToLeft();
         break;
       default:
+        this.moveSoulWithPlayer();
         this.player.body.moveRight(0);
         this.player.body.moveLeft(0);
     }
@@ -75,8 +76,9 @@ export default class Player {
 
   jump() {
     this.jumpCount += 1;
-    if (this.jumpCount < 200) {
-      this.moveSoulWithPlayer();
+    this.moveSoulWithPlayer();
+    if (this.jumpCount < 2) {
+      // this.moveSoulWithPlayer();
       this.player.animations.play('jump');
       this.player.body.moveUp(1000);
     }
@@ -160,10 +162,8 @@ export default class Player {
     if(body1.sprite == null || body2.sprite == null) {
       return true;
     }
-    else if((body2.sprite.key.includes(body1.sprite.key)) ||
-        (body2.sprite.key.includes(body1.sprite.key))
-        || (body1.sprite.key.includes(body2.sprite.key))  ||
-        (body1.sprite.key.includes(body2.sprite.key)))
+    else if((body2.sprite.key.includes(body1.sprite.key))
+        || (body1.sprite.key.includes(body2.sprite.key)))
       {
         return false
       }
@@ -181,6 +181,20 @@ export default class Player {
         }
       }
       else if (body.sprite.key == "knight"){
+        bullet.kill();
+        body.sprite.animations.play('hurt', 10, false);
+        if(body.sprite.alive) {
+            body.sprite.damage(0.4);
+        }
+      }
+      else if (body.sprite.key == "lucifer"){
+        bullet.kill();
+        body.sprite.animations.play('hurt', 10, false);
+        if(body.sprite.alive) {
+            body.sprite.damage(0.4);
+        }
+      }
+      else if (body.sprite.key == "kickapoo"){
         bullet.kill();
         body.sprite.animations.play('hurt', 10, false);
         if(body.sprite.alive) {

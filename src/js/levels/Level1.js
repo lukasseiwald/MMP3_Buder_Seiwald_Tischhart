@@ -37,7 +37,7 @@ export default class extends Phaser.State {
      //Bullets
     this.load.image('egyptian_bullet', '../../assets/characters/egyptian/egyptian_bullet.png');
     this.load.image('knight_bullet', '../../assets/characters/knight/knight_bullet.png');
-    
+
   }
 
   create() {
@@ -51,7 +51,7 @@ export default class extends Phaser.State {
     //  Turn on impact events for the world, without this we get no collision callbacks
     this.game.physics.p2.setImpactEvents(true);
 
-    // Create our collision groups. 
+    // Create our collision groups.
     this.playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
     this.tilesCollisionGroup = this.game.physics.p2.createCollisionGroup();
     this.bulletCollisionGroup = this.game.physics.p2.createCollisionGroup();
@@ -234,7 +234,7 @@ export default class extends Phaser.State {
       }
     }
   }
-  
+
   render() {
     this.game.debug.text('FPS: ' + this.game.time.fps || '--', 20, 20);
   }

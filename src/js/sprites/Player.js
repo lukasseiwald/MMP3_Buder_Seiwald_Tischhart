@@ -45,10 +45,9 @@ export default class Player {
     }
 
     if(this.jumpCount > 0 && this.isGrounded()) {
-      console.log('is grounded');
       this.jumpCount = 0;
     }
-    
+
   }
 
   idle() {
@@ -79,8 +78,7 @@ export default class Player {
 
   jump() {
     this.jumpCount += 1;
-    console.log(this.jumpCount);
-    if (this.jumpCount <= 2) {
+    if (this.jumpCount < 2) {
       this.moveSoulWithPlayer();
       this.player.animations.play('jump');
       this.player.body.moveUp(1000);

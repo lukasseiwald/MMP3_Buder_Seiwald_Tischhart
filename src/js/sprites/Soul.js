@@ -33,10 +33,10 @@ export default class Soul {
     this.soul.isLost = false;
     //this.soul.body.static = true;
     this.soul.body.data.gravityScale = 0;
-    this.soul.lifespan = 25000; //Souls last for 25 seconds
+    //this.soul.lifespan = 25000; //Souls last for 25 seconds
   }
 
   basedSoul() {
-    this.soul.kill();
+    
   }
 }

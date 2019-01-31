@@ -102,6 +102,8 @@ export default class Player {
     this.player.fireRate = 100;
     this.player.nextFire = 0;
     this.player.hasEnemySoul = false;
+    this.player.carryingSoul = 0;
+    this.player.collectedSouls = [this.player.key + '_soul']
     this.player.bulletAsset = this.player.key + '_bullet';
     this.player.soulAsset = this.player.key + '_soul';
     this.player.anchor.set(0.5, 0.5);
@@ -149,7 +151,7 @@ export default class Player {
     this.player.body.setCollisionGroup(playerCollisionGroup);
     this.player.body.collides([tilesCollisionGroup, playerCollisionGroup, bulletCollisionGroup]);
     this.player.body.collides(soulCollisionGroup, this.obtainedSoul, this);
-    //this.player.body.collides(baseCollisionGroup, this.inBase, this);
+    this.player.body.collides(baseCollisionGroup, this.inBase, this);
 
     window.game.physics.p2.setPostBroadphaseCallback(this.filterCollisions, this);
 
@@ -187,6 +189,7 @@ export default class Player {
     //remove obtained soul of dead player
     if(this.player.obtainedSoul) {
       this.player.obtainedSoul.sprite.kill();
+      this.player.carryingSoul = 0;
     }
     //Style of Respawn Counter
     let style = { font: "65px Bungee", fill: "#000000", align: "center" };
@@ -222,6 +225,8 @@ export default class Player {
     //Spawning
     this.soul = new Soul();
     this.soul.spawnSoul(this.player, this.player.soulAsset);
+    this.soul.fixedX = true;
+    this.soul.fixedY = true;
     window.game.souls.push(this.soul);
   }
 
@@ -234,7 +239,7 @@ export default class Player {
   }
 
   shoot() {
-    if(window.game.time.now > this.player.nextFire) {
+    if(window.game.time.now > this.player.nextFire && this.player.alive) {
       this.bullet = this.bullets.getFirstExists(false);
       if(this.bullet) {
 
@@ -258,10 +263,20 @@ export default class Player {
   }
 
   obtainedSoul(player, soul) {
-    if(this.player.obtainedSoul == null) {
+    //check if player already carries a soul and if player already previous obtained the soul
+    if(this.player.collectedSouls.includes(soul.sprite.key)) {
+      console.log("player has this soul already: " + soul.sprite.key);
+      console.log(this.player.collectedSouls);
+      soul.sprite.kill();
+    }
+    if(this.player.carryingSoul === 0) {
       if(!soul.alreadyObtained) {
+        this.player.carryingSoul = 1;
+        soul.fixedX = false;
+        soul.fixedY = false;
         this.player.obtainedSoul = soul;
         this.player.obtainedSoul.alreadyObtained = true;
+        this.player.obtainedSoul.obtainedBy = this.player;
         this.player.obtainedSoul.x = this.player.x;
         this.player.obtainedSoul.y = this.player.y - 50;
       }

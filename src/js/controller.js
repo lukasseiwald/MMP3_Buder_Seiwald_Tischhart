@@ -45,6 +45,7 @@ airConsole.onMessage = function(from, data) {
 }
 
 function sendToScreen(action) {
+  console.log(action);
   airConsole.message(AirConsole.SCREEN, {action: action});
 }
 
@@ -54,13 +55,14 @@ function setUpController(){
   for (let button of buttons) {
     button.addEventListener("touchstart", function(e){
       sendToScreen(e.currentTarget.dataset.direction);
+      button.classList.add('button--active');
     },{passive: true});
 
-    if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
-      button.addEventListener("touchend", function(e){
+    button.addEventListener("touchend", function(e){
+      if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
         sendToScreen('idle');
-      });
-    }
+      }
+      button.classList.remove('button--active');
+    });
   }
-
 }

@@ -55,9 +55,12 @@ function setUpController(){
       button.addEventListener("touchstart", function(e){
         sendToScreen(e.currentTarget.dataset.direction);
       },{passive: true});
-      button.addEventListener("touchend", function(e){
-        sendToScreen('idle');
-      });
+
+      if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
+        button.addEventListener("touchend", function(e){
+          sendToScreen('idle');
+        });
+      }
     }
   }
   else {

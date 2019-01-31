@@ -152,17 +152,10 @@ export default class extends Phaser.State {
     this.updatePlayer();
     this.updatePlayer2();
 
-    //let player = this.player1;
-
-    //character.move() ->left ider right oder nix
-    //character handelt was move ist
-
-    //playermanager updaten
-
-    // for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
-    //   let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
-    //   character.move();
-    // }
+    for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
+      let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
+      character.move();
+    }
 
     window.game.global.airConsole.onMessage = function(deviceId, data) {
       let character = window.game.global.playerManager.getPlayerCharacter(deviceId);

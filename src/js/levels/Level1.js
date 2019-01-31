@@ -10,6 +10,34 @@ export default class extends Phaser.State {
 
   preload() {
     this.game.time.advancedTiming = true; //For indicating FPS
+
+    //Background
+    this.load.image('background1', '../../assets/images/background/BG-3.png');
+    this.load.image('background2', '../../assets/images/background/BG-2.png');
+
+    //Tiles
+    this.load.spritesheet('tiles', '../../assets/tileMap/tileSet.png', 33, 33, 7);
+
+    //Bases
+    this.load.image('egyptian_base', '../../assets/bases/egyptian_base.png');
+    this.load.image('knight_base', '../../assets/bases/knight_base.png');
+    this.load.image('lucifer_base', '../../assets/bases/lucifer_base.png');
+    this.load.image('kickapoo_base', '../../assets/bases/kickapoo_base.png');
+
+    //Players
+    this.load.atlasJSONHash('egyptian', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
+    this.load.atlasJSONHash('knight', '../../assets/characters/knight/knight.png', '../../assets/characters/knight/knight.json');
+    //this.load.atlasJSONHash('lucifer', '../../assets/characters/lucifer/lucifer.png', '../../assets/characters/lucifer/lucifer.json');
+    //this.load.atlasJSONHash('knight', '../../assets/characters/kickapoo/kickapoo.png', '../../assets/characters/kickapoo/kickapoo.json');
+
+    //Souls
+    this.load.spritesheet('egyptian_soul', '../../assets/characters/egyptian/egyptian_soul.png', 32, 32, 3);
+    this.load.spritesheet('knight_soul', '../../assets/characters/knight/knight_soul.png', 32, 32, 3);
+
+     //Bullets
+    this.load.image('egyptian_bullet', '../../assets/characters/egyptian/egyptian_bullet.png');
+    this.load.image('knight_bullet', '../../assets/characters/knight/knight_bullet.png');
+    
   }
 
   create() {
@@ -23,7 +51,7 @@ export default class extends Phaser.State {
     //  Turn on impact events for the world, without this we get no collision callbacks
     this.game.physics.p2.setImpactEvents(true);
 
-    //  Create our collision groups. One for the player, one for the tiles
+    // Create our collision groups. 
     this.playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
     this.tilesCollisionGroup = this.game.physics.p2.createCollisionGroup();
     this.bulletCollisionGroup = this.game.physics.p2.createCollisionGroup();
@@ -36,46 +64,31 @@ export default class extends Phaser.State {
     addImage(this, 0, 0, 'background1', this.world.width, this.world.height);
     addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
-    //Map
-    this.map = this.game.add.tilemap('map');
-    this.map.addTilesetImage('tileSet', 'tiles');
-    this.layer = this.map.createLayer('TileLayer');
-    this.layer.resizeWorld();
-
-    this.map.setCollisionByExclusion([], true, this.layer);
-
-    this.game.physics.p2.convertTilemap( this.map, this.layer);
-
-
-    //Platform
-    // this.platforms = this.game.add.physicsGroup();
-    // this.platforms.enableBody = true;
-
     // //Tiles
-    // this.tiles = this.game.add.group();
-    // this.tiles.enableBody = true;
-    // this.tiles.physicsBodyType = Phaser.Physics.P2JS;
-    //this.createPlatforms();
+    this.tiles = this.game.add.group();
+    this.tiles.enableBody = true;
+    this.tiles.physicsBodyType = Phaser.Physics.P2JS;
+    this.createMap();
 
     //Bases
     this.baseEgyptian = new Base();
-    this.baseEgyptian.x = 75;
-    this.baseEgyptian.y = 720;
+    this.baseEgyptian.x = 90;
+    this.baseEgyptian.y = 825;
     this.baseEgyptian.createBase(this.baseEgyptian.x, this.baseEgyptian.y, 'egyptian_base');
 
     this.baseKnight = new Base();
     this.baseKnight.x = this.world.width -90;
-    this.baseKnight.y = 720;
+    this.baseKnight.y = 825;
     this.baseKnight.createBase(this.baseKnight.x, this.baseKnight.y, 'knight_base');
 
     this.baseLucifer = new Base();
     this.baseLucifer.x = 75;
-    this.baseLucifer.y = 210;
+    this.baseLucifer.y = 298;
     this.baseLucifer.createBase(this.baseLucifer.x, this.baseLucifer.y, 'lucifer_base');
 
     this.baseKickapoo = new Base();
     this.baseKickapoo.x = this.world.width - 90;
-    this.baseKickapoo.y = 210;
+    this.baseKickapoo.y = 298;
     this.baseKickapoo.createBase(this.baseKickapoo.x, this.baseKickapoo.y, 'kickapoo_base');
 
     let x = 120;
@@ -195,58 +208,33 @@ export default class extends Phaser.State {
     }
   }
 
-  processHandler (player, tile) {
-    return true;
-  }
+  createMap() {
+    var map = {
+      cols: 56,
+      rows: 30,
+      tsize: 33,
+      tiles: [
+         2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 2, 7, 0, 0, 0, 0, 0, 4, 2, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 4, 7, 0, 0, 0, 0, 4, 2, 2, 5, 2, 2, 2, 6, 2, 2, 7, 0, 0, 0, 0, 4, 7, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5, 0, 0, 0, 0, 0, 0, 0, 6, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+      ],
+      getTile(col, row) {
+        return this.tiles[row * map.cols + col]
+      }
+    };
 
-  hitTile() { }
+    for (var c = 0; c < map.cols; c++) {
+      for (var r = 0; r < map.rows; r++) {
+        var tile = map.getTile(c, r);
 
-  //To check if Player is close to tile ---> in order to destroying it
-  collidingWithTiles(player, tile) {
-    if(tile.frame == 1) {
-      tile.kill();
-    }
-  }
-
-  createPlatforms() {
-    //cover floor with tiles
-    for(var i = 0; i < this.game.width; i += 66) {
-      var ground = this.platforms.create(i, this.game.world.height - 66, 'tileSet', 0);
-      ground.body.static = true;
-    }
-
-    var tileSet = 0;
-    var randomNumber;
-
-    for(var i = 0; i < this.game.width; i += 66) {
-      for(var j = 0; j < this.game.height - 66; j += 66) {
-        randomNumber = Math.floor((Math.random() * 100) + 1);
-        if(tileSet > 1) {
-          if(randomNumber < 15) {
-            var tile = this.tiles.create(i, j - 66, 'tileSet', 0);
-            tile.body.setCollisionGroup(this.tilesCollisionGroup);
-            tile.body.collides([this.tilesCollisionGroup, this.playerCollisionGroup, this.bulletCollisionGroup]);
-            //tile.body.setSize(30, 30);
-            tile.body.fixedRotation = true;
-            tile.body.static = true;
-          }
-          if(tileSet > 4) {
-            tileSet = 0;
-          }
-        }
-        if(randomNumber < 10) {
-          tileSet += 1;
-          var tile = this.tiles.create(i, j - 66, 'tileSet', 1);
-          tile.body.setCollisionGroup(this.tilesCollisionGroup);
-          tile.body.collides([this.tilesCollisionGroup, this.playerCollisionGroup, this.bulletCollisionGroup]);
-          //tile.body.setSize(30, 30);
-          tile.body.fixedRotation = true;
-          tile.body.static = true;
+        if (tile !== 0) { // 0 => empty tile
+          var collisionTile = this.tiles.create(c * map.tsize, r * map.tsize, 'tiles', tile -1);
+          collisionTile.body.setCollisionGroup(this.tilesCollisionGroup);
+          collisionTile.body.collides([this.playerCollisionGroup, this.bulletCollisionGroup]);
+          collisionTile.body.static = true;
         }
       }
     }
   }
-
+  
   render() {
     this.game.debug.text('FPS: ' + this.game.time.fps || '--', 20, 20);
   }

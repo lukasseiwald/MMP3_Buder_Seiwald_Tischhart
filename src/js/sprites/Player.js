@@ -26,9 +26,7 @@ export default class Player {
               }
           }
       }
-
       return result;
-
   }
 
   move() {
@@ -47,7 +45,6 @@ export default class Player {
     if(this.jumpCount > 0 && this.isGrounded()) {
       this.jumpCount = 0;
     }
-
   }
 
   idle() {

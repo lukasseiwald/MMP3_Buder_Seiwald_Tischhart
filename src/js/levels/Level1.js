@@ -22,7 +22,7 @@ export default class extends Phaser.State {
     //  Turn on impact events for the world, without this we get no collision callbacks
     this.game.physics.p2.setImpactEvents(true);
 
-    // Create our collision groups. 
+    // Create our collision groups.
     this.playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
     this.tilesCollisionGroup = this.game.physics.p2.createCollisionGroup();
     this.bulletCollisionGroup = this.game.physics.p2.createCollisionGroup();
@@ -65,22 +65,26 @@ export default class extends Phaser.State {
     let x = 120;
     let y = 120;
 
-    // for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
-    //   let character = new Player();
-    //   character.spawnPlayer(x, y, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
-    //   window.game.global.playerManager.setCharacter(deviceId, character);
+    let skins = ['egyptian', 'knight', 'lucifer', 'kickapoo'];
+    let index = 0;
 
-    //   x += 100;
-    //   y +=100;
-    // }
+    for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
+      let character = new Player();
+      character.spawnPlayer(x, y, skins[index], this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      window.game.global.playerManager.setCharacter(deviceId, character);
+
+      x += 100;
+      y +=100;
+      index += 1;
+    }
 
     // Player 1
-    this.player1 = new Player();
-    this.player1.spawnPlayer(this.baseKnight.x, this.baseKnight.y -200, 'knight', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
-    
+    // this.player1 = new Player();
+    // this.player1.spawnPlayer(this.baseKnight.x, this.baseKnight.y -200, 'knight', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+
     // Player 2
-    this.player2 = new Player();
-    this.player2.spawnPlayer(this.baseEgyptian.x, this.baseEgyptian.y -200, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+    // this.player2 = new Player();
+    // this.player2.spawnPlayer(this.baseEgyptian.x, this.baseEgyptian.y -200, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
 
     //Player 3
     // this.player3 = new Player();
@@ -101,18 +105,17 @@ export default class extends Phaser.State {
   }
 
   update() {
-    this.updatePlayer();
-    this.updatePlayer2();
+    // this.updatePlayer();
+    // this.updatePlayer2();
 
-    // for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
-    //   let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
-    //   character.move();
-    // }
+    for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
+      let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
+      character.move();
+    }
 
     window.game.global.airConsole.onMessage = function(deviceId, data) {
       let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
       if(character !== null) {
-        console.log(data.action);
         switch(data.action) {
           case 'right':
             character.moveToRight();
@@ -133,7 +136,7 @@ export default class extends Phaser.State {
         }
       }
       else {
-        console.log("player is null");
+        console.info("player is null");
       }
     };
   }
@@ -206,7 +209,7 @@ export default class extends Phaser.State {
       }
     }
   }
-  
+
   render() {
     this.game.debug.text('FPS: ' + this.game.time.fps || '--', 20, 20);
   }

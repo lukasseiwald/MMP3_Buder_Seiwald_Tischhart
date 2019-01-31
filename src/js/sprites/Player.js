@@ -26,9 +26,7 @@ export default class Player {
               }
           }
       }
-
       return result;
-
   }
 
   move() {
@@ -47,7 +45,6 @@ export default class Player {
     if(this.jumpCount > 0 && this.isGrounded()) {
       this.jumpCount = 0;
     }
-
   }
 
   idle() {
@@ -276,7 +273,7 @@ export default class Player {
         this.player.obtainedSoul = soul;
         this.player.obtainedSoul.alreadyObtained = true;
         this.player.obtainedSoul.x = this.player.x;
-        this.player.obtainedSoul.y = this.player.y - 100;
+        this.player.obtainedSoul.y = this.player.y - 50;
       }
     }
   }
@@ -284,7 +281,7 @@ export default class Player {
   moveSoulWithPlayer() {
     if(this.player.obtainedSoul) {
       this.player.obtainedSoul.x = this.player.x;
-      this.player.obtainedSoul.y = this.player.y - 100;
+      this.player.obtainedSoul.y = this.player.y - 50;
     }
   }
 

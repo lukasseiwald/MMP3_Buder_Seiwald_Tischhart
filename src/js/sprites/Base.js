@@ -20,10 +20,10 @@ export default class Base {
 
     //make Base face right direction and size
     if(x > 600) {
-      this.base.scale.setTo(-0.8,0.8);
+      this.base.scale.setTo(-0.35,0.35);
     }
     else {
-      this.base.scale.setTo(0.8,0.8);
+      this.base.scale.setTo(0.35,0.35);
     }
 
     //Collisions for Souls
@@ -41,7 +41,6 @@ export default class Base {
 
   basedSoul(base, soul) {
     let soulName = soul.sprite.key;
-    console.log(this.base.collectedSouls);
     if(!this.base.collectedSouls.includes(soulName)) {
       this.winning();
       

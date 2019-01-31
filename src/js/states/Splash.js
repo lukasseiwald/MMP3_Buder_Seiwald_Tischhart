@@ -17,6 +17,6 @@ export default class extends Phaser.State {
   }
 
   create () {
-    this.state.start('Waiting')
+    this.state.start('Level1')
   }
 }

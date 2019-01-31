@@ -2,6 +2,7 @@
 import Phaser from 'phaser'
 import Base from '../sprites/Base'
 import Player from '../sprites/Player'
+import { addImage } from '../utils'
 import lang from '../lang'
 
 export default class extends Phaser.State {
@@ -10,16 +11,28 @@ export default class extends Phaser.State {
   preload() {
 
     this.game.time.advancedTiming = true; //For indicating FPS
+
+    //Background
+    this.load.image('background1', '../../assets/images/background/BG-3.png');
+    this.load.image('background2', '../../assets/images/background/BG-2.png');
+
     this.load.spritesheet('tileSet', '../../assets/tiles/vulcanoTilesS.png', 66, 66, 3);
+
+    //Tilemap
+    this.load.tilemap('map', '../../assets/tileMap/newTileMap.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.image('tiles', '../../assets/tileMap/tileSet.png');
 
     //Bases
     this.load.image('egyptian_base', '../../assets/bases/egyptian_base.png');
     this.load.image('knight_base', '../../assets/bases/knight_base.png');
-
+    this.load.image('lucifer_base', '../../assets/bases/lucifer_base.png');
+    this.load.image('kickapoo_base', '../../assets/bases/kickapoo_base.png');
 
     //Players
     this.load.atlasJSONHash('egyptian', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
     this.load.atlasJSONHash('knight', '../../assets/characters/knight/knight.png', '../../assets/characters/knight/knight.json');
+    //this.load.atlasJSONHash('lucifer', '../../assets/characters/lucifer/lucifer.png', '../../assets/characters/lucifer/lucifer.json');
+    //this.load.atlasJSONHash('knight', '../../assets/characters/kickapoo/kickapoo.png', '../../assets/characters/kickapoo/kickapoo.json');
 
     //Souls
     this.load.spritesheet('egyptian_soul', '../../assets/characters/egyptian/egyptian_soul.png', 32, 32, 3);
@@ -28,6 +41,7 @@ export default class extends Phaser.State {
      //Bullets
     this.load.image('egyptian_bullet', '../../assets/characters/egyptian/egyptian_bullet.png');
     this.load.image('knight_bullet', '../../assets/characters/knight/knight_bullet.png');
+    
   }
 
   create() {
@@ -50,15 +64,30 @@ export default class extends Phaser.State {
 
     this.game.physics.p2.updateBoundsCollisionGroup();
 
-    //Platform
-    this.platforms = this.game.add.physicsGroup();
-    this.platforms.enableBody = true;
+    //Background
+    addImage(this, 0, 0, 'background1', this.world.width, this.world.height);
+    addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
-    //Tiles
-    this.tiles = this.game.add.group();
-    this.tiles.enableBody = true;
-    this.tiles.physicsBodyType = Phaser.Physics.P2JS;
-    this.createPlatforms();
+    //Map
+    this.map = this.game.add.tilemap('map');
+    this.map.addTilesetImage('tileSet', 'tiles');
+    this.layer = this.map.createLayer('TileLayer');
+    this.layer.resizeWorld();
+
+    this.map.setCollisionByExclusion([], true, this.layer);
+
+    this.game.physics.p2.convertTilemap( this.map, this.layer);
+
+
+    //Platform
+    // this.platforms = this.game.add.physicsGroup();
+    // this.platforms.enableBody = true;
+
+    // //Tiles
+    // this.tiles = this.game.add.group();
+    // this.tiles.enableBody = true;
+    // this.tiles.physicsBodyType = Phaser.Physics.P2JS;
+    //this.createPlatforms();
 
     //Bases
     this.baseEgyptian = new Base();
@@ -67,21 +96,31 @@ export default class extends Phaser.State {
     this.baseEgyptian.createBase(this.baseEgyptian.x, this.baseEgyptian.y, 'egyptian_base');
 
     this.baseKnight = new Base();
-    this.baseKnight.x = 1370;
+    this.baseKnight.x = this.world.width -90;
     this.baseKnight.y = 720;
     this.baseKnight.createBase(this.baseKnight.x, this.baseKnight.y, 'knight_base');
+
+    this.baseLucifer = new Base();
+    this.baseLucifer.x = 75;
+    this.baseLucifer.y = 210;
+    this.baseLucifer.createBase(this.baseLucifer.x, this.baseLucifer.y, 'lucifer_base');
+
+    this.baseKickapoo = new Base();
+    this.baseKickapoo.x = this.world.width - 90;
+    this.baseKickapoo.y = 210;
+    this.baseKickapoo.createBase(this.baseKickapoo.x, this.baseKickapoo.y, 'kickapoo_base');
 
     let x = 120;
     let y = 120;
 
-    for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
-      let character = new Player();
-      character.spawnPlayer(x, y, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
-      window.game.global.playerManager.setCharacter(deviceId, character);
+    // for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
+    //   let character = new Player();
+    //   character.spawnPlayer(x, y, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+    //   window.game.global.playerManager.setCharacter(deviceId, character);
 
-      x += 100;
-      y +=100;
-    }
+    //   x += 100;
+    //   y +=100;
+    // }
 
     //Player 1
     this.player1 = new Player();
@@ -93,11 +132,11 @@ export default class extends Phaser.State {
 
     //Player 3
     // this.player3 = new Player();
-    // this.player3.spawnPlayer(1360, 50, 'skin3', 'bullet3', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
+    //this.player3.spawnPlayer(this.baseLucifer.x, this.baseLucifer.y, 'lucifer', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
 
     //Player 4
     // this.player3 = new Player();
-    // this.player3.spawnPlayer(50, 50, 'skin4', 'bullet3', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup);
+    // this.player4.spawnPlayer(this.baseKickapoo.x, this.baseKickapoo.y, 'kickapoo', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
@@ -120,10 +159,10 @@ export default class extends Phaser.State {
 
     //playermanager updaten
 
-    for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
-      let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
-      character.move();
-    }
+    // for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
+    //   let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
+    //   character.move();
+    // }
 
     window.game.global.airConsole.onMessage = function(deviceId, data) {
       let character = window.game.global.playerManager.getPlayerCharacter(deviceId);

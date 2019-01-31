@@ -18,7 +18,7 @@ function handleWaiting(data){
   switch (data.action) {
     case 'touch_to_continue':
       let waiting = document.getElementById('state--waiting');
-      waiting.addEventListener('click', function(){
+      waiting.addEventListener('touchstart', function(){
         airConsole.message(AirConsole.SCREEN,
           {
             screen: 'waiting',
@@ -50,27 +50,17 @@ function sendToScreen(action) {
 
 function setUpController(){
   let buttons = document.getElementsByClassName('button');
-  if (isTouchDevice()) {
-    for (let button of buttons) {
-      button.addEventListener("touchstart", function(e){
-        sendToScreen(e.currentTarget.dataset.direction);
-      },{passive: true});
 
-      if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
-        button.addEventListener("touchend", function(e){
-          sendToScreen('idle');
-        });
-      }
-    }
-  }
-  else {
-    for (let button of buttons) {
-      button.addEventListener("mousedown", function(e){
-        sendToScreen(e.currentTarget.dataset.direction);
-      });
-      button.addEventListener("mouseup", function(e){
+  for (let button of buttons) {
+    button.addEventListener("touchstart", function(e){
+      sendToScreen(e.currentTarget.dataset.direction);
+    },{passive: true});
+
+    if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
+      button.addEventListener("touchend", function(e){
         sendToScreen('idle');
       });
     }
   }
+
 }

@@ -14,8 +14,6 @@ export default class PlayerManager {
     return this.players;
   }
 
-
-
   setConnectedPlayers() {
     for (let deviceId of window.game.global.airConsole.getControllerDeviceIds()) {
       this.addPlayer(deviceId);

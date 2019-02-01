@@ -8,6 +8,7 @@ export default class extends Phaser.State {
 
   create () {
     window.game.global.playerManager = new PlayerManager();
+    window.game.global.playerManager.setConnectedPlayers();
 
     this.timer = 0;
     let that = this;
@@ -35,9 +36,10 @@ export default class extends Phaser.State {
     //FUNCTIONS & LISTENERS
 
     window.game.global.airConsole.onConnect = function(deviceId) {
-      window.game.global.playerManager.addPlayer(deviceId);
-      updateScreen();
-
+      if(window.game.global.playerManager.getConnectedPlayerNum() < 4) {
+        window.game.global.playerManager.addPlayer(deviceId);
+        updateScreen();
+      }
       if (window.game.global.playerManager.getConnectedPlayerNum() >= 4) {
         let masterId = window.game.global.playerManager.getMaster();
         touchToContinue.text = "Master Player (" + window.game.global.playerManager.getNickname(masterId) + ") please tap on Touchscreen to continue";

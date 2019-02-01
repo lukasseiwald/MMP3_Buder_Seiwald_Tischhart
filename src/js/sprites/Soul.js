@@ -26,8 +26,8 @@ export default class Soul {
     this.soul.body.collides(playerCollisionGroup);
     this.soul.body.collides(baseCollisionGroup, this.basedSoul, this);
 
-    this.soul.animations.add('souling', [1,2,3], 10, true);
-    this.soul.animations.play('souling');
+    this.soul.animations.add('souling');
+    this.soul.animations.play('souling', 5, true);
 
     this.soul.isPickedUp = false;
     this.soul.isLost = false;

@@ -45,7 +45,6 @@ airConsole.onMessage = function(from, data) {
 }
 
 function sendToScreen(action) {
-  console.log(action);
   airConsole.message(AirConsole.SCREEN, {action: action});
 }
 

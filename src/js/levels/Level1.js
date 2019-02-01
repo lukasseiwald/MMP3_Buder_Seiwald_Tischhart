@@ -14,6 +14,7 @@ export default class extends Phaser.State {
   }
 
   create() {
+    this.game.world.setBounds(0, 0, this.game.world.width, this.game.world.height + 100);
     this.game.physics.startSystem(Phaser.Physics.P2JS);
     this.game.physics.p2.gravity.y = 4000;
 
@@ -54,7 +55,7 @@ export default class extends Phaser.State {
       },
       {
         skin: 'lucifer',
-        x: 80,
+        x: 75,
         y: 313
       },
       {

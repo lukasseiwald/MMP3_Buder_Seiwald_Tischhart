@@ -43,6 +43,10 @@ export default class Player {
         this.player.body.moveLeft(0);
     }
 
+    if(this.player.body.y > window.game.height) {
+      this.player.body.y = 0;
+    }
+
     if(this.jumpCount > 0 && this.isGrounded()) {
       this.jumpCount = 0;
     }
@@ -79,7 +83,7 @@ export default class Player {
     this.moveSoulWithPlayer();
     if (this.jumpCount < 2) {
       this.player.animations.play('jump');
-      this.player.body.moveUp(1000);
+      this.player.body.moveUp(1500);
     }
   }
 
@@ -162,9 +166,17 @@ export default class Player {
     this.player.body.collides(soulCollisionGroup, this.obtainedSoul, this);
    // this.player.body.collides(baseCollisionGroup, this.inBase, this);
 
+    //this.player.events.onOutOfBounds.add(this.playerTeleport, this);
+
     window.game.physics.p2.setPostBroadphaseCallback(this.filterCollisions, this);
 
     return this.player;
+  }
+
+  playerTeleport() {
+    console.log("telöeport");
+    this.player.x = 500;
+    this.player.y = 50;
   }
 
   //pre-check in order to prevent collision of player with its own bullets
@@ -201,7 +213,7 @@ export default class Player {
       this.player.carryingSoul = 0;
     }
     //Style of Respawn Counter
-    let style = { font: "65px Bungee", fill: "#000000", align: "center" };
+    let style = { font: "65px Bungee", fill: "#FFFFFF", align: "center" };
     //Time
     let countdown = 6;
 

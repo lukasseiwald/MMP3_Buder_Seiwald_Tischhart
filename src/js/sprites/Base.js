@@ -28,12 +28,12 @@ export default class Base {
     baseCollisionGroup.mask = 64;
     let soulCollisionGroup = window.game.physics.p2.createCollisionGroup();
     soulCollisionGroup.mask = 32;
-    let playerCollisionGroup = window.game.physics.p2.createCollisionGroup();
-    playerCollisionGroup.mask = 4;
+    // let playerCollisionGroup = window.game.physics.p2.createCollisionGroup();
+    // playerCollisionGroup.mask = 4;
 
     this.base.body.setCollisionGroup(baseCollisionGroup);
     this.base.body.collides(soulCollisionGroup, this.basedSoul, this);
-    this.base.body.collides(playerCollisionGroup, this.basedPlayer, this);
+    //this.base.body.collides(playerCollisionGroup, this.basedPlayer, this);
   }
 
   basedSoul(base, soul) {
@@ -85,10 +85,10 @@ export default class Base {
     window.game.add.sprite(soulTrophyX, soulTrophY , soulName); //anders bennen da es sonst als eingesammelte seele zählt
   }
 
-  basedPlayer(base, player) {
-    console.log("player in base");
-    player.obtainedSoul = null;
-  }
+  // basedPlayer(base, player) {
+  //   console.log("player in base");
+  //   player.obtainedSoul = null;
+  // }
 
   winning() {
     let style = { font: "65px Bungee", fill: "#000000", align: "center" };

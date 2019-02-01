@@ -54,7 +54,7 @@ export default class extends Phaser.State {
       },
       {
         skin: 'lucifer',
-        x: 75,
+        x: 80,
         y: 313
       },
       {
@@ -68,7 +68,7 @@ export default class extends Phaser.State {
     for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
       let base = new Base(characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin + '_base');
       let character = new Player();
-      character.spawnPlayer(characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      character.spawnPlayer(characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup);
       window.game.global.playerManager.setCharacter(deviceId, character);
       index += 1;
 

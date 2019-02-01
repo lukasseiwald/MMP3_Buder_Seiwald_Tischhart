@@ -83,9 +83,18 @@ export default class Player {
     }
   }
 
-  spawnPlayer(x, y, asset, playerCollisionGroup, tilesCollisionGroup , bulletCollisionGroup, soulCollisionGroup, baseCollisionGroup) {
+  spawnPlayer(x, y, asset, playerCollisionGroup, tilesCollisionGroup , bulletCollisionGroup, soulCollisionGroup) {
 
-    this.player = window.game.add.sprite(x,y,asset);
+    let spawnX = x;
+    let spawnY = y
+    if(x > 600) {
+      spawnY = spawnY - 300;
+    }
+    else {
+      spawnX = spawnX - 400;
+      spawnY = spawnY - 300;
+    }
+    this.player = window.game.add.sprite(spawnX,spawnY,asset);
     this.player.enableBody = true;
 
     //  Enable if for physics. This creates a default rectangular body.
@@ -151,7 +160,7 @@ export default class Player {
     this.player.body.setCollisionGroup(playerCollisionGroup);
     this.player.body.collides([tilesCollisionGroup, playerCollisionGroup, bulletCollisionGroup]);
     this.player.body.collides(soulCollisionGroup, this.obtainedSoul, this);
-    this.player.body.collides(baseCollisionGroup, this.inBase, this);
+   // this.player.body.collides(baseCollisionGroup, this.inBase, this);
 
     window.game.physics.p2.setPostBroadphaseCallback(this.filterCollisions, this);
 

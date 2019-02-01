@@ -66,10 +66,10 @@ export default class extends Phaser.State {
     let index = 0;
 
     for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
-      let base = new Base(characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin + '_base');
-      let character = new Player();
+      let character = new Player(deviceId);
       character.spawnPlayer(characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
       window.game.global.playerManager.setCharacter(deviceId, character);
+      let base = new Base(characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin + '_base', character);
       index += 1;
 
     }

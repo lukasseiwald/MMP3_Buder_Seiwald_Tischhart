@@ -1,8 +1,11 @@
 import Phaser from 'phaser'
+import { headlineStyling } from '../stylings'
+import { addImage } from '../utils'
 
 export default class Base {
 
-  constructor (x, y, asset) {
+  constructor (x, y, asset, character) {
+    this.character = character;
     this.base = game.add.sprite(x , y, asset);
     this.base.enableBody = true;
 
@@ -44,12 +47,12 @@ export default class Base {
       console.log(soul);
       let soulName = soul.sprite.key;
 
-      
+
       if(!base.sprite.collectedSouls.includes(soulName)) {
-        
+
         this.player = soul.obtainedBy;
         if(this.player.collectedSouls != undefined) {
-          this.player.collectedSouls.push(soulName); 
+          this.player.collectedSouls.push(soulName);
           this.player.carryingSoul = 0;
           base.sprite.collectedSouls.push(soulName);
           soul.sprite.kill();
@@ -59,10 +62,10 @@ export default class Base {
       else {
         console.log("soul already included");
       }
-      if(base.sprite.collectedSouls.length > 3) { 
+      if(base.sprite.collectedSouls.length > 3) {
         this.winning();
         let style = { font: "65px Bungee", fill: "#000000", align: "center" };
-        window.game.add.text(500, 500, "Player Won", style);
+        //window.game.add.text(500, 500, "Player Won", style);
         window.game.time.events.add(Phaser.Timer.SECOND * 5, this.winning, this);
       }
     }
@@ -75,13 +78,32 @@ export default class Base {
 
   winning() {
     let style = { font: "65px Bungee", fill: "#000000", align: "center" };
-    let winner = this.base.key.split("_");
-    let winningText = winner[0] + " WON";
+    let winningText = window.game.global.playerManager.getNickname(this.character.deviceId) + " WON";
 
-    window.game.add.text(550, 300, winningText, style);
+    let winnerId = this.character.deviceId;
+    window.game.global.playerManager.sendMessageToPlayer(winnerId, {screen: 'game', action: 'winning'});
+
+    this.image = addImage(window.game, 0, 0, 'background1', window.game.world.width, window.game.world.height);
+
+    let test = window.game.add.text(window.game.world.centerX, window.game.world.centerY, winningText, headlineStyling);
+    test.anchor.setTo(0.5, 0.5);
+
+    for (let [deviceId, player] of window.game.global.playerManager.getPlayers()) {
+      if (deviceId !== winnerId) {
+        window.game.global.playerManager.sendMessageToPlayer(deviceId,
+          {
+            screen: 'game',
+            action: 'loosing'
+          }
+        )
+      }
+    }
     window.game.time.events.add(Phaser.Timer.SECOND * 5, this.won, this);
   }
+
   won() {
+    this.image.destroy();
+    window.game.global.playerManager.broadcast({screen: 'game', action: 'restart'});
     window.game.state.start('Level1')
   }
 }

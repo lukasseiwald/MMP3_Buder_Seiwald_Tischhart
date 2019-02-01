@@ -3,8 +3,9 @@ import Soul from './Soul'
 
 export default class Player {
 
-  constructor () {
+  constructor (deviceId) {
     this.player = null
+    this.deviceId = deviceId;
     window.game.souls = [];
     this.movingTo = null;
     this.jumpCount = 0;

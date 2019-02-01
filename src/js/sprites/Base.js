@@ -15,8 +15,6 @@ export default class Base {
     let skinName = asset.split("_")[0] + "_soul";
     this.base.collectedSouls = [skinName]; //maybe already write in player soul, and check if alreadyCollectedSoul != newSoul
 
-    console.log(this.base.collectedSouls);
-
     //make Base face right direction and size
     if(x > 600) {
       this.base.scale.setTo(-1,1);
@@ -40,16 +38,21 @@ export default class Base {
 
   basedSoul(base, soul) {
     if(base) {
-      console.log(base);
-      console.log(soul);
       let soulName = soul.sprite.key;
 
-      
-      if(!base.sprite.collectedSouls.includes(soulName)) {
+      if(base.sprite.collectedSouls.indexOf(soulName) < 0) { //still doesnt see it properly     ! > -1
         
         this.player = soul.obtainedBy;
-        if(this.player.collectedSouls != undefined) {
-          this.player.collectedSouls.push(soulName); 
+        if(this.player != undefined) {
+          
+          base.sprite.collectedSouls.push(soulName);
+          //Sync player collectedSouls with base for avoiding errors
+          console.log(this.player);
+          this.player.collectedSouls = base.sprite.collectedSouls;
+          console.log(this.player.collectedSouls);
+          //adding Soul to the Base Soul Collection
+          this.addSoulSpriteToCollection(soulName);
+         
           this.player.carryingSoul = 0;
           base.sprite.collectedSouls.push(soulName);
           soul.sprite.kill();
@@ -59,13 +62,27 @@ export default class Base {
       else {
         console.log("soul already included");
       }
-      if(base.sprite.collectedSouls.length > 3) { 
+      if(base.sprite.collectedSouls.includes("kickapoo_soul") && base.sprite.collectedSouls.includes("lucifer_soul") && base.sprite.collectedSouls.includes("egyptian_soul") && base.sprite.collectedSouls.includes("knight_soul")) { 
         this.winning();
         let style = { font: "65px Bungee", fill: "#000000", align: "center" };
         window.game.add.text(500, 500, "Player Won", style);
         window.game.time.events.add(Phaser.Timer.SECOND * 5, this.winning, this);
       }
     }
+  }
+
+  addSoulSpriteToCollection(soulName) {
+    var spacingForCollectionStyle = this.base.collectedSouls.length - 1;
+    let soulTrophyX;
+    let soulTrophY
+    if(this.base.x < 600) {
+      soulTrophyX = this.base.x - 87
+    }
+    else {
+      soulTrophyX = this.base.x + 39
+    }
+    soulTrophY = this.base.y - 99 + 30 * spacingForCollectionStyle;
+    window.game.add.sprite(soulTrophyX, soulTrophY , soulName); //anders bennen da es sonst als eingesammelte seele zählt
   }
 
   basedPlayer(base, player) {

@@ -264,10 +264,11 @@ export default class Player {
 
   obtainedSoul(player, soul) {
     //check if player already carries a soul and if player already previous obtained the soul
+
     if(this.player.collectedSouls.includes(soul.sprite.key)) {
       console.log("player has this soul already: " + soul.sprite.key);
       console.log(this.player.collectedSouls);
-      soul.sprite.kill();
+      soul.sprite.kill(); 
     }
     if(this.player.carryingSoul === 0) {
       if(!soul.alreadyObtained) {

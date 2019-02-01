@@ -72,4 +72,12 @@ export default class PlayerManager {
   getConnectedPlayerNum(){
     return this.players.size;
   }
+
+  sendMessageToPlayer(deviceId, data) {
+    window.game.global.airConsole.message(deviceId, data);
+  }
+
+  broadcast(data) {
+    window.game.global.airConsole.broadcast(data);
+  }
 }

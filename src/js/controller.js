@@ -7,6 +7,9 @@ let csm = new CSM('stage');
 
 csm.setState('waiting', 'state--waiting');
 csm.setState('game', 'state--game');
+csm.setState('winning', 'state--winning');
+csm.setState('loosing', 'state--loosing');
+
 csm.startState('waiting');
 
 airConsole.onReady = function() {
@@ -33,6 +36,20 @@ function handleWaiting(data){
   }
 }
 
+function handleGame(data) {
+  switch (data.action) {
+    case 'winning':
+      csm.startState('winning');
+      break;
+    case 'loosing':
+      csm.startState('loosing');
+      break;
+    case 'restart':
+      csm.startState('game');
+      break;
+  }
+}
+
 airConsole.onMessage = function(from, data) {
   switch (data.screen) {
     case 'waiting':
@@ -51,17 +68,34 @@ function sendToScreen(action) {
 function setUpController(){
   let buttons = document.getElementsByClassName('button');
 
-  for (let button of buttons) {
-    button.addEventListener("touchstart", function(e){
-      sendToScreen(e.currentTarget.dataset.direction);
-      button.classList.add('button--active');
-    },{passive: true});
+  if (isTouchDevice) {
+    for (let button of buttons) {
+      button.addEventListener("touchstart", function(e){
+        sendToScreen(e.currentTarget.dataset.direction);
+        button.classList.add('button--active');
+      },{passive: true});
 
-    button.addEventListener("touchend", function(e){
-      if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
-        sendToScreen('idle');
-      }
-      button.classList.remove('button--active');
-    });
+      button.addEventListener("touchend", function(e){
+        if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
+          sendToScreen('idle');
+        }
+        button.classList.remove('button--active');
+      });
+    }
+  }
+  else {
+    for (let button of buttons) {
+      button.addEventListener("mousedown", function(e){
+        sendToScreen(e.currentTarget.dataset.direction);
+        button.classList.add('button--active');
+      },{passive: true});
+
+      button.addEventListener("mouseup", function(e){
+        if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
+          sendToScreen('idle');
+        }
+        button.classList.remove('button--active');
+      });
+    }
   }
 }

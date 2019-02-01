@@ -3,8 +3,9 @@ import Soul from './Soul'
 
 export default class Player {
 
-  constructor () {
+  constructor (deviceId) {
     this.player = null
+    this.deviceId = deviceId;
     window.game.souls = [];
     this.movingTo = null;
     this.jumpCount = 0;
@@ -100,6 +101,7 @@ export default class Player {
     }
     this.player = window.game.add.sprite(spawnX,spawnY,asset);
     this.player.enableBody = true;
+    this.player.death = 100;
 
     //  Enable if for physics. This creates a default rectangular body.
     window.game.physics.p2.enable(this.player);
@@ -289,7 +291,7 @@ export default class Player {
     if(this.player.collectedSouls.includes(soul.sprite.key)) {
       console.log("player has this soul already: " + soul.sprite.key);
       console.log(this.player.collectedSouls);
-      soul.sprite.kill(); 
+      soul.sprite.kill();
     }
     if(this.player.carryingSoul === 0) {
       if(!soul.alreadyObtained) {

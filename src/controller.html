@@ -145,7 +145,10 @@
           font-family: 'Bungee', cursive;
         }
 
-        .waiting__background {
+        .controller__background,
+        .winning__background,
+        .loosing__background,
+        .waiting__background  {
           z-index: 1;
           position: absolute;
           left: 0;
@@ -156,15 +159,19 @@
           min-height: 100%;
         }
 
-        .controller__background {
-          z-index: 1;
-          position: absolute;
-          left: 0;
-          right: 0;
-          top: 0;
-          bottom: 0;
-          min-width: 100%;
-          min-height: 100%;
+        .loosing,
+        .winning {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .winning__text,
+        .loosing__text {
+          z-index: 4;
+          position: relative;
+          font-family: 'Bungee', cursive;
+          font-size: 45px;
         }
 
         .button__triangle {
@@ -220,6 +227,28 @@
       <image class="controller__background" src="./assets/images/background/BG-1.png"/>
 
     </div>
+
+    <!-- WINNING STATE -->
+
+    <div id="state--winning" class="state winning">
+
+      <p class="winning__text">
+        YOU WIN!
+      </p>
+      <image class="winning__background" src="./assets/images/background/BG-1.png"/>
+
+    </div>
+
+    <!-- LOOSING STATE -->
+
+    <div id="state--loosing" class="state loosing">
+      <p class="loosing__text">
+        YOU LOOSE!
+      </p>
+      <image class="loosing__background" src="./assets/images/background/BG-1.png"/>
+    </div>
+
+
   </div>
   <script type="text/javascript" src="https://www.airconsole.com/api/airconsole-1.7.0.js"></script>
 </body>

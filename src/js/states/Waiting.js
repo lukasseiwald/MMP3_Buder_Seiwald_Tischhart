@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { centerGameObjects, addImage, getPlayerNicknames } from '../utils'
+import { centerGameObjects, addImage } from '../utils'
 import { headlineStyling, subheadlineStyling } from '../stylings'
 import PlayerManager from '../PlayerManager';
 
@@ -43,7 +43,7 @@ export default class extends Phaser.State {
       if (window.game.global.playerManager.getConnectedPlayerNum() >= 4) {
         let masterId = window.game.global.playerManager.getMaster();
         touchToContinue.text = "Master Player (" + window.game.global.playerManager.getNickname(masterId) + ") please tap on Touchscreen to continue";
-        window.game.global.airConsole.message(masterId,
+        window.game.global.playerManager.sendMessageToPlayer(masterId,
           {
             screen: 'waiting',
             action: 'touch_to_continue'
@@ -56,7 +56,7 @@ export default class extends Phaser.State {
       window.game.global.playerManager.removePlayer(deviceId);
       updateScreen();
 
-      //TODO: remove touch event from master device
+      //TODO: remove touch event from master device -> because no longer able to continue
     }
 
     window.game.global.airConsole.onMessage = function(deviceId, data) {

@@ -11,7 +11,7 @@ import config from './config'
 
 class Game extends Phaser.Game {
   constructor () {
-    super("100%", "100%", Phaser.CANVAS, 'content', null)
+    super(1840, 1020, Phaser.CANVAS, 'content', null)
 
     this.state.add('Boot', BootState, false);
     this.state.add('Splash', SplashState, false);

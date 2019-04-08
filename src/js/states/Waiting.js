@@ -8,15 +8,6 @@ export default class extends Phaser.State {
   init () {}
 
   create () {
-    let sparkParticle = function (game, x, y) {
-
-      Phaser.Particle.call(this, game, x, y, game.cache.getBitmapData('particleShade'));
-
-    };
-
-    sparkParticle.prototype = Object.create(Phaser.Particle.prototype);
-    sparkParticle.prototype.constructor = sparkParticle;
-
     window.game.global.playerManager = new PlayerManager();
     window.game.global.playerManager.setConnectedPlayers();
 
@@ -30,36 +21,43 @@ export default class extends Phaser.State {
 
     //PARTICLES
 
-    let bmd = game.add.bitmapData(64, 64);
+    let sparkParticle = function (game, x, y) {
 
+      Phaser.Particle.call(this, game, x, y, game.cache.getBitmapData('particleShade'));
+
+    };
+
+    sparkParticle.prototype = Object.create(Phaser.Particle.prototype);
+    sparkParticle.prototype.constructor = sparkParticle;
+    sparkParticle.prototype.onEmit = function(){ 
+      this.alpha = 0;
+    }
+
+    let bmd = game.add.bitmapData(64, 64);
     let radgrad = bmd.ctx.createRadialGradient(16, 16, 4, 16, 16, 16);
 
-    radgrad.addColorStop(0, 'rgba(221, 181, 76, 1)');
-    radgrad.addColorStop(1, 'rgba(221, 181, 76, 0)');
+    radgrad.addColorStop(0, 'rgba(247, 146, 32, 1)');
+    radgrad.addColorStop(1, 'rgba(247, 146, 32, 0)');
 
     bmd.context.fillStyle = radgrad;
     bmd.context.fillRect(0, 0, 64, 64);
 
     game.cache.addBitmapData('particleShade', bmd);
 
-    let emitter = game.add.emitter(game.world.centerX, game.world.height-100, 200);
-    emitter.width = game.world.width;
-    // emitter.height = game.world.height;
+    this.lifetime = 5000;    
+    this.emitter = game.add.emitter(game.world.centerX, game.world.height-100, 200);
+    this.emitter.width = game.world.width;
+    this.emitter.particleClass = sparkParticle;
+    this.emitter.makeParticles();
+    this.emitter.minParticleSpeed.set(0, 0);
+    this.emitter.maxParticleSpeed.set(0, 0);
+    this.emitter.setRotation(0, 0);  
+    // this.emitter.setScale(0.1, 1, 0.1, 1, 12000, Phaser.Easing.Quintic.Out);
+    this.emitter.minParticleScale = 0.1;
+    this.emitter.maxParticleScale = 1;
+    this.emitter.gravity = -50;
 
-    emitter.particleClass = sparkParticle;
-
-    emitter.makeParticles();
-
-    emitter.minParticleSpeed.set(0, 0);
-    emitter.maxParticleSpeed.set(0, 0);
-
-    emitter.setRotation(0, 0);
-    emitter.setScale(0.1, 1, 0.1, 1, 12000, Phaser.Easing.Quintic.Out);
-    emitter.gravity = -50;
-
-    emitter.start(false, 10000, 100);
-
-    game.input.onDown.add(this.updateBitmapDataTexture, this);
+    this.emitter.start(false, this.lifetime, 100);
 
     //TEXT ELEMENTS
 
@@ -130,28 +128,17 @@ export default class extends Phaser.State {
         this.touchToContinue.alpha = this.touchToContinue.alpha === .5 ? 1 : .5;
       }
     }
-  }
+    let emitter = this.emitter
+    let fadeInTime = 1000;
 
-  updateBitmapDataTexture() {
-
-    //  Get the bitmapData from the cache. This returns a reference to the original object
-    var bmd = game.cache.getBitmapData('particleShade');
-
-    bmd.context.clearRect(0, 0, 64, 64);
-
-    //  createRadialGradient parameters: x, y, innerRadius, x, y, outerRadius
-    var radgrad = bmd.ctx.createRadialGradient(32, 32, 4, 32, 32, 32);
-    var c = Phaser.Color.getRGB(Phaser.Color.getRandomColor(0, 255, 255));
-
-    radgrad.addColorStop(0, Phaser.Color.getWebRGB(c));
-    c.a = 0;
-    radgrad.addColorStop(1, Phaser.Color.getWebRGB(c));
-
-    bmd.context.fillStyle = radgrad;
-    bmd.context.fillRect(0, 0, 64, 64);
-
-    //  All particles using this texture will update at the next render
-    bmd.dirty = true;
-
+    emitter.forEachAlive(function(p){
+      let age = emitter.lifespan - p.lifespan
+      if(p.lifespan <= emitter.lifespan/ 2) {// Half of lifetime over
+        p.alpha= p.lifespan / (emitter.lifespan/2);
+      }
+      if (p.lifespan > emitter.lifespan - fadeInTime) {
+        p.alpha = age/ fadeInTime;
+      }
+    })
   }
 }

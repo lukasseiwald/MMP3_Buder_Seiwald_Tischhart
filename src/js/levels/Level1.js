@@ -15,8 +15,8 @@ export default class extends Phaser.State {
   }
 
   create() {
-    this.game.world.setBounds(0, 0, this.game.world.width, this.game.world.height + 100);
     this.game.physics.startSystem(Phaser.Physics.P2JS);
+    this.game.physics.p2.setBoundsToWorld(true, true, false, false);
     this.game.physics.p2.gravity.y = 4000;
 
     //  little bouncey
@@ -34,12 +34,13 @@ export default class extends Phaser.State {
     this.itemCollisionGroup = this.game.physics.p2.createCollisionGroup();    //Mask: 128
 
     this.game.physics.p2.updateBoundsCollisionGroup();
+    this.game.physics.setBoundsToWorld();
 
     //Background
     addImage(this, 0, 0, 'background3', this.world.width, this.world.height);
     addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
-    //Tiles
+    // //Tiles
     this.tiles = this.game.add.group();
     this.game.physics.p2.enable(this.tiles);
     this.tiles.physicsBodyType = Phaser.Physics.P2JS;
@@ -57,20 +58,20 @@ export default class extends Phaser.State {
       this.baseKickapoo = new Base(this.world.width - 90, 298, 'kickapoo_base');
 
       // Player 1
-      this.player1 = new Player();
-      this.player1.spawnPlayer(this.baseKnight.x, this.baseKnight.y -200, 'knight', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      this.player1 = new Player(1, 200, 500, 'knight');
+      this.player1.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
 
       // Player 2
-      this.player2 = new Player();
-      this.player2.spawnPlayer(this.baseEgyptian.x, this.baseEgyptian.y -200, 'egyptian', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      this.player2 = new Player(2, 400, 500, 'egyptian');
+      this.player2.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
 
       //Player 3
-      this.player3 = new Player();
-      this.player3.spawnPlayer(this.baseLucifer.x, this.baseLucifer.y, 'lucifer', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      this.player3 = new Player(3, 600, 500, 'lucifer');
+      this.player3.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
 
       //Player 4
-      this.player4 = new Player();
-      this.player4.spawnPlayer(this.baseKickapoo.x, this.baseKickapoo.y, 'kickapoo', this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      this.player4 = new Player(4, 800, 500, 'kickapoo');
+      this.player4.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
 
       this.cursors = this.game.input.keyboard.createCursorKeys();
 
@@ -81,7 +82,7 @@ export default class extends Phaser.State {
         right: this.game.input.keyboard.addKey(Phaser.Keyboard.D),
       };
     }
-    else { 
+    else {
       let characterSettings = [
         {
           skin:'egyptian',
@@ -107,14 +108,13 @@ export default class extends Phaser.State {
       let index = 0;
 
       for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
-        let character = new Player(deviceId);
+        let character = new Player(deviceId, characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin);
         let base = new Base(characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin + '_base', character);
-        character.spawnPlayer(characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+        character.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
         window.game.global.playerManager.setCharacter(deviceId, character);
         index += 1;
       }
     }
-
     this.createMap();
   }
 
@@ -127,7 +127,7 @@ export default class extends Phaser.State {
         let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
         character.move();
       }
-  
+
       window.game.global.airConsole.onMessage = function(deviceId, data) {
         let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
         if(character !== null) {

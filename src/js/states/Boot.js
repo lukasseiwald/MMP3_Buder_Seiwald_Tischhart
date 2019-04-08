@@ -13,6 +13,7 @@ export default class extends Phaser.State {
   }
 
   preload() {
+    //this.game.world.setBounds(0, 0, this.game.world.width, this.game.world.bounds.bottom+150);
 
     //LOAD BACKGROUND
     this.load.image('background1', '../../assets/images/background/BG-1.png');

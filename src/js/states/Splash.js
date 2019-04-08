@@ -21,7 +21,7 @@ export default class extends Phaser.State {
 
     if(window.game.global.dev) {
       this.state.start('Level1')
-    } 
+    }
     else {
       this.state.start('Waiting')
     }

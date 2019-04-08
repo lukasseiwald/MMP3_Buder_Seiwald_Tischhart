@@ -14,8 +14,8 @@ export default class extends Phaser.State {
   }
 
   create() {
-    this.game.world.setBounds(0, 0, this.game.world.width, this.game.world.height + 100);
     this.game.physics.startSystem(Phaser.Physics.P2JS);
+    this.game.physics.p2.setBoundsToWorld(true, true, false, false);
     this.game.physics.p2.gravity.y = 4000;
 
     //  little bouncey
@@ -32,15 +32,18 @@ export default class extends Phaser.State {
     this.baseCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
     this.game.physics.p2.updateBoundsCollisionGroup();
+    this.game.physics.setBoundsToWorld();
 
     //Background
     addImage(this, 0, 0, 'background3', this.world.width, this.world.height);
     addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
+
     // //Tiles
     this.tiles = this.game.add.group();
     this.game.physics.p2.enable(this.tiles);
     this.tiles.physicsBodyType = Phaser.Physics.P2JS;
+
 
     let characterSettings = [
       {
@@ -67,16 +70,15 @@ export default class extends Phaser.State {
     let index = 0;
 
     for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
-      let character = new Player(deviceId);
+      let character = new Player(deviceId, characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin,);
       let base = new Base(characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin + '_base', character);
-      character.spawnPlayer(characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin, this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      character.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
       window.game.global.playerManager.setCharacter(deviceId, character);
       index += 1;
-
     }
 
-    this.createMap();
 
+    this.createMap();
 
     // TODO: DELETE LATER ->
 

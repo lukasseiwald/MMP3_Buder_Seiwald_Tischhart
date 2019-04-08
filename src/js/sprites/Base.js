@@ -6,7 +6,7 @@ export default class Base {
 
   constructor (x, y, asset, character) {
     this.character = character;
-    this.base = game.add.sprite(x , y, asset);
+    this.base = game.add.sprite(x, y, asset);
     this.base.enableBody = true;
 
     window.game.physics.p2.enable(this.base);
@@ -19,7 +19,7 @@ export default class Base {
     this.base.collectedSouls = [skinName]; //maybe already write in player soul, and check if alreadyCollectedSoul != newSoul
 
     //make Base face right direction and size
-    if(x > 600) {
+    if(x > window.game.width/2) {
       this.base.scale.setTo(-1,1);
     }
     else {

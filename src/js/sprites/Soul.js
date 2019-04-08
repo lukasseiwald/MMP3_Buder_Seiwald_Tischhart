@@ -2,18 +2,13 @@ import Phaser from 'phaser'
 
 export default class Soul {
 
-  constructor () {
-    this.soul = null
-  }
-
-  spawnSoul(player, asset) {
-
+  constructor (player, asset) {
     this.soul = game.add.sprite(player.x ,player.y - 30, asset);
     this.soul.enableBody = true;
 
     window.game.physics.p2.enable(this.soul);
     this.soul.physicsBodyType = Phaser.Physics.P2JS;
-   
+
     //Collisions for Souls
     let soulCollisionGroup = window.game.physics.p2.createCollisionGroup();
     soulCollisionGroup.mask = 32;
@@ -25,18 +20,12 @@ export default class Soul {
     this.soul.body.setCollisionGroup(soulCollisionGroup);
     this.soul.body.collides(playerCollisionGroup);
     this.soul.body.collides(baseCollisionGroup, this.basedSoul, this);
+    this.soul.body.data.gravityScale = 0;
+    this.soul.fixedX = true;
+    this.soul.fixedY = true;
 
     this.soul.animations.add('souling');
     this.soul.animations.play('souling', 5, true);
 
-    this.soul.isPickedUp = false;
-    this.soul.isLost = false;
-    //this.soul.body.static = true;
-    this.soul.body.data.gravityScale = 0;
-    //this.soul.lifespan = 25000; //Souls last for 25 seconds
-  }
-
-  basedSoul() {
-    
   }
 }

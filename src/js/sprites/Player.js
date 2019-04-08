@@ -3,33 +3,39 @@ import Soul from './Soul'
 
 export default class Player {
 
-  constructor (deviceId) {
+  constructor (deviceId, spawnX, spawnY, skin) {
     this.player = null
     this.deviceId = deviceId;
+
     window.game.souls = [];
     this.movingTo = null;
     this.jumpCount = 0;
+
+    this.spawnX = spawnX;
+    this.spawnY = spawnY;
+    this.skin = skin;
   }
 
   isGrounded() {
-      var yAxis = p2.vec2.fromValues(0, 1);
-      var result = false;
+    let yAxis = p2.vec2.fromValues(0, 1);
+    let result = false;
 
-      for (var i=0; i < window.game.physics.p2.world.narrowphase.contactEquations.length; i++){
-          var c = window.game.physics.p2.world.narrowphase.contactEquations[i];
-          if (c.bodyA === this.player.body.data || c.bodyB === this.player.body.data){
-              var d = p2.vec2.dot(c.normalA, yAxis);
-              if (c.bodyA === this.player.body.data){
-                  d *= -1;
-              }
-              if (d > 0.5){
-                  result = true;
-              }
-          }
+    for (let i=0; i < window.game.physics.p2.world.narrowphase.contactEquations.length; i++){
+      let c = window.game.physics.p2.world.narrowphase.contactEquations[i];
+      if (c.bodyA === this.player.body.data || c.bodyB === this.player.body.data){
+        let d = p2.vec2.dot(c.normalA, yAxis);
+        if (c.bodyA === this.player.body.data){
+          d *= -1;
+        }
+        if (d > 0.5){
+          result = true;
+        }
       }
-      return result;
+    }
+    return result;
   }
 
+  //is getting called in update method
   move() {
     switch (this.movingTo) {
       case 'right':
@@ -44,8 +50,11 @@ export default class Player {
         this.player.body.moveLeft(0);
     }
 
-    if(this.player.body.y > window.game.height) {
+    if(this.player.body.y > window.game.height - 10) {
       this.player.body.y = 0;
+    }
+    else if(this.player.body.y < 0){
+      this.player.body.y = window.game.height;
     }
 
     if(this.jumpCount > 0 && this.isGrounded()) {
@@ -88,20 +97,20 @@ export default class Player {
     }
   }
 
-  spawnPlayer(x, y, asset, playerCollisionGroup, tilesCollisionGroup , bulletCollisionGroup, soulCollisionGroup) {
+  setAnimations() {
+    this.player.animations.add('idle', ['Idle_000','Idle_001','Idle_002','Idle_003','Idle_004','Idle_005','Idle_006','Idle_007','Idle_008','Idle_009','Idle_010','Idle_011','Idle_012','Idle_013','Idle_014','Idle_015','Idle_016','Idle_017',], 18, true);
+    this.player.animations.add('run', ['Running_000','Running_001','Running_002','Running_003','Running_004','Running_005','Running_006','Running_007','Running_008','Running_009','Running_010','Running_011'], 30, true);
+    this.player.animations.add('walk', ['Walking_000','Walking_001','Walking_002','Walking_003','Walking_004','Walking_005','Walking_006','Walking_007','Walking_008','Walking_009','Walking_010','Walking_011','Walking_012','Walking_013','Walking_014','Walking_015','Walking_016','Walking_017','Walking_018','Walking_019','Walking_020','Walking_021','Walking_022','Walking_023'], 30, true);
+    this.player.animations.add('jump', ['Jump Loop_000','Jump Loop_001','Jump Loop_002','Jump Loop_003','Jump Loop_004','Jump Loop_005'], 20, true);
+    this.player.animations.add('slash', ['Slashing_000','Slashing_001','Slashing_002','Slashing_003','Slashing_004','Slashing_005','Slashing_006','Slashing_007','Slashing_008','Slashing_009','Slashing_010','Slashing_011'], 20, false);
+    this.player.animations.add('shoot', ['Throwing_000','Throwing_001','Throwing_002','Throwing_003','Throwing_004','Throwing_005','Throwing_006','Throwing_007','Throwing_008','Throwing_009','Throwing_010','Throwing_011'], 20, false);
+    this.player.animations.add('hurt', ['Hurt_000','Hurt_001','Hurt_002','Hurt_003','Hurt_004','Hurt_005','Hurt_006','Hurt_007','Hurt_008','Hurt_009','Hurt_010','Hurt_011'], 20, false);
+  }
 
-    let spawnX = x;
-    let spawnY = y
-    if(x > 600) {
-      spawnY = spawnY - 300;
-    }
-    else {
-      spawnX = spawnX - 400;
-      spawnY = spawnY - 300;
-    }
-    this.player = window.game.add.sprite(spawnX,spawnY,asset);
+  spawnPlayer(playerCollisionGroup, tilesCollisionGroup , bulletCollisionGroup, soulCollisionGroup) {
+    this.player = window.game.add.sprite(0,0,this.skin);
+    this.player.anchor.set(0.5, 0.5);
     this.player.enableBody = true;
-    this.player.death = 100;
 
     //  Enable if for physics. This creates a default rectangular body.
     window.game.physics.p2.enable(this.player);
@@ -110,42 +119,28 @@ export default class Player {
     //  Modifying a few body properties
     this.player.body.setZeroDamping();
     this.player.body.fixedRotation = true;
+    this.player.body.clearShapes();
+    this.player.body.addPolygon({}, 321, 299, 302, 255, 317, 230, 348, 230, 352, 275, 348, 300);
+
+    //make player face right direction
+    if(this.spawnX > window.game.world.width/2) {
+      this.player.scale.x = -1;
+    }
 
     //few Player properties
-    this.player.spawnPointX = x;
-    this.player.spawnPointY = y;
-    this.player.fireRate = 100;
     this.player.nextFire = 0;
-    this.player.hasEnemySoul = false;
     this.player.carryingSoul = 0;
     this.player.collectedSouls = [this.player.key + '_soul']
     this.player.bulletAsset = this.player.key + '_bullet';
     this.player.soulAsset = this.player.key + '_soul';
-    this.player.anchor.set(0.5, 0.5);
-
-    this.player.body.clearShapes();
-    this.player.body.addPolygon( {} ,   321, 299  ,  302, 255  ,  317, 230  ,  348, 230  ,  352, 275  ,  348, 300   );
 
     //Event Listener
-    this.player.events.onKilled.add(this.playerDied, this);
+    this.player.events.onKilled.add(this.died, this);
 
-    this.player.animations.add('idle', ['Idle_000','Idle_001','Idle_002','Idle_003','Idle_004','Idle_005','Idle_006','Idle_007','Idle_008','Idle_009','Idle_010','Idle_011','Idle_012','Idle_013','Idle_014','Idle_015','Idle_016','Idle_017',], 18, true);
-    this.player.animations.add('run', ['Running_000','Running_001','Running_002','Running_003','Running_004','Running_005','Running_006','Running_007','Running_008','Running_009','Running_010','Running_011'], 30, true);
-    this.player.animations.add('walk', ['Walking_000','Walking_001','Walking_002','Walking_003','Walking_004','Walking_005','Walking_006','Walking_007','Walking_008','Walking_009','Walking_010','Walking_011','Walking_012','Walking_013','Walking_014','Walking_015','Walking_016','Walking_017','Walking_018','Walking_019','Walking_020','Walking_021','Walking_022','Walking_023'], 30, true);
-    this.player.animations.add('jump', ['Jump Loop_000','Jump Loop_001','Jump Loop_002','Jump Loop_003','Jump Loop_004','Jump Loop_005'], 20, true);
-    this.player.animations.add('slash', ['Slashing_000','Slashing_001','Slashing_002','Slashing_003','Slashing_004','Slashing_005','Slashing_006','Slashing_007','Slashing_008','Slashing_009','Slashing_010','Slashing_011'], 20, false);
-    this.player.animations.add('shoot', ['Throwing_000','Throwing_001','Throwing_002','Throwing_003','Throwing_004','Throwing_005','Throwing_006','Throwing_007','Throwing_008','Throwing_009','Throwing_010','Throwing_011'], 20, false);
-    this.player.animations.add('hurt', ['Hurt_000','Hurt_001','Hurt_002','Hurt_003','Hurt_004','Hurt_005','Hurt_006','Hurt_007','Hurt_008','Hurt_009','Hurt_010','Hurt_011'], 20, false);
-    //this.player.animations.add('dying', ['Dying_000','Dying_001','Dying_002','Dying_003','Dying_004','Dying_005','Dying_006','Dying_007','Dying_008','Dying_009','Dying_010','Dying_011','Dying_012','Dying_013','Dying_014'], 17, false);
+    this.setAnimations();
     this.player.animations.play('idle');
 
-
-     //make Player face right direction
-    if(x > 600) {
-      this.player.scale.x = -1;
-    }
-
-    //Buletts
+    //bullets
     this.bullets = window.game.add.group();
     this.bullets.enableBody = true;
     this.bullets.physicsBodyType = Phaser.Physics.P2JS;
@@ -156,33 +151,24 @@ export default class Player {
     this.bullets.setAll('checkWorldBounds', true);
 
     this.bullets.forEach((bullet)=>{
-        //this = bullet
-        bullet.body.setCollisionGroup(bulletCollisionGroup);
-        bullet.body.collides([playerCollisionGroup, tilesCollisionGroup, bulletCollisionGroup]);
-        bullet.body.onBeginContact.add(this.hitPlayer, bullet);
+      bullet.body.setCollisionGroup(bulletCollisionGroup);
+      bullet.body.collides([playerCollisionGroup, tilesCollisionGroup, bulletCollisionGroup]);
+      bullet.body.onBeginContact.add(this.hit, bullet);
     });
 
-    //Collisions for Player
+    //collisions for Player
     this.player.body.setCollisionGroup(playerCollisionGroup);
     this.player.body.collides([tilesCollisionGroup, playerCollisionGroup, bulletCollisionGroup]);
     this.player.body.collides(soulCollisionGroup, this.obtainedSoul, this);
-   // this.player.body.collides(baseCollisionGroup, this.inBase, this);
-
-    //this.player.events.onOutOfBounds.add(this.playerTeleport, this);
 
     window.game.physics.p2.setPostBroadphaseCallback(this.filterCollisions, this);
 
-    return this.player;
+    //reset spawn point because player spawned wrong previously
+    this.player.reset(this.spawnX, this.spawnY);
   }
 
-  playerTeleport() {
-    console.log("telöeport");
-    this.player.x = 500;
-    this.player.y = 50;
-  }
-
-  //pre-check in order to prevent collision of player with its own bullets
   filterCollisions(body1, body2) {
+    //check if player collides with own bullet
     if(body1.sprite == null || body2.sprite == null) {
       return true;
     }
@@ -196,9 +182,9 @@ export default class Player {
     return true;
   }
 
-  hitPlayer(hitTarget) {
+  hit(hitTarget) {
     if(hitTarget) {
-      var bullet = this.body.sprite;
+      let bullet = this.body.sprite;
       if (hitTarget.sprite.bulletAsset) {
         hitTarget.sprite.animations.play('hurt', 10, false);
         if(hitTarget.sprite.alive) {
@@ -208,7 +194,7 @@ export default class Player {
     }
   }
 
-  playerDied() {
+  died() {
     //remove obtained soul of dead player
     if(this.player.obtainedSoul) {
       this.player.obtainedSoul.sprite.kill();
@@ -216,25 +202,24 @@ export default class Player {
     }
     //Style of Respawn Counter
     let style = { font: "65px Bungee", fill: "#FFFFFF", align: "center" };
-    //Time
-    let countdown = 6;
 
-    let text = window.game.add.text(this.player.spawnPointX , this.player.spawnPointY, 5, style);
-    let respawnTimer = setInterval(function() {
-      countdown = --countdown <= 0 ? 5 : countdown;
-      text.setText(countdown - 1);
-      if(countdown < 2) {
+    let counter = 5;
+    let text = window.game.add.text(this.spawnX , this.spawnY, '', style);
+    let respawnTimer = setInterval(() => {
+      text.setText(counter);
+      if(counter < 1) {
         clearInterval(respawnTimer);
         text.kill();
+        this.respawn();
       }
+      counter = counter - 1;
     }, 1000);
 
-    window.game.time.events.add(Phaser.Timer.SECOND * 5, this.respawnPlayer, this);
     this.spawnDeadBodyWithSoul();
   }
 
-  respawnPlayer() {
-    this.player.reset(this.player.spawnPointX, this.player.spawnPointY);
+  respawn() {
+    this.player.reset(this.spawnX, this.spawnY);
     this.player.obtainedSoul = null;
   }
 
@@ -242,14 +227,11 @@ export default class Player {
     //Spawning dead body just to play its dying animation
     this.deadBody = window.game.add.sprite(this.player.x - 35, this.player.y - 35, this.player.key);
     this.deadBody.animations.add('dying', ['Dying_000','Dying_001','Dying_002','Dying_003','Dying_004','Dying_005','Dying_006','Dying_007','Dying_008','Dying_009','Dying_010','Dying_011','Dying_012','Dying_013','Dying_014'], 17, false);
-    this.deadBody.animations.play("dying");
-    window.game.time.events.add(Phaser.Timer.SECOND * 5, this.deleteDeadBody, this);
+    this.deadBody.animations.play('dying');
+    window.game.time.events.add(Phaser.Timer.SECOND * 6, this.deleteDeadBody, this);
 
-    //Spawning
-    this.soul = new Soul();
-    this.soul.spawnSoul(this.player, this.player.soulAsset);
-    this.soul.fixedX = true;
-    this.soul.fixedY = true;
+    //spawn soul
+    this.soul = new Soul(this.player, this.player.soulAsset);
     window.game.souls.push(this.soul);
   }
 
@@ -263,23 +245,22 @@ export default class Player {
 
   shoot() {
     if(window.game.time.now > this.player.nextFire && this.player.alive) {
-      this.bullet = this.bullets.getFirstExists(false);
-      if(this.bullet) {
+      let bullet = this.bullets.getFirstExists(false);
+      if(bullet) {
 
         this.player.animations.play('shoot');
 
         if(this.player.scale.x < 0) {
-          this.bullet.reset(this.player.x - 20, this.player.y);
-          this.bullet.body.moveLeft(1500);
-          this.bullet.body.velocity.y = -500;
-          this.bullet.lifespan = 1000;
+          bullet.reset(this.player.x - 20, this.player.y);
+          bullet.body.moveLeft(1500);
+          bullet.body.velocity.y = -500;
         }
         else if(this.player.scale.x > 0){
-          this.bullet.reset(this.player.x + 20, this.player.y);
-          this.bullet.body.moveRight(1500);
-          this.bullet.body.velocity.y = -500;
-          this.bullet.lifespan = 1000;
+          bullet.reset(this.player.x + 20, this.player.y);
+          bullet.body.moveRight(1500);
+          bullet.body.velocity.y = -500;
         }
+        bullet.lifespan = 1000;
         this.player.nextFire = window.game.time.now + 900;
       }
     }

@@ -14,7 +14,6 @@ export default class extends Phaser.State {
     let that = this;
 
     //IMAGES
-
     addImage(this, 0, 0, 'background1', this.world.width, this.world.height);
     addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 

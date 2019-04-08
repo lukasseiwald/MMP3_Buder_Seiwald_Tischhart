@@ -2,6 +2,7 @@
 import Phaser from 'phaser'
 import Base from '../sprites/Base'
 import Player from '../sprites/Player'
+import Item from '../sprites/Item'
 import {playerConfig} from '../configs/playerConfig'
 import { addImage } from '../utils'
 import lang from '../lang'
@@ -25,11 +26,12 @@ export default class extends Phaser.State {
     this.game.physics.p2.setImpactEvents(true);
 
     // Create our collision groups.
-    this.playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
-    this.tilesCollisionGroup = this.game.physics.p2.createCollisionGroup();
-    this.bulletCollisionGroup = this.game.physics.p2.createCollisionGroup();
-    this.soulCollisionGroup = this.game.physics.p2.createCollisionGroup();
-    this.baseCollisionGroup = this.game.physics.p2.createCollisionGroup();
+    this.playerCollisionGroup = this.game.physics.p2.createCollisionGroup();  //Mask: 4
+    this.tilesCollisionGroup = this.game.physics.p2.createCollisionGroup();   //Mask: 8
+    this.bulletCollisionGroup = this.game.physics.p2.createCollisionGroup();  //Mask: 16
+    this.soulCollisionGroup = this.game.physics.p2.createCollisionGroup();    //Mask: 32
+    this.baseCollisionGroup = this.game.physics.p2.createCollisionGroup();    //Mask: 64
+    this.itemCollisionGroup = this.game.physics.p2.createCollisionGroup();    //Mask: 128
 
     this.game.physics.p2.updateBoundsCollisionGroup();
 
@@ -37,10 +39,15 @@ export default class extends Phaser.State {
     addImage(this, 0, 0, 'background3', this.world.width, this.world.height);
     addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
-    // //Tiles
+    //Tiles
     this.tiles = this.game.add.group();
     this.game.physics.p2.enable(this.tiles);
     this.tiles.physicsBodyType = Phaser.Physics.P2JS;
+
+    //create Items ever x seconds
+    this.game.time.events.repeat(Phaser.Timer.SECOND * 15, 100, this.createItems, this);
+    
+    //this.powerItem.spawnItem();
     
     if(window.game.global.dev) {
       //Bases
@@ -250,6 +257,10 @@ export default class extends Phaser.State {
         }
       }
     }
+  }
+
+  createItems() {
+    this.powerItem = new Item();
   }
 
   render() {

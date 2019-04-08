@@ -13,6 +13,7 @@ export default class Soul {
 
     window.game.physics.p2.enable(this.soul);
     this.soul.physicsBodyType = Phaser.Physics.P2JS;
+    this.soul.body.setCircle(16);
    
     //Collisions for Souls
     let soulCollisionGroup = window.game.physics.p2.createCollisionGroup();

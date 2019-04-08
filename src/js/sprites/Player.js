@@ -68,7 +68,12 @@ export default class Player {
     this.player.animations.play('run');
     this.moveSoulWithPlayer();
     this.player.body.moveLeft(0);
-    this.player.body.moveRight(400);
+    if(this.player.activeItem === 'speed_item') {
+      this.player.body.moveRight(800);
+    }
+    else {
+      this.player.body.moveRight(400);
+    }
   }
 
   moveToLeft() {
@@ -76,7 +81,12 @@ export default class Player {
     this.player.animations.play('run');
     this.moveSoulWithPlayer();
     this.player.body.moveRight(0);
-    this.player.body.moveLeft(400);
+    if(this.player.activeItem === 'speed_item') {
+      this.player.body.moveLeft(800);
+    }
+    else {
+      this.player.body.moveLeft(400);
+    }
   }
 
   jump() {
@@ -84,12 +94,16 @@ export default class Player {
     this.moveSoulWithPlayer();
     if (this.jumpCount < 2) {
       this.player.animations.play('jump');
-      this.player.body.moveUp(1100);
+      if(this.player.activeItem === 'jump_item') {
+        this.player.body.moveUp(1900);
+      }
+      else {
+        this.player.body.moveUp(1100);
+      }
     }
   }
 
   spawnPlayer(x, y, asset, playerCollisionGroup, tilesCollisionGroup , bulletCollisionGroup, soulCollisionGroup) {
-
     let spawnX = x;
     let spawnY = y
     if(x > 600) {
@@ -121,6 +135,7 @@ export default class Player {
     this.player.collectedSouls = [this.player.key + '_soul']
     this.player.bulletAsset = this.player.key + '_bullet';
     this.player.soulAsset = this.player.key + '_soul';
+    this.player.activeItem = '';
     this.player.anchor.set(0.5, 0.5);
 
     this.player.body.clearShapes();
@@ -164,9 +179,11 @@ export default class Player {
 
     //Collisions for Player
     this.player.body.setCollisionGroup(playerCollisionGroup);
+    let itemCollisionGroup = window.game.physics.p2.createCollisionGroup();
+    itemCollisionGroup.mask = 128;
     this.player.body.collides([tilesCollisionGroup, playerCollisionGroup, bulletCollisionGroup]);
     this.player.body.collides(soulCollisionGroup, this.obtainedSoul, this);
-   // this.player.body.collides(baseCollisionGroup, this.inBase, this);
+    this.player.body.collides(itemCollisionGroup, this.collectedItem, this);
 
     //this.player.events.onOutOfBounds.add(this.playerTeleport, this);
 
@@ -311,6 +328,17 @@ export default class Player {
     if(this.player.obtainedSoul) {
       this.player.obtainedSoul.x = this.player.x;
       this.player.obtainedSoul.y = this.player.y - 50;
+    }
+  }
+
+  collectedItem(player, item) {
+    let collectedItem = item.sprite.key;
+    switch (collectedItem) {
+      case 'health_item':
+        player.sprite.health = 200;
+        break;
+      default:
+        this.player.activeItem = collectedItem
     }
   }
 

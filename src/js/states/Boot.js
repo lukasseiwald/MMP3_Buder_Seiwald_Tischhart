@@ -46,6 +46,11 @@ export default class extends Phaser.State {
     this.load.image('lucifer_bullet', '../../assets/characters/lucifer/lucifer_bullet.png');
     this.load.image('kickapoo_bullet', '../../assets/characters/kickapoo/kickapoo_bullet.png');
 
+    //LOAD ITEMS
+    this.load.spritesheet('health_item', '../../assets/items/health.png', 50, 50, 5);
+    this.load.spritesheet('jump_item', '../../assets/items/jump.png', 50, 50, 7);
+    this.load.spritesheet('speed_item', '../../assets/items/speed.png', 50, 50, 4);
+
     //LOADING FONTS
 
     if (config.webfonts.length) {

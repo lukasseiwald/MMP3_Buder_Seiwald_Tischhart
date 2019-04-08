@@ -66,16 +66,19 @@ export default class Base {
         console.log("soul already included");
       }
       if(base.sprite.collectedSouls.includes("kickapoo_soul") && base.sprite.collectedSouls.includes("lucifer_soul") && base.sprite.collectedSouls.includes("egyptian_soul") && base.sprite.collectedSouls.includes("knight_soul")) {
-        this.winning();
-        let style = { font: "65px Bungee", fill: "#000000", align: "center" };
-        //window.game.add.text(500, 500, "Player Won", style);
-        window.game.time.events.add(Phaser.Timer.SECOND * 5, this.winning, this);
+        if(window.game.global.dev) {
+          window.game.state.start('Level1');
+        }
+        else {
+          this.winning();
+          window.game.time.events.add(Phaser.Timer.SECOND * 5, this.winning, this);
+        }
       }
     }
   }
 
   addSoulSpriteToCollection(soulName) {
-    var spacingForCollectionStyle = this.base.collectedSouls.length - 1;
+    let spacingForCollectionStyle = this.base.collectedSouls.length - 1;
     let soulTrophyX;
     let soulTrophY
     if(this.base.x < 600) {
@@ -121,6 +124,6 @@ export default class Base {
   won() {
     this.image.destroy();
     window.game.global.playerManager.broadcast({screen: 'game', action: 'restart'});
-    window.game.state.start('Level1')
+    window.game.state.start('Level1');
   }
 }

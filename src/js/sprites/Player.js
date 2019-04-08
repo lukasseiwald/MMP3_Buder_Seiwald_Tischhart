@@ -93,7 +93,7 @@ export default class Player {
     this.moveSoulWithPlayer();
     if (this.jumpCount < 2) {
       this.player.animations.play('jump');
-      this.player.body.moveUp(1500);
+      this.player.body.moveUp(1100);
     }
   }
 

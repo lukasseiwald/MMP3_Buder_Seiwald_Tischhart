@@ -191,6 +191,9 @@ export default class Player {
   }
 
   filterCollisions(body1, body2) {
+    if(body2.beingCarried == false) {
+      return false;
+    }
     //check if player collides with own bullet
     if(body1.sprite == null || body2.sprite == null) {
       return true;
@@ -258,7 +261,7 @@ export default class Player {
 
   spawnDeadBodyWithSoul() {
     //Spawning dead body just to play its dying animation
-    this.deadBody = window.game.add.sprite(this.player.x - 35, this.player.y - 35, this.player.key);
+    this.deadBody = window.game.add.sprite(this.player.x - 35, this.player.y - 45, this.player.key);
     this.deadBody.animations.add('dying', ['Dying_000','Dying_001','Dying_002','Dying_003','Dying_004','Dying_005','Dying_006','Dying_007','Dying_008','Dying_009','Dying_010','Dying_011','Dying_012','Dying_013','Dying_014'], 17, false);
     this.deadBody.animations.play('dying');
     window.game.time.events.add(Phaser.Timer.SECOND * 6, this.deleteDeadBody, this);
@@ -301,15 +304,17 @@ export default class Player {
 
   obtainedSoul(player, soul) {
     //check if player already carries a soul and if player already previous obtained the soul
-
     if(this.player.collectedSouls.includes(soul.sprite.key)) {
       if(!soul.beingCarried) {
         soul.sprite.kill();
       }
     }
-    if(this.player.carryingSoul === 0) {
+    if(this.player.carryingSoul == 0) {
       if(!soul.alreadyObtained) {
         this.player.carryingSoul = 1;
+        soul.static = false;
+        soul.immovable = false;
+        soul.moves = true;
         soul.fixedX = false;
         soul.fixedY = false;
         soul.beingCarried = true;
@@ -319,6 +324,9 @@ export default class Player {
         this.player.obtainedSoul.x = this.player.x;
         this.player.obtainedSoul.y = this.player.y - 50;
       }
+    }
+    else if(this.player.obtainedSoul != null) {
+      soul.sprite.kill();
     }
   }
 

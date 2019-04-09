@@ -6,6 +6,7 @@ import Item from '../sprites/Item'
 import {playerConfig} from '../configs/playerConfig'
 import { addImage } from '../utils'
 import lang from '../lang'
+import Particle from '../Particle';
 
 export default class extends Phaser.State {
   init() { }
@@ -40,7 +41,11 @@ export default class extends Phaser.State {
     addImage(this, 0, 0, 'background3', this.world.width, this.world.height);
     addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
-    // //Tiles
+    //PARTICLES
+    this.glowingParticles = new Particle();
+    this.glowingParticles.startEmitter();
+
+    //Tiles
     this.tiles = this.game.add.group();
     this.game.physics.p2.enable(this.tiles);
     this.tiles.physicsBodyType = Phaser.Physics.P2JS;
@@ -119,8 +124,12 @@ export default class extends Phaser.State {
   }
 
   update() {
+    //particle visibility (fading in and out)
+    this.glowingParticles.updateVisibility();
     if(window.game.global.dev) {
       this.updatePlayer();
+    // this.updatePlayer();
+    // this.updatePlayer2();
     }
     else {
       for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {

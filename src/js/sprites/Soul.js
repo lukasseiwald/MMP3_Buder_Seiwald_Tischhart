@@ -24,9 +24,9 @@ export default class Soul {
     this.soul.body.data.gravityScale = 0;
     this.soul.fixedX = true;
     this.soul.fixedY = true;
+    this.soul.beingCarried = false;
 
     this.soul.animations.add('souling');
     this.soul.animations.play('souling', 5, true);
-
   }
 }

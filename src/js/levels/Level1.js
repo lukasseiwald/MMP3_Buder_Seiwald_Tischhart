@@ -159,8 +159,7 @@ export default class extends Phaser.State {
     this.glowingParticles.updateVisibility();
     if(window.game.global.dev) {
       this.updatePlayer();
-    // this.updatePlayer();
-    // this.updatePlayer2();
+      this.updatePlayer2();
     }
     else {
       for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
@@ -199,20 +198,20 @@ export default class extends Phaser.State {
 
   updatePlayer() {
     this.player1.move();
-    if (this.cursors.left.isDown) {
+    if (this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
       this.player1.moveToLeft();
       this.player1.movingTo = 'left';
     }
-    else if (this.cursors.right.isDown)
+    else if (this.game.input.keyboard.isDown(Phaser.Keyboard.D))
     {
       this.player1.moveToRight();
       this.player1.movingTo = 'right';
     }
-    else if (this.cursors.up.isDown)
+    else if (this.game.input.keyboard.isDown(Phaser.Keyboard.W))
     {
     	this.player1.jump();
     }
-    else if (this.cursors.down.isDown)
+    else if (this.game.input.keyboard.isDown(Phaser.Keyboard.S))
     {
     	this.player1.shoot();
     }
@@ -222,26 +221,30 @@ export default class extends Phaser.State {
     }
   }
 
-  // updatePlayer2() {
-  //   if (this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
-  //     this.player2.moveToLeft();
-  //   }
-  //   else if (this.game.input.keyboard.isDown(Phaser.Keyboard.D))
-  //   {
-  //   	this.player2.moveToRight();
-  //   }
-  //   else if (this.game.input.keyboard.isDown(Phaser.Keyboard.W))
-  //   {
-  //   	this.player2.jump();
-  //   }
-  //   else if (this.game.input.keyboard.isDown(Phaser.Keyboard.S))
-  //   {
-  //   	this.player2.shoot(this.game, this.bulletCollisionGroup, this.playerCollisionGroup);
-  //   }
-  //   else {
-  //     this.player2.idle();
-  //   }
-  // }
+  updatePlayer2() {
+    this.player2.move();
+    if (this.cursors.left.isDown) {
+      this.player2.moveToLeft();
+      this.player2.movingTo = 'left';
+    }
+    else if (this.cursors.right.isDown)
+    {
+      this.player2.moveToRight();
+      this.player2.movingTo = 'right';
+    }
+    else if (this.cursors.up.isDown)
+    {
+    	this.player2.jump();
+    }
+    else if (this.cursors.down.isDown)
+    {
+    	this.player2.shoot();
+    }
+    else {
+      this.player2.idle();
+      this.player2.movingTo = null;
+    }
+  }
 
   createMap() {
     var map = {

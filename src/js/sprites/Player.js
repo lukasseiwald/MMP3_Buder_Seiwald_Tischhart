@@ -149,7 +149,6 @@ export default class Player {
     this.player.bulletAsset = this.player.key + '_bullet';
     this.player.soulAsset = this.player.key + '_soul';
     this.player.activeItem = '';
-    console.log(this.player);
     this.player.deviceId = this.deviceId; //Für Healthbar
     this.player.anchor.set(0.5, 0.5);
 
@@ -213,7 +212,6 @@ export default class Player {
         hitTarget.sprite.animations.play('hurt', 10, false);
         if(hitTarget.sprite.alive) {
             hitTarget.sprite.damage(0.35);
-            console.log(hitTarget.sprite.health);
             let healthBar = window.game.global.healthBars[hitTarget.sprite.deviceId];
             if(hitTarget.sprite.health <= 0) {
               window.game.add.tween(healthBar).to( { width: 0 }, 200, Phaser.Easing.Linear.None, true);
@@ -231,6 +229,7 @@ export default class Player {
     if(this.player.obtainedSoul) {
       this.player.obtainedSoul.sprite.kill();
       this.player.carryingSoul = 0;
+      this.player.activeItem = '';
     }
     //Style of Respawn Counter
     let style = { font: "65px Bungee", fill: "#FFFFFF", align: "center" };
@@ -304,15 +303,16 @@ export default class Player {
     //check if player already carries a soul and if player already previous obtained the soul
 
     if(this.player.collectedSouls.includes(soul.sprite.key)) {
-      console.log("player has this soul already: " + soul.sprite.key);
-      console.log(this.player.collectedSouls);
-      soul.sprite.kill();
+      if(!soul.beingCarried) {
+        soul.sprite.kill();
+      }
     }
     if(this.player.carryingSoul === 0) {
       if(!soul.alreadyObtained) {
         this.player.carryingSoul = 1;
         soul.fixedX = false;
         soul.fixedY = false;
+        soul.beingCarried = true;
         this.player.obtainedSoul = soul;
         this.player.obtainedSoul.alreadyObtained = true;
         this.player.obtainedSoul.obtainedBy = this.player;

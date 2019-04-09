@@ -12,24 +12,27 @@ export default class Particle {
 		      Phaser.Particle.call(this, game, x, y, game.cache.getBitmapData('particleShade'));
 		    };
 
+		    let colors = ['0xf4b042', '0xf49d41', '0xf47f41', '0xf44f41'];
 		    this.sparkParticle.prototype = Object.create(Phaser.Particle.prototype);
 		    this.sparkParticle.prototype.constructor = this.sparkParticle;
 		    this.sparkParticle.prototype.onEmit = function(){ 
 		      this.alpha = 0;
+		      this.tint = colors[Math.floor(Math.random() * 4)];
 		    }
+
 
 		    let bmd = game.add.bitmapData(64, 64);
 		    let radgrad = bmd.ctx.createRadialGradient(16, 16, 4, 16, 16, 16);
 
-		    radgrad.addColorStop(0, 'rgba(247, 146, 32, 1)');
-		    radgrad.addColorStop(1, 'rgba(247, 146, 32, 0)');
+		    radgrad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+		    radgrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
 		    bmd.context.fillStyle = radgrad;
 		    bmd.context.fillRect(0, 0, 64, 64);
 
 		    this.game.cache.addBitmapData('particleShade', bmd);
 
-			this.emitter = this.game.add.emitter(game.world.centerX, this.game.world.height-100, 200);
+			this.emitter = this.game.add.emitter(game.world.centerX, this.game.world.height-30, 200);
 		    this.emitter.width = game.world.width;
 
 		    // settings

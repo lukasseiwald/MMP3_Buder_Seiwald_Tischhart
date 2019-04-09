@@ -1,42 +1,68 @@
 export default class Particle {
-	constructor(){
+	constructor(type, lifetime){
 		this.game = window.game;
-		this.lifetime = 5000;
-		this.setParticle();
+		this.lifetime = lifetime;
+		this.setParticle(type);
 	}
 
-	setParticle() {
-		this.sparkParticle = function (game, x, y) {
-	      Phaser.Particle.call(this, game, x, y, game.cache.getBitmapData('particleShade'));
-	    };
+	setParticle(type) {
+		switch(type) {
+			case 'spark':
+			this.sparkParticle = function (game, x, y) {
+		      Phaser.Particle.call(this, game, x, y, game.cache.getBitmapData('particleShade'));
+		    };
 
-	    this.sparkParticle.prototype = Object.create(Phaser.Particle.prototype);
-	    this.sparkParticle.prototype.constructor = this.sparkParticle;
-	    this.sparkParticle.prototype.onEmit = function(){ 
-	      this.alpha = 0;
-	    }
+		    this.sparkParticle.prototype = Object.create(Phaser.Particle.prototype);
+		    this.sparkParticle.prototype.constructor = this.sparkParticle;
+		    this.sparkParticle.prototype.onEmit = function(){ 
+		      this.alpha = 0;
+		    }
 
-	    let bmd = game.add.bitmapData(64, 64);
-	    let radgrad = bmd.ctx.createRadialGradient(16, 16, 4, 16, 16, 16);
+		    let bmd = game.add.bitmapData(64, 64);
+		    let radgrad = bmd.ctx.createRadialGradient(16, 16, 4, 16, 16, 16);
 
-	    radgrad.addColorStop(0, 'rgba(247, 146, 32, 1)');
-	    radgrad.addColorStop(1, 'rgba(247, 146, 32, 0)');
+		    radgrad.addColorStop(0, 'rgba(247, 146, 32, 1)');
+		    radgrad.addColorStop(1, 'rgba(247, 146, 32, 0)');
 
-	    bmd.context.fillStyle = radgrad;
-	    bmd.context.fillRect(0, 0, 64, 64);
+		    bmd.context.fillStyle = radgrad;
+		    bmd.context.fillRect(0, 0, 64, 64);
 
-	    this.game.cache.addBitmapData('particleShade', bmd);
+		    this.game.cache.addBitmapData('particleShade', bmd);
 
-		this.emitter = this.game.add.emitter(game.world.centerX, this.game.world.height-100, 200);
-	    this.emitter.width = game.world.width;
-	    this.emitter.particleClass = this.sparkParticle;
-	    this.emitter.makeParticles();
-	    this.emitter.minParticleSpeed.set(0, 0);
-	    this.emitter.maxParticleSpeed.set(0, 0);
-	    this.emitter.setRotation(0, 0);  
-	    this.emitter.minParticleScale = 0.1;
-	    this.emitter.maxParticleScale = 0.6;
-	    this.emitter.gravity = -50;
+			this.emitter = this.game.add.emitter(game.world.centerX, this.game.world.height-100, 200);
+		    this.emitter.width = game.world.width;
+
+		    // settings
+		    this.emitter.particleClass = this.sparkParticle;
+		    this.emitter.minParticleSpeed.set(0, 0);
+		    this.emitter.maxParticleSpeed.set(0, 0);
+		    this.emitter.setRotation(0, 0);  
+		    this.emitter.minParticleScale = 0.1;
+		    this.emitter.maxParticleScale = 0.6;
+		    this.emitter.gravity = -50;
+
+		    // Start the emitter
+		    this.emitter.makeParticles();
+		    break;
+		    case 'smoke':
+		    // Create a particle emitter along the bottom of the stage
+		    this.emitter = game.add.emitter(game.world.centerX, game.world.height-150, 50);
+		    this.emitter.width = game.width-50;
+		    
+		    // settings
+		    this.emitter.minParticleScale = 0.1;
+		    this.emitter.maxParticleScale = 0.9;
+		    this.emitter.minRotation = -5;
+		    this.emitter.maxRotation = 5;
+		    this.emitter.setYSpeed(-2, -5);
+		    this.emitter.setXSpeed(10, 20);
+		    this.emitter.gravity = -10;
+		    this.emitter.setAlpha(0, 0.2, this.lifetime/2, Phaser.Easing.Quadratic.InOut, true);
+		    
+		    // Start the emitter
+		    this.emitter.makeParticles('smoke');
+		    break;
+		}
 	}
 
 	startEmitter() {

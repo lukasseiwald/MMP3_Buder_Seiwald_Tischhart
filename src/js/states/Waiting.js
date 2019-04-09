@@ -2,8 +2,10 @@ import Phaser from 'phaser'
 import { centerGameObjects, addImage } from '../utils'
 import { headlineStyling, subheadlineStyling } from '../stylings'
 import PlayerManager from '../PlayerManager';
+import Particle from '../Particle';
 
 export default class extends Phaser.State {
+
   init () {}
 
   create () {
@@ -16,6 +18,12 @@ export default class extends Phaser.State {
     //IMAGES
     addImage(this, 0, 0, 'background1', this.world.width, this.world.height);
     addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
+
+    //PARTICLES
+
+    this.glowingParticles = new Particle();
+    this.glowingParticles.startEmitter();
+
 
     //TEXT ELEMENTS
 
@@ -86,5 +94,9 @@ export default class extends Phaser.State {
         this.touchToContinue.alpha = this.touchToContinue.alpha === .5 ? 1 : .5;
       }
     }
+
+
+    //particle visibility (fading in and out)
+    this.glowingParticles.updateVisibility();
   }
 }

@@ -149,19 +149,14 @@ export default class Player {
     this.player.bulletAsset = this.player.key + '_bullet';
     this.player.soulAsset = this.player.key + '_soul';
     this.player.activeItem = '';
+    console.log(this.player);
+    this.player.deviceId = this.deviceId; //Für Healthbar
     this.player.anchor.set(0.5, 0.5);
 
     //Event Listener
     this.player.events.onKilled.add(this.died, this);
 
-    this.player.animations.add('idle', ['Idle_000','Idle_001','Idle_002','Idle_003','Idle_004','Idle_005','Idle_006','Idle_007','Idle_008','Idle_009','Idle_010','Idle_011','Idle_012','Idle_013','Idle_014','Idle_015','Idle_016','Idle_017',], 18, true);
-    this.player.animations.add('run', ['Running_000','Running_001','Running_002','Running_003','Running_004','Running_005','Running_006','Running_007','Running_008','Running_009','Running_010','Running_011'], 30, true);
-    this.player.animations.add('walk', ['Walking_000','Walking_001','Walking_002','Walking_003','Walking_004','Walking_005','Walking_006','Walking_007','Walking_008','Walking_009','Walking_010','Walking_011','Walking_012','Walking_013','Walking_014','Walking_015','Walking_016','Walking_017','Walking_018','Walking_019','Walking_020','Walking_021','Walking_022','Walking_023'], 30, true);
-    this.player.animations.add('jump', ['Jump Loop_000','Jump Loop_001','Jump Loop_002','Jump Loop_003','Jump Loop_004','Jump Loop_005'], 20, true);
-    this.player.animations.add('slash', ['Slashing_000','Slashing_001','Slashing_002','Slashing_003','Slashing_004','Slashing_005','Slashing_006','Slashing_007','Slashing_008','Slashing_009','Slashing_010','Slashing_011'], 20, false);
-    this.player.animations.add('shoot', ['Throwing_000','Throwing_001','Throwing_002','Throwing_003','Throwing_004','Throwing_005','Throwing_006','Throwing_007','Throwing_008','Throwing_009','Throwing_010','Throwing_011'], 20, false);
-    this.player.animations.add('hurt', ['Hurt_000','Hurt_001','Hurt_002','Hurt_003','Hurt_004','Hurt_005','Hurt_006','Hurt_007','Hurt_008','Hurt_009','Hurt_010','Hurt_011'], 20, false);
-  
+    this.setAnimations();
     this.player.animations.play('idle');
 
     //bullets
@@ -217,12 +212,20 @@ export default class Player {
       if (hitTarget.sprite.bulletAsset) {
         hitTarget.sprite.animations.play('hurt', 10, false);
         if(hitTarget.sprite.alive) {
-            hitTarget.sprite.damage(0.4);
+            hitTarget.sprite.damage(0.35);
+            console.log(hitTarget.sprite.health);
+            let healthBar = window.game.global.healthBars[hitTarget.sprite.deviceId];
+            if(hitTarget.sprite.health <= 0) {
+              window.game.add.tween(healthBar).to( { width: 0 }, 200, Phaser.Easing.Linear.None, true);
+            }
+            else {
+              window.game.add.tween(healthBar).to( { width: (healthBar.width - 34) }, 200, Phaser.Easing.Linear.None, true);
+            }
         }
       }
     }
   }
-
+  
   died() {
     //remove obtained soul of dead player
     if(this.player.obtainedSoul) {
@@ -248,6 +251,8 @@ export default class Player {
   }
 
   respawn() {
+    let healthBar = window.game.global.healthBars[this.player.deviceId];
+    window.game.add.tween(healthBar).to( { width: 100 }, 200, Phaser.Easing.Linear.None, true);
     this.player.reset(this.spawnX, this.spawnY);
     this.player.obtainedSoul = null;
   }
@@ -328,7 +333,9 @@ export default class Player {
     let collectedItem = item.sprite.key;
     switch (collectedItem) {
       case 'health_item':
-        player.sprite.health = 200;
+        player.sprite.health = 1;
+        let healthBar = window.game.global.healthBars[player.sprite.deviceId];
+        window.game.add.tween(healthBar).to( { width: 100 }, 200, Phaser.Easing.Linear.None, true);
         break;
       default:
         this.player.activeItem = collectedItem

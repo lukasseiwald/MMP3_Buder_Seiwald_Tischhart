@@ -46,33 +46,83 @@ export default class extends Phaser.State {
     this.tiles.physicsBodyType = Phaser.Physics.P2JS;
 
     //create Items ever x seconds
-    this.game.time.events.repeat(Phaser.Timer.SECOND * 15, 100, this.createItems, this);
+    this.game.time.events.repeat(Phaser.Timer.SECOND * 20, 100, this.createItems, this);
     
     //this.powerItem.spawnItem();
+
+    let characterSettings = [
+      {
+        skin:'egyptian',
+        x: 90,
+        y: 842
+      },
+      {
+        skin: 'knight',
+        x: this.world.width - 90,
+        y: 842
+      },
+      {
+        skin: 'lucifer',
+        x: 75,
+        y: 313
+      },
+      {
+        skin: 'kickapoo',
+        x: this.world.width - 90,
+        y: 313
+      }
+    ]
+
+    //HealthBar
+    let bmd = this.game.add.bitmapData(100, 20);
+    bmd.ctx.beginPath();
+    bmd.ctx.rect(0, 0, 100, 20);
+    bmd.ctx.fillStyle = '#850015';
+    bmd.ctx.fill();
+
+    let widthLife = new Phaser.Rectangle(0, 0, bmd.width, bmd.height);
+
+    this.createMap();
     
     if(window.game.global.dev) {
       //Bases
-      this.baseEgyptian = new Base(90, 825, 'egyptian_base');
-      this.baseKnight = new Base(this.world.width - 90, 825, 'knight_base');
-      this.baseLucifer = new Base(75, 298, 'lucifer_base');
-      this.baseKickapoo = new Base(this.world.width - 90, 298, 'kickapoo_base');
+      this.baseEgyptian = new Base(characterSettings[0].x, characterSettings[0].y, characterSettings[0].skin + '_base');
+      this.baseKnight = new Base(characterSettings[1].x, characterSettings[1].y, characterSettings[1].skin + '_base');
+      this.baseLucifer = new Base(characterSettings[2].x, characterSettings[2].y, characterSettings[2].skin + '_base');
+      this.baseKickapoo = new Base(characterSettings[3].x, characterSettings[3].y, characterSettings[3].skin + '_base');
 
       // Player 1
-      this.player1 = new Player(1, 200, 500, 'knight');
+      this.player1 = new Player(1, characterSettings[0].x, characterSettings[0].y, characterSettings[0].skin);
+      let p1HealthBar = this.game.add.sprite(characterSettings[0].x - 50, characterSettings[0].y - 100, bmd);
+      p1HealthBar.cropEnabled = true;
+      p1HealthBar.crop(widthLife);
+      this.game.global.healthBars[1] = p1HealthBar;
       this.player1.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
 
       // Player 2
-      this.player2 = new Player(2, 400, 500, 'egyptian');
+      this.player2 = new Player(2, characterSettings[1].x, characterSettings[1].y, characterSettings[1].skin);
+      let p2HealthBar = this.game.add.sprite(characterSettings[1].x - 50, characterSettings[1].y - 100, bmd);
+      p2HealthBar.cropEnabled = true;
+      p2HealthBar.crop(widthLife);
+      this.game.global.healthBars[2] = p2HealthBar;
       this.player2.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
 
       //Player 3
-      this.player3 = new Player(3, 600, 500, 'lucifer');
+      this.player3 = new Player(3, 75, 313, 'lucifer');
+      let p3HealthBar = this.game.add.sprite(characterSettings[2].x - 50, characterSettings[2].y - 100, bmd);
+      p3HealthBar.cropEnabled = true;
+      p3HealthBar.crop(widthLife);
+      this.game.global.healthBars[3] = p3HealthBar;
       this.player3.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
 
       //Player 4
-      this.player4 = new Player(4, 800, 500, 'kickapoo');
+      this.player4 = new Player(4, this.world.width - 90, 313, 'kickapoo');
+      let p4HealthBar = this.game.add.sprite(characterSettings[3].x - 50, characterSettings[3].y - 100, bmd);
+      p4HealthBar.cropEnabled = true;
+      p4HealthBar.crop(widthLife);
+      this.game.global.healthBars[4] = p4HealthBar;
       this.player4.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
-
+      
       this.cursors = this.game.input.keyboard.createCursorKeys();
 
       this.wasd = {
@@ -83,39 +133,20 @@ export default class extends Phaser.State {
       };
     }
     else {
-      let characterSettings = [
-        {
-          skin:'egyptian',
-          x: 90,
-          y: 842
-        },
-        {
-          skin: 'knight',
-          x: this.world.width - 90,
-          y: 842
-        },
-        {
-          skin: 'lucifer',
-          x: 75,
-          y: 313
-        },
-        {
-          skin: 'kickapoo',
-          x: this.world.width - 90,
-          y: 313
-        }
-      ]
       let index = 0;
 
       for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
         let character = new Player(deviceId, characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin);
         let base = new Base(characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin + '_base', character);
+        let healthBar = this.game.add.sprite(characterSettings[index].x - 50, characterSettings[index].y - 100, bmd);
+        healthBar.cropEnabled = true;
+        healthBar.crop(widthLife);
+        this.game.global.healthBars[deviceId] = healthBar;
         character.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
         window.game.global.playerManager.setCharacter(deviceId, character);
         index += 1;
       }
     }
-    this.createMap();
   }
 
   update() {

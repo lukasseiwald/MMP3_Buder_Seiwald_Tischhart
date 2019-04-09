@@ -17,7 +17,8 @@ export default class extends Phaser.State {
   }
 
   create () {
-    window.game.global.dev = true;
+    window.game.global.dev = false;
+    window.game.global.healthBars = [];
 
     if(window.game.global.dev) {
       this.state.start('Level1')

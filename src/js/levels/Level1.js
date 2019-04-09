@@ -51,7 +51,9 @@ export default class extends Phaser.State {
     this.tiles.physicsBodyType = Phaser.Physics.P2JS;
 
     //create Items ever x seconds
-    this.game.time.events.repeat(Phaser.Timer.SECOND * 20, 100, this.createItems, this);
+    let itemPositions = [{x: 400, y: 500}, {x: 530, y: 200}, {x: 200, y: 150}, {x: 600, y: 850}, {x: 700, y: 450}, {x: window.game.world.width - 430, y: 500}, {x: window.game.world.width - 560, y: 200}, {x: window.game.world.width - 230, y: 150}, {x: window.game.world.width - 630, y: 850}, {x: window.game.world.width - 730, y: 450}, {x: window.game.world.width / 2, y: 100}, {x: window.game.world.width / 2, y: 640}, {x: window.game.world.width / 2, y: 310}];
+    this.game.global.itemPositions = this.shuffle(itemPositions);
+    this.game.time.events.repeat(Phaser.Timer.SECOND * 18, 100, this.createItems, this);
     
     //this.powerItem.spawnItem();
 
@@ -300,6 +302,14 @@ export default class extends Phaser.State {
         }
       }
     }
+  }
+
+  shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
   }
 
   createItems() {

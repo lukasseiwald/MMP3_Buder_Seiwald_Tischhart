@@ -19,7 +19,7 @@ export default class Base {
     this.base.collectedSouls = [skinName]; //maybe already write in player soul, and check if alreadyCollectedSoul != newSoul
 
     //make Base face right direction and size
-    if(x > window.game.width/2) {
+    if(x > window.game.width / 2) {
       this.base.scale.setTo(-1,1);
     }
     else {
@@ -31,12 +31,9 @@ export default class Base {
     baseCollisionGroup.mask = 64;
     let soulCollisionGroup = window.game.physics.p2.createCollisionGroup();
     soulCollisionGroup.mask = 32;
-    // let playerCollisionGroup = window.game.physics.p2.createCollisionGroup();
-    // playerCollisionGroup.mask = 4;
 
     this.base.body.setCollisionGroup(baseCollisionGroup);
     this.base.body.collides(soulCollisionGroup, this.basedSoul, this);
-    //this.base.body.collides(playerCollisionGroup, this.basedPlayer, this);
   }
 
   basedSoul(base, soul) {
@@ -44,26 +41,21 @@ export default class Base {
       let soulName = soul.sprite.key;
 
       if(base.sprite.collectedSouls.indexOf(soulName) < 0) { //still doesnt see it properly     ! > -1
-
         this.player = soul.obtainedBy;
         if(this.player != undefined) {
-
+          if(this.player.key !== base.sprite.key.split("_")[0]) { //Base only accepts Souls from own Player 
+            return;
+          }
           base.sprite.collectedSouls.push(soulName);
-          //Sync player collectedSouls with base for avoiding errors
-          console.log(this.player);
-          this.player.collectedSouls = base.sprite.collectedSouls;
-          console.log(this.player.collectedSouls);
-          //adding Soul to the Base Soul Collection
-          this.addSoulSpriteToCollection(soulName);
-
+          this.player.collectedSouls = base.sprite.collectedSouls; //Syncing player collectedSouls with base for avoiding errors
+          this.addSoulSpriteToCollection(soulName); //adding Soul to the Base Soul Collection
           this.player.carryingSoul = 0;
           base.sprite.collectedSouls.push(soulName);
           soul.sprite.kill();
         }
-        console.log("soul without player.... no go");
       }
       else {
-        console.log("soul already included");
+        console.log("soul already included"); 
       }
       if(base.sprite.collectedSouls.includes("kickapoo_soul") && base.sprite.collectedSouls.includes("lucifer_soul") && base.sprite.collectedSouls.includes("egyptian_soul") && base.sprite.collectedSouls.includes("knight_soul")) {
         if(window.game.global.dev) {
@@ -90,11 +82,6 @@ export default class Base {
     soulTrophY = this.base.y - 99 + 30 * spacingForCollectionStyle;
     window.game.add.sprite(soulTrophyX, soulTrophY , soulName); //anders bennen da es sonst als eingesammelte seele zählt
   }
-
-  // basedPlayer(base, player) {
-  //   console.log("player in base");
-  //   player.obtainedSoul = null;
-  // }
 
   winning() {
     let style = { font: "65px Bungee", fill: "#000000", align: "center" };

@@ -62,25 +62,6 @@ export default class extends Phaser.State {
         active: this.fontsLoaded
       });
     }
-
-
-    //LOAD CHARACTERS
-
-    // this.load.atlasJSONHash('egyptian', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
-    // this.load.atlasJSONHash('knight', '../../assets/characters/knight/knight.png', '../../assets/characters/knight/knight.json');
-    // //this.load.atlasJSONHash('lucifer', '../../assets/characters/lucifer/lucifer.png', '../../assets/characters/lucifer/lucifer.json');
-    // //this.load.atlasJSONHash('knight', '../../assets/characters/kickapoo/kickapoo.png', '../../assets/characters/kickapoo/kickapoo.json');
-
-    //LOAD SOULS
-
-    // this.load.spritesheet('egyptian_soul', '../../assets/characters/egyptian/egyptian_soul.png', 32, 32, 3);
-    // this.load.spritesheet('knight_soul', '../../assets/characters/knight/knight_soul.png', 32, 32, 3);
-
-    // LOAD BULLETS
-
-    // this.load.image('egyptian_bullet', '../../assets/characters/egyptian/egyptian_bullet.png');
-    // this.load.image('knight_bullet', '../../assets/characters/knight/knight_bullet.png');
-
   }
 
   render() {

@@ -24,6 +24,34 @@ export default class extends Phaser.State {
 
     this.glowingParticles = new Particle();
     this.glowingParticles.startEmitter();
+
+    var LIFECYCLE = 8000;
+    
+    // Create a particle emitter along the bottom of the stage
+    this.emitter = game.add.emitter(game.world.centerX, game.world.height-150, 50);
+    this.emitter.width = game.width-50;
+    
+    // Particle behaviour ranges to create a smoke drift-like effect
+    this.emitter.minParticleScale = 0.1;
+    this.emitter.maxParticleScale = 0.9;
+    this.emitter.minRotation = -5;
+    this.emitter.maxRotation = 5;
+    this.emitter.setYSpeed(-2, -5);
+    this.emitter.setXSpeed(10, 20);
+    this.emitter.gravity = -10;
+    
+    // Particle alpha will ease from 0 to 0.2 and back again, for fade in/out
+    this.emitter.setAlpha(0, 0.2, LIFECYCLE/2, Phaser.Easing.Quadratic.InOut, true);
+    
+    // Start the emitter
+    this.emitter.makeParticles('smoke');
+    this.emitter.start(false, LIFECYCLE, 100, 0);
+    
+    // add GUI
+    // var gui = new dat.GUI();
+    // gui.add(this.emitter, 'gravity').min(-20).max(20).name('Gravity');
+    // gui.add(this.emitter, 'maxRotation').min(0).max(20).name('Rotation');
+    // gui.close();
     
 
     //TEXT ELEMENTS
@@ -100,5 +128,13 @@ export default class extends Phaser.State {
 
     //particle visibility (fading in and out)
     this.glowingParticles.updateVisibility();
+
+    // let emitter = this.emitter
+    // emitter.forEachAlive(function(p){
+    //     console.log(p.alpha)
+    //     if(p.lifespan <= emitter.lifespan/ 2) {// fading out
+    //       p.alpha= 0.2*(p.lifespan / (emitter.lifespan/2));
+    //     }
+    // });
   }
 }

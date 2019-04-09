@@ -35,7 +35,7 @@ export default class Particle {
 	    this.emitter.maxParticleSpeed.set(0, 0);
 	    this.emitter.setRotation(0, 0);  
 	    this.emitter.minParticleScale = 0.1;
-	    this.emitter.maxParticleScale = 1;
+	    this.emitter.maxParticleScale = 0.6;
 	    this.emitter.gravity = -50;
 	}
 

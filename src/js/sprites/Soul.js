@@ -8,7 +8,8 @@ export default class Soul {
 
     window.game.physics.p2.enable(this.soul);
     this.soul.physicsBodyType = Phaser.Physics.P2JS;
-    this.soul.body.setCircle(16);
+    this.soul.body.static = true; //to ensure that the soul only moves when it is obtained
+    this.soul.body.setCircle(16); //Hit Box
    
     //Collisions for Souls
     let soulCollisionGroup = window.game.physics.p2.createCollisionGroup();
@@ -24,9 +25,9 @@ export default class Soul {
     this.soul.body.data.gravityScale = 0;
     this.soul.fixedX = true;
     this.soul.fixedY = true;
+    this.soul.beingCarried = false;
 
     this.soul.animations.add('souling');
     this.soul.animations.play('souling', 5, true);
-
   }
 }

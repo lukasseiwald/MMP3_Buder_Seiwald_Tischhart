@@ -1,5 +1,5 @@
 export default class Particle {
-	constructor(type, offset, lifetime, amount){
+	constructor(type, offset = 0, lifetime, amount){
 		this.amount = amount;
 		this.game = window.game;
 		this.lifetime = lifetime;
@@ -87,8 +87,8 @@ export default class Particle {
 		    let grd = bmpd.ctx.createRadialGradient(
 		      pSize / 2, pSize /2, 2,
 		      pSize / 2, pSize / 2, pSize * 0.5);
-		    grd.addColorStop(0, 'rgba(224, 181, 11, 0.7)');
-		    grd.addColorStop(1, 'rgba(224, 46, 11, 0.1)');
+		    grd.addColorStop(0, 'rgba(193, 170, 30, 0.6)');
+  			grd.addColorStop(1, 'rgba(255, 100, 30, 0.1)');
 		    bmpd.ctx.fillStyle = grd;
 		    
 		    bmpd.ctx.arc(pSize / 2, pSize / 2 , pSize / 2, 0, Math.PI * 2);
@@ -109,7 +109,7 @@ export default class Particle {
 		    this.emitter.setRotation(0, 0);
 		    // Make the flames taller than they are wide to simulate the
 		    // effect of flame tongues
-		    this.emitter.setScale(1, 8, 1, 3, 12000, Phaser.Easing.Quintic.Out);
+		    this.emitter.setScale(1, 8, 1, 5, 12000, Phaser.Easing.Quintic.Out);
 		    this.emitter.setAlpha(0, 0.6, 2000, Phaser.Easing.Quadratic.InOut, true);
 		    this.emitter.gravity = -1;
 		    break;

@@ -27,10 +27,10 @@ export default class extends Phaser.State {
     this.steamParticles = new Particle("smoke", 150, 8000, 100);
     this.steamParticles.startEmitter();    
 
-    this.lavaParticles = new Particle("lava", 100, 4000, 1);
-    this.lavaParticles.startEmitter();
-
     addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
+
+    this.lavaParticles = new Particle("lava", 0, 4000, 1);
+    this.lavaParticles.startEmitter();
     
 
     

@@ -6,7 +6,11 @@ import Particle from '../Particle';
 
 export default class extends Phaser.State {
 
-  init () {}
+  init () {
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+    this.scale.setGameSize(this.width, this.height);
+  }
 
   create () {
     window.game.scale.onResize = this.resize;
@@ -22,15 +26,15 @@ export default class extends Phaser.State {
 
     //PARTICLES
 
-    this.glowingParticles = new Particle("spark", 30, 5000, 100);
+    this.glowingParticles = new Particle('spark', 30, 5000, 100);
     this.glowingParticles.startEmitter();
 
-    this.steamParticles = new Particle("smoke", 150, 8000, 100);
-    this.steamParticles.startEmitter();    
+    // this.steamParticles = new Particle('smoke', 150, 8000, 1);
+    // this.steamParticles.startEmitter();
 
     this.bg2 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
-    this.lavaParticles = new Particle("lava", 0, 4000, 1);
+    this.lavaParticles = new Particle('lava', 0, 4000, 1);
     this.lavaParticles.startEmitter();
 
     //TEXT ELEMENTS
@@ -51,19 +55,20 @@ export default class extends Phaser.State {
     //FUNCTIONS & LISTENERS
 
     window.game.global.airConsole.onConnect = function(deviceId) {
+      console.log('someone connected');
       if(window.game.global.playerManager.getConnectedPlayerNum() < 4) {
         window.game.global.playerManager.addPlayer(deviceId);
         updateScreen();
       }
       if (window.game.global.playerManager.getConnectedPlayerNum() >= 4) {
-        // window.game.global.airConsole.broadcast(
-        //   {
-        //     screen: 'waiting',
-        //     action: 'change_to_controller'
-        //   })
-        // that.state.start('Level1')
+        window.game.global.airConsole.broadcast(
+          {
+            screen: 'waiting',
+            action: 'change_to_controller'
+          })
+        that.state.start('Level1')
         let masterId = window.game.global.playerManager.getMaster();
-        touchToContinue.text = "Master Player (" + window.game.global.playerManager.getNickname(masterId) + ") please tap on Touchscreen to continue";
+        touchToContinue.text = 'Master Player (' + window.game.global.playerManager.getNickname(masterId) + ') please tap on Touchscreen to continue';
         window.game.global.playerManager.sendMessageToPlayer(masterId,
           {
             screen: 'waiting',

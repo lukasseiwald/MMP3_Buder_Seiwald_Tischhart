@@ -128,7 +128,7 @@ export default class Player {
     this.player.enableBody = true;
 
     //  Enable if for physics. This creates a default rectangular body.
-    window.game.physics.p2.enable(this.player);
+    window.game.physics.p2.enable(this.player, true);
     this.player.physicsBodyType = Phaser.Physics.P2JS;
 
     //  Modifying a few body properties
@@ -226,7 +226,7 @@ export default class Player {
       }
     }
   }
-  
+
   died() {
     //remove obtained soul of dead player
     if(this.player.obtainedSoul) {

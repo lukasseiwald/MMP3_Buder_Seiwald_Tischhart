@@ -10,29 +10,23 @@ import Particle from '../Particle';
 
 export default class extends Phaser.State {
   init() {
-     this.width = window.innerWidth;
-     this.height = window.innerHeight;
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
     let ratio = this.width/this.height;
-    console.log(this.width/this.height);
-
+    // 1.8064 is the ratio with that the map was created
     if(ratio > 1.8064) {
-      console.log('größer')
       this.scale.setGameSize(this.height * 1.8064, this.height);
     }
     else {
-      console.log('kleinder')
       this.scale.setGameSize(this.width, this.width/1.8064);
     }
   }
 
   preload() {
     this.game.time.advancedTiming = true; //For indicating FPS
-
-    //1.8064
   }
 
   create() {
-    console.log(this);
     this.game.camera.roundPixels = true;
 
     const map = {
@@ -45,34 +39,34 @@ export default class extends Phaser.State {
       }
     };
     map.tsize = this.width/map.cols;
-    console.log('tsize', map.tsize);
+
     const characterSettings = [
       {
         skin:'egyptian',
         x: map.tsize * 5,
         y: map.tsize * 26,
-        baseX: 2.5 * map.tsize,
-        baseY: map.tsize * 25.5
+        baseX: 3 * map.tsize,
+        baseY: this.world.height - 3.5 * map.tsize
       },
       {
         skin: 'knight',
         x: this.world.width - 90,
         y: map.tsize * 26,
-        baseX: this.world.width - 2.5 * map.tsize,
-        baseY: map.tsize * 25.5
+        baseX: this.world.width - 3 * map.tsize,
+        baseY: this.world.height - 3.5 * map.tsize
       },
       {
         skin: 'lucifer',
         x: map.tsize * 3,
         y: map.tsize * 10,
-        baseX: 2.5 * map.tsize,
+        baseX: 3 * map.tsize,
         baseY: map.tsize * 9.5
       },
       {
         skin: 'kickapoo',
         x: this.world.width - 90,
         y: map.tsize * 10,
-        baseX: this.world.width - 2.5 * map.tsize,
+        baseX: this.world.width - 3 * map.tsize,
         baseY: map.tsize * 9.5
       }
     ]
@@ -100,20 +94,19 @@ export default class extends Phaser.State {
 
     //IMAGES
     this.bg3 = addImage(this, 0, 0, 'background3', this.world.width, this.world.height);
-    this.bg2 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
     //PARTICLES
 
     this.glowingParticles = new Particle("spark", 30, 5000, 100);
     this.glowingParticles.startEmitter();
 
-    this.steamParticles = new Particle("smoke", 150, 8000, 100);
-    this.steamParticles.startEmitter();    
+    // this.steamParticles = new Particle("smoke", 150, 8000, 100);
+    // this.steamParticles.startEmitter();
 
     this.bg2 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
-    this.lavaParticles = new Particle("lava", 0, 4000, 1);
-    this.lavaParticles.startEmitter();
+    // this.lavaParticles = new Particle("lava", 0, 4000, 1);
+    // this.lavaParticles.startEmitter();
 
     //Tiles
     this.tiles = this.game.add.group();
@@ -134,7 +127,6 @@ export default class extends Phaser.State {
 
     let widthLife = new Phaser.Rectangle(0, 0, bmd.width, bmd.height);
 
-    this.createMap(map);
 
     if(window.game.global.dev) {
       //Bases
@@ -199,6 +191,8 @@ export default class extends Phaser.State {
         index += 1;
       }
     }
+    this.createMap(map);
+
   }
 
   update() {

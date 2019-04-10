@@ -18,7 +18,6 @@ export default class extends Phaser.State {
     //IMAGES
 
     addImage(this, 0, 0, 'background1', this.world.width, this.world.height);
-    addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
     //PARTICLES
 
@@ -27,6 +26,54 @@ export default class extends Phaser.State {
 
     this.steamParticles = new Particle("smoke", 8000);
     this.steamParticles.startEmitter();
+
+    let colors = ['0xf4b042', '0xf49d41', '0xf47f41', '0xf44f41'];
+    function FireParticle(game, x, y) {
+      Phaser.Particle.call(this, game, x, y, game.cache.getBitmapData('flame'));
+    }
+
+    FireParticle.prototype = Object.create(Phaser.Particle.prototype);
+    FireParticle.prototype.constructor = FireParticle;
+    // FireParticle.prototype.onEmit = function(){ 
+    //       this.tint = colors[Math.floor(Math.random() * 4)];
+    //     }
+
+    var pSize = game.world.width / 30;
+    var bmpd = game.add.bitmapData(pSize, pSize);
+    // Create a radial gradient, yellow-ish on the inside, orange
+    // on the outside. Use it to draw a circle that will be used
+    // by the FireParticle class.
+    var grd = bmpd.ctx.createRadialGradient(
+      pSize / 2, pSize /2, 2,
+      pSize / 2, pSize / 2, pSize * 0.5);
+    grd.addColorStop(0, 'rgba(224, 181, 11, 0.7)');
+    grd.addColorStop(1, 'rgba(224, 46, 11, 0.1)');
+    bmpd.ctx.fillStyle = grd;
+    
+    bmpd.ctx.arc(pSize / 2, pSize / 2 , pSize / 2, 0, Math.PI * 2);
+    bmpd.ctx.fill();
+    
+    game.cache.addBitmapData('flame', bmpd);
+    
+    // Generate 250 particles
+    let emitter = game.add.emitter(game.world.centerX, game.world.height-100, 300);
+    emitter.width = game.world.width;
+    emitter.particleClass = FireParticle;
+    // Magic happens here, bleding the colors of each particle
+    // generates the bright light effect
+    emitter.blendMode = PIXI.blendModes.ADD;
+    emitter.makeParticles();
+    emitter.minParticleSpeed.set(-1, -4);
+    emitter.maxParticleSpeed.set(1, 4);
+    emitter.setRotation(0, 0);
+    // Make the flames taller than they are wide to simulate the
+    // effect of flame tongues
+    emitter.setScale(1, 8, 1, 3, 12000, Phaser.Easing.Quintic.Out);
+    emitter.setAlpha(0, 0.6, 2000, Phaser.Easing.Quadratic.InOut, true);
+    emitter.gravity = -1;
+    emitter.start(false, 4000, 1);
+
+    addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
     //TEXT ELEMENTS
 

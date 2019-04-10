@@ -1,8 +1,9 @@
 export default class Particle {
-	constructor(type, lifetime, amount){
+	constructor(type, offset, lifetime, amount){
 		this.amount = amount;
 		this.game = window.game;
 		this.lifetime = lifetime;
+		this.offset = offset;
 		this.setParticle(type);
 	}
 
@@ -33,7 +34,7 @@ export default class Particle {
 
 		    this.game.cache.addBitmapData('particleShade', bmd);
 
-			this.emitter = this.game.add.emitter(game.world.centerX, this.game.world.height-30, 200);
+			this.emitter = this.game.add.emitter(game.world.centerX, this.game.world.height-this.offset, 200);
 		    this.emitter.width = game.world.width;
 
 		    // settings
@@ -50,7 +51,7 @@ export default class Particle {
 		    break;
 		    case 'smoke':
 		    // Create a particle emitter along the bottom of the stage
-		    this.emitter = game.add.emitter(game.world.centerX, game.world.height-150, 50);
+		    this.emitter = game.add.emitter(game.world.centerX, game.world.height-this.offset, 50);
 		    this.emitter.width = game.width-50;
 		    
 		    // settings
@@ -96,7 +97,7 @@ export default class Particle {
 		    game.cache.addBitmapData('flame', bmpd);
 		    
 		    // Generate 250 particles
-		    this.emitter = game.add.emitter(game.world.centerX, game.world.height-100, 300);
+		    this.emitter = game.add.emitter(game.world.centerX, game.world.height-this.offset, 300);
 		    this.emitter.width = game.world.width;
 		    this.emitter.particleClass = FireParticle;
 		    // Magic happens here, bleding the colors of each particle

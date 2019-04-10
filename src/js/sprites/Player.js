@@ -9,6 +9,10 @@ export default class Player {
 
     window.game.souls = [];
     this.movingTo = null;
+    this.dashTimer = 0;
+    this.dashIdleTimer = 0;
+    this.lastDash = 0;
+    this.canDash = false;
     this.jumpCount = 0;
 
     this.spawnX = spawnX;
@@ -46,6 +50,7 @@ export default class Player {
         break;
       default:
         this.moveSoulWithPlayer();
+        this.moveShieldWithPlayer();
         this.player.body.moveRight(0);
         this.player.body.moveLeft(0);
     }
@@ -56,14 +61,18 @@ export default class Player {
     else if(this.player.body.y < 0){
       this.player.body.y = window.game.height;
     }
-
     if(this.jumpCount > 0 && this.isGrounded()) {
       this.jumpCount = 0;
     }
   }
 
   idle() {
-    this.moveSoulWithPlayer();
+    //DASH
+    if(Math.abs(window.game.time.totalElapsedSeconds() - this.dashTimer) > 0.3 && Math.abs(window.game.time.totalElapsedSeconds() - this.dashTimer) < 0.85) {
+      this.dashIdleTimer = window.game.time.totalElapsedSeconds();
+      this.canDash = true;
+    }
+    //Keep on playing hurt animation
     if(this.player.animations.name === 'hurt') {
       this.player.animations.killOnComplete;
     }
@@ -75,7 +84,6 @@ export default class Player {
   moveToRight() {
     this.player.scale.x = 1; //1 => facing Right
     this.player.animations.play('run');
-    this.moveSoulWithPlayer();
     this.player.body.moveLeft(0);
     if(this.player.activeItem === 'speed_item') {
       this.player.body.moveRight(800);
@@ -83,12 +91,14 @@ export default class Player {
     else {
       this.player.body.moveRight(400);
     }
+    this.moveSoulWithPlayer();
+    this.moveShieldWithPlayer();
+    this.dash();
   }
 
   moveToLeft() {
     this.player.scale.x = -1; //-1 => facing Left
     this.player.animations.play('run');
-    this.moveSoulWithPlayer();
     this.player.body.moveRight(0);
     if(this.player.activeItem === 'speed_item') {
       this.player.body.moveLeft(800);
@@ -96,11 +106,41 @@ export default class Player {
     else {
       this.player.body.moveLeft(400);
     }
+    this.moveSoulWithPlayer();
+    this.moveShieldWithPlayer();
+    this.dash();
+  }
+
+  dash() {
+    this.dashTimer = window.game.time.totalElapsedSeconds();
+    if(this.canDash == true && (Math.abs(this.dashTimer - this.dashIdleTimer) < 0.3) && (Math.abs(this.dashTimer - this.lastDash) > 2.5)) {
+      let dash_smoke = window.game.add.sprite(this.player.x - 30, this.player.y - 80, 'dash_smoke');
+      dash_smoke.scale.setTo(2, 2); //Item Size
+      var dash_smoke_animation = dash_smoke.animations.add('smoking');
+      dash_smoke_animation.killOnComplete = true;
+      switch(this.player.scale.x) {
+        case -1:
+          this.player.body.moveLeft(4800);
+          dash_smoke.scale.x = -1.5
+          break;
+        case 1:
+          this.player.body.moveRight(4800);
+          dash_smoke.scale.x = 1;
+          break;
+        default:
+          break;
+      }
+      dash_smoke_animation.play(16);
+      this.canDash = false;
+      this.lastDash = window.game.time.totalElapsedSeconds();
+      this.dashTimer = 0;
+    }
   }
 
   jump() {
     this.jumpCount += 1;
     this.moveSoulWithPlayer();
+    this.moveShieldWithPlayer();
     if (this.jumpCount < 2) {
       this.player.animations.play('jump');
       if(this.player.activeItem === 'jump_item') {
@@ -144,11 +184,12 @@ export default class Player {
 
     //few Player properties
     this.player.nextFire = 0;
-    this.player.carryingSoul = 0;
+    this.player.obtainedSoul = null;
     this.player.collectedSouls = [this.player.key + '_soul']
     this.player.bulletAsset = this.player.key + '_bullet';
     this.player.soulAsset = this.player.key + '_soul';
     this.player.activeItem = '';
+    this.player.shield = null;
     this.player.deviceId = this.deviceId; //Für Healthbar
     this.player.anchor.set(0.5, 0.5);
 
@@ -210,10 +251,16 @@ export default class Player {
 
   hit(hitTarget) {
     if(hitTarget) {
-      let bullet = this.body.sprite;
       if (hitTarget.sprite.bulletAsset) {
-        hitTarget.sprite.animations.play('hurt', 10, false);
         if(hitTarget.sprite.alive) {
+          if(hitTarget.sprite.shield != null) {
+            hitTarget.sprite.shield.damage(0.50);
+            if(hitTarget.sprite.shield.health <= 0) {
+              hitTarget.sprite.shield = null;
+            }
+          }
+          else {
+            hitTarget.sprite.animations.play('hurt', 10, false);
             hitTarget.sprite.damage(0.35);
             let healthBar = window.game.global.healthBars[hitTarget.sprite.deviceId];
             if(hitTarget.sprite.health <= 0) {
@@ -222,6 +269,7 @@ export default class Player {
             else {
               window.game.add.tween(healthBar).to( { width: (healthBar.width - 34) }, 200, Phaser.Easing.Linear.None, true);
             }
+          }
         }
       }
     }
@@ -231,7 +279,7 @@ export default class Player {
     //remove obtained soul of dead player
     if(this.player.obtainedSoul) {
       this.player.obtainedSoul.sprite.kill();
-      this.player.carryingSoul = 0;
+      this.player.obtainedSoul = null;
       this.player.activeItem = '';
     }
     //Style of Respawn Counter
@@ -303,15 +351,15 @@ export default class Player {
   }
 
   obtainedSoul(player, soul) {
+    console.log(this.player.obtainedSoul);
     //check if player already carries a soul and if player already previous obtained the soul
     if(this.player.collectedSouls.includes(soul.sprite.key)) {
       if(!soul.beingCarried) {
         soul.sprite.kill();
       }
     }
-    if(this.player.carryingSoul == 0) {
+    else if(this.player.obtainedSoul == null) {
       if(!soul.alreadyObtained) {
-        this.player.carryingSoul = 1;
         soul.static = false;
         soul.immovable = false;
         soul.moves = true;
@@ -337,6 +385,13 @@ export default class Player {
     }
   }
 
+  moveShieldWithPlayer() {
+    if(this.player.shield) {
+      this.player.shield.x = this.player.x - 65;
+      this.player.shield.y = this.player.y - 65;
+    }
+  }
+
   collectedItem(player, item) {
     let collectedItem = item.sprite.key;
     switch (collectedItem) {
@@ -344,6 +399,13 @@ export default class Player {
         player.sprite.health = 1;
         let healthBar = window.game.global.healthBars[player.sprite.deviceId];
         window.game.add.tween(healthBar).to( { width: 100 }, 200, Phaser.Easing.Linear.None, true);
+        break;
+      case 'shield_item':
+        if(player.sprite.shield != null) {
+          player.sprite.shield.kill();
+        }
+        player.sprite.shield = window.game.add.sprite(this.player.x - 50, this.player.y - 55, 'shield_character');
+        player.sprite.shield.enableBody = true;
         break;
       default:
         this.player.activeItem = collectedItem

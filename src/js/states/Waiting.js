@@ -14,16 +14,16 @@ export default class extends Phaser.State {
 
     this.timer = 0;
     let that = this;
+    // this.background_music = window.game.add.audio('background_music');
+    // window.game.sound.setDecodedCallback(this.background_music, this.start, this);
 
     //IMAGES
     addImage(this, 0, 0, 'background1', this.world.width, this.world.height);
     addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
     //PARTICLES
-
     this.glowingParticles = new Particle();
     this.glowingParticles.startEmitter();
-
 
     //TEXT ELEMENTS
 
@@ -41,7 +41,7 @@ export default class extends Phaser.State {
     numberOfPlayers.anchor.setTo(0.5, 0.5);
 
     //FUNCTIONS & LISTENERS
-
+  
     window.game.global.airConsole.onConnect = function(deviceId) {
       if(window.game.global.playerManager.getConnectedPlayerNum() < 4) {
         window.game.global.playerManager.addPlayer(deviceId);
@@ -99,4 +99,10 @@ export default class extends Phaser.State {
     //particle visibility (fading in and out)
     this.glowingParticles.updateVisibility();
   }
+
+  // start() {
+  //   //PLAY SOUND
+  //   console.log("start");
+  //   this.background_music.play();
+  // }
 }

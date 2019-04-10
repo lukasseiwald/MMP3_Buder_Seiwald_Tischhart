@@ -49,7 +49,7 @@ export default class Base {
           base.sprite.collectedSouls.push(soulName);
           this.player.collectedSouls = base.sprite.collectedSouls; //Syncing player collectedSouls with base for avoiding errors
           this.addSoulSpriteToCollection(soulName); //adding Soul to the Base Soul Collection
-          this.player.carryingSoul = 0;
+          this.player.obtainedSoul = null;
           base.sprite.collectedSouls.push(soulName);
           soul.sprite.kill();
         }

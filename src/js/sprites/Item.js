@@ -39,8 +39,4 @@ export default class Item {
     collectItem(item, player) {
       item.sprite.kill();
     }
-
-    createItems() {
-      this.powerItem = new Item();
-    }
 }

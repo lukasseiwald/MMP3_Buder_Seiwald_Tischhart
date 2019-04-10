@@ -9,6 +9,7 @@ export default class extends Phaser.State {
   init () {}
 
   create () {
+    window.game.scale.onResize = this.resize;
     window.game.global.playerManager = new PlayerManager();
     window.game.global.playerManager.setConnectedPlayers();
 
@@ -18,12 +19,21 @@ export default class extends Phaser.State {
     // window.game.sound.setDecodedCallback(this.background_music, this.start, this);
 
     //IMAGES
-    addImage(this, 0, 0, 'background1', this.world.width, this.world.height);
-    addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
+
+    this.bg1 = addImage(this, 0, 0, 'background1', this.world.width, this.world.height);
 
     //PARTICLES
-    this.glowingParticles = new Particle();
+
+    this.glowingParticles = new Particle("spark", 30, 5000, 100);
     this.glowingParticles.startEmitter();
+
+    this.steamParticles = new Particle("smoke", 150, 8000, 100);
+    this.steamParticles.startEmitter();    
+
+    this.bg2 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
+
+    this.lavaParticles = new Particle("lava", 0, 4000, 1);
+    this.lavaParticles.startEmitter();
 
     //TEXT ELEMENTS
 
@@ -48,6 +58,12 @@ export default class extends Phaser.State {
         updateScreen();
       }
       if (window.game.global.playerManager.getConnectedPlayerNum() >= 4) {
+        // window.game.global.airConsole.broadcast(
+        //   {
+        //     screen: 'waiting',
+        //     action: 'change_to_controller'
+        //   })
+        // that.state.start('Level1')
         let masterId = window.game.global.playerManager.getMaster();
         touchToContinue.text = "Master Player (" + window.game.global.playerManager.getNickname(masterId) + ") please tap on Touchscreen to continue";
         window.game.global.playerManager.sendMessageToPlayer(masterId,
@@ -85,6 +101,12 @@ export default class extends Phaser.State {
     }
   }
 
+  resize() {
+    console.log('resize')
+    // this.bg1.width = window.game.world.width;
+    // this.bg1.height = window.game.world.height;
+  }
+
   update() {
     //blinking effect on screen
     if (window.game.global.playerManager.getConnectedPlayerNum() >= 4) {
@@ -98,6 +120,14 @@ export default class extends Phaser.State {
 
     //particle visibility (fading in and out)
     this.glowingParticles.updateVisibility();
+
+    // let emitter = this.emitter
+    // emitter.forEachAlive(function(p){
+    //     console.log(p.alpha)
+    //     if(p.lifespan <= emitter.lifespan/ 2) {// fading out
+    //       p.alpha= 0.2*(p.lifespan / (emitter.lifespan/2));
+    //     }
+    // });
   }
 
   // start() {

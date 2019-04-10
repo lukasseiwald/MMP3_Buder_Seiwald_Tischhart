@@ -17,14 +17,21 @@ export default class extends Phaser.State {
     let that = this;
 
     //IMAGES
+
     this.bg1 = addImage(this, 0, 0, 'background1', this.world.width, this.world.height);
-    this.bg2 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
     //PARTICLES
 
-    this.glowingParticles = new Particle();
+    this.glowingParticles = new Particle("spark", 30, 5000, 100);
     this.glowingParticles.startEmitter();
 
+    this.steamParticles = new Particle("smoke", 150, 8000, 100);
+    this.steamParticles.startEmitter();    
+
+    this.bg2 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
+
+    this.lavaParticles = new Particle("lava", 0, 4000, 1);
+    this.lavaParticles.startEmitter();
 
     //TEXT ELEMENTS
 
@@ -111,5 +118,13 @@ export default class extends Phaser.State {
 
     //particle visibility (fading in and out)
     this.glowingParticles.updateVisibility();
+
+    // let emitter = this.emitter
+    // emitter.forEachAlive(function(p){
+    //     console.log(p.alpha)
+    //     if(p.lifespan <= emitter.lifespan/ 2) {// fading out
+    //       p.alpha= 0.2*(p.lifespan / (emitter.lifespan/2));
+    //     }
+    // });
   }
 }

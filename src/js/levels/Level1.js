@@ -98,13 +98,22 @@ export default class extends Phaser.State {
     this.game.physics.p2.updateBoundsCollisionGroup();
     this.game.physics.setBoundsToWorld();
 
-    //Background
-    addImage(this, 0, 0, 'background3', this.world.width, this.world.height);
-    addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
+    //IMAGES
+    this.bg3 = addImage(this, 0, 0, 'background3', this.world.width, this.world.height);
+    this.bg2 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
     //PARTICLES
-    this.glowingParticles = new Particle();
+
+    this.glowingParticles = new Particle("spark", 30, 5000, 100);
     this.glowingParticles.startEmitter();
+
+    this.steamParticles = new Particle("smoke", 150, 8000, 100);
+    this.steamParticles.startEmitter();    
+
+    this.bg2 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
+
+    this.lavaParticles = new Particle("lava", 0, 4000, 1);
+    this.lavaParticles.startEmitter();
 
     //Tiles
     this.tiles = this.game.add.group();

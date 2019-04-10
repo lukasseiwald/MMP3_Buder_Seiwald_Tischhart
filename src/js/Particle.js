@@ -1,5 +1,6 @@
 export default class Particle {
-	constructor(type, lifetime){
+	constructor(type, lifetime, amount){
+		this.amount = amount;
 		this.game = window.game;
 		this.lifetime = lifetime;
 		this.setParticle(type);
@@ -65,11 +66,57 @@ export default class Particle {
 		    // Start the emitter
 		    this.emitter.makeParticles('smoke');
 		    break;
+		    case 'lava':
+		    // let colors = ['0xf4b042', '0xf49d41', '0xf47f41', '0xf44f41'];
+		    function FireParticle(game, x, y) {
+		      Phaser.Particle.call(this, game, x, y, game.cache.getBitmapData('flame'));
+		    }
+
+		    FireParticle.prototype = Object.create(Phaser.Particle.prototype);
+		    FireParticle.prototype.constructor = FireParticle;
+		    // FireParticle.prototype.onEmit = function(){ 
+		    //       this.tint = colors[Math.floor(Math.random() * 4)];
+		    //     }
+
+		    let pSize = game.world.width / 30;
+		    let bmpd = game.add.bitmapData(pSize, pSize);
+		    // Create a radial gradient, yellow-ish on the inside, orange
+		    // on the outside. Use it to draw a circle that will be used
+		    // by the FireParticle class.
+		    let grd = bmpd.ctx.createRadialGradient(
+		      pSize / 2, pSize /2, 2,
+		      pSize / 2, pSize / 2, pSize * 0.5);
+		    grd.addColorStop(0, 'rgba(224, 181, 11, 0.7)');
+		    grd.addColorStop(1, 'rgba(224, 46, 11, 0.1)');
+		    bmpd.ctx.fillStyle = grd;
+		    
+		    bmpd.ctx.arc(pSize / 2, pSize / 2 , pSize / 2, 0, Math.PI * 2);
+		    bmpd.ctx.fill();
+		    
+		    game.cache.addBitmapData('flame', bmpd);
+		    
+		    // Generate 250 particles
+		    this.emitter = game.add.emitter(game.world.centerX, game.world.height-100, 300);
+		    this.emitter.width = game.world.width;
+		    this.emitter.particleClass = FireParticle;
+		    // Magic happens here, bleding the colors of each particle
+		    // generates the bright light effect
+		    this.emitter.blendMode = PIXI.blendModes.ADD;
+		    this.emitter.makeParticles();
+		    this.emitter.minParticleSpeed.set(-1, -4);
+		    this.emitter.maxParticleSpeed.set(1, 4);
+		    this.emitter.setRotation(0, 0);
+		    // Make the flames taller than they are wide to simulate the
+		    // effect of flame tongues
+		    this.emitter.setScale(1, 8, 1, 3, 12000, Phaser.Easing.Quintic.Out);
+		    this.emitter.setAlpha(0, 0.6, 2000, Phaser.Easing.Quadratic.InOut, true);
+		    this.emitter.gravity = -1;
+		    break;
 		}
 	}
 
 	startEmitter() {
-		this.emitter.start(false, this.lifetime, 100);
+		this.emitter.start(false, this.lifetime, this.amount);
 	}
 
 	updateVisibility() {

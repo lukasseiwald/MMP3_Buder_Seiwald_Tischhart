@@ -132,14 +132,14 @@ export default class Player {
     this.player.enableBody = true;
 
     //  Enable if for physics. This creates a default rectangular body.
-    window.game.physics.p2.enable(this.player, true);
+    window.game.physics.p2.enable(this.player);
     this.player.physicsBodyType = Phaser.Physics.P2JS;
 
     //  Modifying a few body properties
     this.player.body.setZeroDamping();
     this.player.body.fixedRotation = true;
-    // this.player.body.clearShapes();
-    // this.player.body.addPolygon({}, 321, 299, 302, 255, 317, 230, 348, 230, 363, 255, 348, 300);
+    this.player.body.clearShapes();
+    this.player.body.addPolygon({}, 321 * this.scale, 299 * this.scale, 302 * this.scale, 255 * this.scale, 317 * this.scale, 230 * this.scale, 348 * this.scale, 230 * this.scale, 363 * this.scale, 255 * this.scale, 348 * this.scale, 300 * this.scale);
 
     //make player face right direction
     if(this.spawnX > window.game.world.width/2) {

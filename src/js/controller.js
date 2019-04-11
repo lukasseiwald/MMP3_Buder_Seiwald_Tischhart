@@ -105,5 +105,11 @@ function setUpController(){
 }
 
 function setUpCharacterSelection() {
-  
+
+  airConsole.message(AirConsole.SCREEN,
+    {
+      screen: 'character_selection',
+      action: 'character_selected',
+      selectedCharacter: 'egyptian'
+    });
 }

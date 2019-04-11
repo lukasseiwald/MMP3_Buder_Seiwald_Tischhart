@@ -261,14 +261,16 @@ export default class Player {
 
   respawn() {
     let healthBar = window.game.global.healthBars[this.deviceId];
-    window.game.add.tween(healthBar).to( { width: 100 }, 200, Phaser.Easing.Linear.None, true);
+    window.game.add.tween(healthBar).to( { width: 6 * this.unit }, 200, Phaser.Easing.Linear.None, true);
     this.player.reset(this.spawnX, this.spawnY);
     this.player.obtainedSoul = null;
   }
 
   spawnDeadBodyWithSoul() {
     //Spawning dead body just to play its dying animation
-    this.deadBody = window.game.add.sprite(this.player.x - 35, this.player.y - 45, this.player.key);
+    this.deadBody = window.game.add.sprite(this.player.x, this.player.y, this.player.key);
+    this.deadBody.anchor.set(0.5, 0.5);
+    this.deadBody.scale.setTo(this.scale, this.scale);
     this.deadBody.animations.add('dying', ['Dying_000','Dying_001','Dying_002','Dying_003','Dying_004','Dying_005','Dying_006','Dying_007','Dying_008','Dying_009','Dying_010','Dying_011','Dying_012','Dying_013','Dying_014'], 17, false);
     this.deadBody.animations.play('dying');
     window.game.time.events.add(Phaser.Timer.SECOND * 6, this.deleteDeadBody, this);

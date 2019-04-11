@@ -12,16 +12,20 @@ export default class extends Phaser.State {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     let gameWidth = this.world.width;
+    let gameHeight = this.world.height;
     let ratio = this.width/this.height;
     // 1.8064 is the ratio with that the map was created
     if(ratio > 1.8064) {
       this.scale.setGameSize(this.height * 1.8064, this.height);
+      window.game.global.scale = this.world.height/gameHeight;
     }
     else {
       this.scale.setGameSize(this.width, this.width/1.8064);
+      window.game.global.scale = this.world.width/gameWidth;
     }
     //compute scale!
-    window.game.global.scale = this.world.width/gameWidth;
+    console.log(this.world.height/gameHeight)
+    console.log(this.world.width/gameWidth)
   }
 
   preload() {
@@ -39,8 +43,11 @@ export default class extends Phaser.State {
       },
     };
 
-    map.tsize = this.width/map.cols;
+    map.tsize = window.game.world.width/map.cols;
     window.game.global.unit = map.tsize;
+
+
+
     let unit = window.game.global.unit;
     let scale = window.game.global.scale;
 
@@ -132,13 +139,13 @@ export default class extends Phaser.State {
     this.glowingParticles = new Particle("spark", 30, 5000, 100);
     this.glowingParticles.startEmitter();
 
-    // this.steamParticles = new Particle("smoke", 150, 8000, 100);
-    // this.steamParticles.startEmitter();
+    this.steamParticles = new Particle("smoke", 150, 8000, 100);
+    this.steamParticles.startEmitter();
 
     this.bg2 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
-    // this.lavaParticles = new Particle("lava", 0, 4000, 1);
-    // this.lavaParticles.startEmitter();
+    this.lavaParticles = new Particle("lava", 0, 4000, 1);
+    this.lavaParticles.startEmitter();
 
     //Tiles
     this.tiles = this.game.add.group();

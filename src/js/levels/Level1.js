@@ -217,6 +217,12 @@ export default class extends Phaser.State {
             case 'shoot':
               character.shoot();
               break;
+            case 'dashRight':
+              character.dash('right');
+              break;
+            case 'dashRight':
+              character.dash('left');
+              break;
             default:
               character.movingTo = null;
               character.idle()

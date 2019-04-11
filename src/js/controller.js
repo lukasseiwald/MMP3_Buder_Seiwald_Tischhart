@@ -80,15 +80,40 @@ function createStick() {
   };
 
   let draggable = nipplejs.create(options);
+  let canDash = false;
 
   draggable.on('move', function(evt, data) {
-    console.log(data)
-    if(data.distance > 40) {
-      sendToScreen(data.direction.x);
+    // console.log(data)
+    if(!canDash) {
+      if(data.distance > 40) {
+        sendToScreen(data.direction.x);
+      }
+      else {
+        sendToScreen('idle');
+      }
     }
-    else {
-      sendToScreen('idle');
+  })
+
+  let touchBorderCnt = 0;
+  let previousDistance = undefined;
+
+  draggable.on('move', function(evt, data) {
+    console.log(touchBorderCnt)
+    if(data.distance > 90 && previousDistance < 80) {
+      touchBorderCnt++;
     }
+    if(touchBorderCnt == 2) {
+      canDash = true;
+      if(data.direction.x == 'right'){
+        sendToScreen('dashRight');
+      }
+      else {
+        sendToScreen('dashLeft')
+      }
+      canDash = false;
+      touchBorderCnt = 0;
+    }
+    previousDistance = data.distance;
   })
 
   draggable.on('end', function(evt, data) {

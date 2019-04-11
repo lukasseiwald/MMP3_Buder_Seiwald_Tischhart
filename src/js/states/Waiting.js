@@ -90,7 +90,7 @@ export default class extends Phaser.State {
               screen: 'waiting',
               action: 'change_to_controller'
             })
-          that.state.start('Level1')
+          that.state.start('CharacterSelection')
           break;
       }
     }

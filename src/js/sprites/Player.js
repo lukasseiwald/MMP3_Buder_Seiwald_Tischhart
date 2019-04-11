@@ -135,7 +135,7 @@ export default class Player {
     this.player.body.setZeroDamping();
     this.player.body.fixedRotation = true;
     this.player.body.clearShapes();
-    this.player.body.addPolygon({}, 321, 299, 302, 255, 317, 230, 348, 230, 352, 275, 348, 300);
+    this.player.body.addPolygon({}, 321, 299, 302, 255, 317, 230, 348, 230, 363, 255, 348, 300);
 
     //make player face right direction
     if(this.spawnX > window.game.world.width/2) {

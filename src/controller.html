@@ -187,6 +187,13 @@
           transform: rotate(180deg);
         }
 
+        .selection__wrapper {
+          z-index: 2;
+          display:flex;
+          justify-content: center;
+          align-items: center;
+        }
+
     </style>
 </head>
 
@@ -202,6 +209,18 @@
 
       <image class="waiting__background" src="./assets/images/background/BG-1.png"/>
 
+    </div>
+
+    <!-- CHARACTER SELECTION STATE -->
+    <image class="waiting__background" src="./assets/images/background/BG-1.png"/>
+    <div id="state--character_selection" class="state character_selection">
+      <p class="selection__headline">CHOOSE YOUR CHARACTER</p>
+      <div class="selection__wrapper">
+        <img src="./assets/images/controller/arrow_left.gif" class="button__select_left">
+        <div class="selection__character__preview"></div>
+        <img src="./assets/images/controller/arrow_left.gif" class="button__select_right">
+      </div>
+      <span class="button__select button"></span>
     </div>
 
     <!-- CONTROLLER STATE -->

@@ -6,6 +6,7 @@ let airConsole = new AirConsole({"orientation": "landscape"});
 let csm = new CSM('stage');
 
 csm.setState('waiting', 'state--waiting');
+csm.setState('characterSelection', 'state--character_selection')
 csm.setState('game', 'state--game');
 csm.setState('winning', 'state--winning');
 csm.setState('loosing', 'state--loosing');
@@ -25,7 +26,7 @@ function handleWaiting(data){
         airConsole.message(AirConsole.SCREEN,
           {
             screen: 'waiting',
-            action: 'start_game'
+            action: 'start_character_selection'
           });
       })
       break;
@@ -33,6 +34,9 @@ function handleWaiting(data){
       csm.startState('game');
       setUpController();
       break;
+    case 'characterSelection':
+      csm.startState('characterSelection');
+      setUpCharacterSelection();
   }
 }
 
@@ -98,4 +102,8 @@ function setUpController(){
       });
     }
   }
+}
+
+function setUpCharacterSelection() {
+  
 }

@@ -139,13 +139,13 @@ export default class extends Phaser.State {
     this.glowingParticles = new Particle("spark", 30, 5000, 100);
     this.glowingParticles.startEmitter();
 
-    this.steamParticles = new Particle("smoke", 150, 8000, 100);
-    this.steamParticles.startEmitter();
+    // this.steamParticles = new Particle("smoke", 150, 8000, 100);
+    // this.steamParticles.startEmitter();
 
     this.bg2 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
-    this.lavaParticles = new Particle("lava", 0, 4000, 1);
-    this.lavaParticles.startEmitter();
+    // this.lavaParticles = new Particle("lava", 0, 4000, 1);
+    // this.lavaParticles.startEmitter();
 
     //Tiles
     this.tiles = this.game.add.group();

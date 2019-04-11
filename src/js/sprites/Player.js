@@ -352,7 +352,7 @@ export default class Player {
       case 'health_item':
         player.sprite.health = 1;
         let healthBar = window.game.global.healthBars[player.sprite.deviceId];
-        window.game.add.tween(healthBar).to( { width: 100 }, 200, Phaser.Easing.Linear.None, true);
+        window.game.add.tween(healthBar).to( { width: 6 * this.unit }, 200, Phaser.Easing.Linear.None, true);
         break;
       default:
         this.player.activeItem = collectedItem

@@ -12,6 +12,7 @@ csm.setState('winning', 'state--winning');
 csm.setState('loosing', 'state--loosing');
 
 csm.startState('characterSelection');
+setUpCharacterSelection();
 
 airConsole.onReady = function() {
   let name = document.getElementsByClassName('waiting__name')[0];
@@ -105,11 +106,37 @@ function setUpController(){
 }
 
 function setUpCharacterSelection() {
+  let index = 0;
+  let characters = document.getElementsByClassName('character');
 
-  airConsole.message(AirConsole.SCREEN,
+  characters[0].classList.remove('character--invisible');
+  characters[0].id = 'character--selected';
+
+  document.getElementById('button__select_left').addEventListener('click', ()=> {
+    //prev
+    characters[index].id = '';
+    characters[index].classList.add('character--invisible');
+    index = index == 0 ? characters.length - 1 : index - 1;
+    characters[index].classList.remove('character--invisible');
+    characters[index].id = 'character--selected';
+  });
+  document.getElementById('button__select_right').addEventListener('click', ()=> {
+    //next
+    characters[index].classList.add('character--invisible');
+    characters[index].id = '';
+    index = index == characters.length - 1 ? 0 : index + 1;
+    characters[index].classList.remove('character--invisible');
+    characters[index].id = 'character--selected';
+  });
+
+  document.getElementById('button__select').addEventListener('click', (e)=> {
+    console.log(document.getElementById('character--selected').dataset.character);
+    airConsole.message(AirConsole.SCREEN,
     {
       screen: 'character_selection',
       action: 'character_selected',
-      selectedCharacter: 'egyptian'
+      selectedCharacter: document.getElementById('character--selected').dataset.character
     });
+    e.currentTarget.remove();
+  });
 }

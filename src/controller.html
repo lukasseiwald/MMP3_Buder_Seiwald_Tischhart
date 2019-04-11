@@ -16,7 +16,7 @@
             width: 100vw;
         }
         * {
-          font-family: 'Bungee', sans-serif;
+          font-family: 'Bungee', sans-serif !important;
           margin: 0;
         	padding: 0;
         	border: 0;
@@ -26,23 +26,75 @@
           box-sizing: border-box;
         }
 
+        /* All State Background */
         .state {
           position: relative;
           width: 100vw;
           height: 100vh;
-          background: #000;
           overflow: hidden;
+          background-image: url('./assets/images/background/BG-1.png');
+          background-size: cover;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          flex-direction: column;
         }
 
+        /* Game State Controller */
         .controller {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          background: lightgrey;
           display: flex;
           align-items: flex-end;
+          flex-direction: row;
         }
 
+        .controller__buttons__direction,
+        .controller__buttons__interaction {
+          flex: 1;
+          display: flex;
+          flex-direction: row;
+        }
+
+        /* Character Selection State*/
+        .selection__wrapper {
+          z-index: 2;
+          display:flex;
+          justify-content: space-around;
+          align-items: center;
+        }
+
+        .selection__wrapper button {
+          font-family: 'Bungee', cursive;
+
+        }
+
+        .selection__headline {
+          text-align: center;
+        }
+
+        .selection__character_preview img {
+          height: 30vh;
+          margin: 5vw;
+        }
+
+        /* Winning/ Losing State*/
+        .loosing,
+        .winning {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .winning__text,
+        .loosing__text {
+          z-index: 4;
+          position: relative;
+          font-family: 'Bungee', cursive;
+          font-size: 45px;
+        }
+
+        /* Game State */
+
+        /* Game State Controller Buttons*/
         .button {
           z-index: 2;
           position: relative;
@@ -110,6 +162,19 @@
           background-size: 100% 100%;
         }
 
+        .button__triangle {
+          width: 0;
+          height: 0;
+          border-top: 30px solid transparent;
+          border-bottom: 30px solid transparent;
+          border-right: 40px solid #97602b;
+          z-index: 3;
+        }
+
+        .button__triangle--right {
+          transform: rotate(180deg);
+        }
+
         .movement {
           background-color: darkgrey;
           width: 120px;
@@ -133,65 +198,9 @@
           transform: translateY(-50%);
         }
 
-        .waiting__name {
+        .character--invisible {
           position: absolute;
-          text-align: center;
-          left: 0;
-          right: 0;
-          object-fit: cover;
-          top: 50%;
-          transform: translateY(-50%);
-          z-index: 2;
-          font-family: 'Bungee', cursive;
-        }
-
-        .controller__background,
-        .winning__background,
-        .loosing__background,
-        .waiting__background  {
-          z-index: 1;
-          position: absolute;
-          left: 0;
-          right: 0;
-          top: 0;
-          bottom: 0;
-          min-width: 100%;
-          min-height: 100%;
-        }
-
-        .loosing,
-        .winning {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .winning__text,
-        .loosing__text {
-          z-index: 4;
-          position: relative;
-          font-family: 'Bungee', cursive;
-          font-size: 45px;
-        }
-
-        .button__triangle {
-          width: 0;
-          height: 0;
-          border-top: 30px solid transparent;
-          border-bottom: 30px solid transparent;
-          border-right: 40px solid #97602b;
-          z-index: 3;
-        }
-
-        .button__triangle--right {
-          transform: rotate(180deg);
-        }
-
-        .selection__wrapper {
-          z-index: 2;
-          display:flex;
-          justify-content: center;
-          align-items: center;
+          opacity: 0;
         }
 
     </style>
@@ -201,26 +210,25 @@
   <div id="stage">
 
     <!-- WAITING STATE -->
-
     <div id="state--waiting" class="state waiting">
-
       <p class="waiting__name">
       </p>
-
-      <image class="waiting__background" src="./assets/images/background/BG-1.png"/>
-
     </div>
 
     <!-- CHARACTER SELECTION STATE -->
-    <image class="waiting__background" src="./assets/images/background/BG-1.png"/>
     <div id="state--character_selection" class="state character_selection">
       <p class="selection__headline">CHOOSE YOUR CHARACTER</p>
       <div class="selection__wrapper">
-        <img src="./assets/images/controller/arrow_left.gif" class="button__select_left">
-        <div class="selection__character__preview"></div>
-        <img src="./assets/images/controller/arrow_left.gif" class="button__select_right">
+        <img src="./assets/images/controller/arrow_left.gif" id="button__select_left">
+        <div class="selection__character_preview">
+          <img class="character character--invisible" src="./assets/images/controller/egyptian.png" data-character="egyptian">
+          <img class="character character--invisible" src="./assets/images/controller/kickapoo.png" data-character="kickapoo">
+          <img class="character character--invisible" src="./assets/images/controller/knight.png" data-character="knight">
+          <img class="character character--invisible" src="./assets/images/controller/lucifer.png" data-character="lucifer">
+        </div>
+        <img src="./assets/images/controller/arrow_right.gif" id="button__select_right">
       </div>
-      <span class="button__select button"></span>
+      <button class="button__select button" id="button__select">SELECT</button>
     </div>
 
     <!-- CONTROLLER STATE -->
@@ -230,32 +238,30 @@
         <div class="movement__stick">
         </div>
       </div> -->
-      <div class="controller__button button button--left" data-direction="left">
-        <span class="button__triangle"> </span>
+      <div class="controller__buttons__direction">
+        <div class="controller__button button button--left" data-direction="left">
+          <span class="button__triangle"></span>
+        </div>
+        <div class="controller__button button button--right" data-direction="right">
+          <span class="button__triangle button__triangle--right"></span>
+        </div>
       </div>
-      <div class="controller__button button button--right" data-direction="right">
-        <span class="button__triangle button__triangle--right"> </span>
+      <div class="controller__buttons__interaction">
+        <div class="controller__button button button--jump" data-direction="jump">
+          JUMP
+        </div>
+        <div class="controller__button button button--shoot" data-direction="shoot">
+          SHOOT
+        </div>
       </div>
-      <div class="controller__button button button--jump" data-direction="jump">
-        JUMP
-      </div>
-      <div class="controller__button button button--shoot" data-direction="shoot">
-        SHOOT
-      </div>
-
-      <image class="controller__background" src="./assets/images/background/BG-1.png"/>
-
     </div>
 
     <!-- WINNING STATE -->
 
     <div id="state--winning" class="state winning">
-
       <p class="winning__text">
         YOU WIN!
       </p>
-      <image class="winning__background" src="./assets/images/background/BG-1.png"/>
-
     </div>
 
     <!-- LOOSING STATE -->
@@ -264,7 +270,6 @@
       <p class="loosing__text">
         YOU LOOSE!
       </p>
-      <image class="loosing__background" src="./assets/images/background/BG-1.png"/>
     </div>
 
 

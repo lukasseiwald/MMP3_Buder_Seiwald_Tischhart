@@ -3,7 +3,6 @@ import Phaser from 'phaser'
 import Base from '../sprites/Base'
 import Player from '../sprites/Player'
 import Item from '../sprites/Item'
-import {playerConfig} from '../configs/playerConfig'
 import { addImage } from '../utils'
 import lang from '../lang'
 import Particle from '../Particle';
@@ -12,6 +11,7 @@ export default class extends Phaser.State {
   init() {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
+    let gameWidth = this.world.width;
     let ratio = this.width/this.height;
     // 1.8064 is the ratio with that the map was created
     if(ratio > 1.8064) {
@@ -20,6 +20,8 @@ export default class extends Phaser.State {
     else {
       this.scale.setGameSize(this.width, this.width/1.8064);
     }
+    //compute scale!
+    window.game.global.scale = this.world.width/gameWidth;
   }
 
   preload() {
@@ -27,8 +29,6 @@ export default class extends Phaser.State {
   }
 
   create() {
-    this.game.camera.roundPixels = true;
-
     const map = {
       cols: 56, //1848
       rows: 31, //1023
@@ -38,36 +38,53 @@ export default class extends Phaser.State {
         return this.tiles[row * map.cols + col]
       }
     };
+
     map.tsize = this.width/map.cols;
+    window.game.global.unit = map.tsize;
+
+    this.game.camera.roundPixels = true;
+
+
+    let unit = window.game.global.unit;
+    let scale = window.game.global.scale;
+
 
     const characterSettings = [
       {
         skin:'egyptian',
-        x: map.tsize * 5,
-        y: map.tsize * 26,
-        baseX: 3 * map.tsize,
-        baseY: this.world.height - 3.5 * map.tsize
+        x: unit * 5,
+        y: unit * 26,
+        baseX: 3 * unit,
+        baseY: this.world.height - 3.5 * unit,
+        healthbarX: .5 * unit,
+        healthbarY: this.world.height - 6.5 * unit
       },
       {
         skin: 'knight',
         x: this.world.width - 90,
-        y: map.tsize * 26,
-        baseX: this.world.width - 3 * map.tsize,
-        baseY: this.world.height - 3.5 * map.tsize
+        y: unit * 26,
+        baseX: this.world.width - 3 * unit,
+        baseY: this.world.height - 3.5 * unit,
+        healthbarX: this.world.width - unit * 6.5, // - healthbar.width - .5 (half tile on edge)
+        healthbarY: this.world.height - 6.5 * unit
       },
       {
         skin: 'lucifer',
-        x: map.tsize * 3,
-        y: map.tsize * 10,
-        baseX: 3 * map.tsize,
-        baseY: map.tsize * 9.5
+        x: 3 * unit,
+        y: 10 * unit,
+        baseX: 3 * unit,
+        baseY: 9.5 * unit,
+        healthbarX:  .5 * unit,
+        healthbarY: 6.6 * unit
       },
       {
         skin: 'kickapoo',
         x: this.world.width - 90,
-        y: map.tsize * 10,
-        baseX: this.world.width - 3 * map.tsize,
-        baseY: map.tsize * 9.5
+        y: unit * 10,
+        baseX: this.world.width - 3 * unit,
+        baseY: unit * 9.5,
+        healthbarX: this.world.width - unit * 6.5,
+        healthbarY: 6.5 * unit
       }
     ]
 
@@ -119,53 +136,38 @@ export default class extends Phaser.State {
     this.game.time.events.repeat(Phaser.Timer.SECOND * 18, 100, this.createItems, this);
 
     //HealthBar
-    let bmd = this.game.add.bitmapData(100, 20);
+    let bmd = this.game.add.bitmapData(unit * 6, unit * .5);
     bmd.ctx.beginPath();
-    bmd.ctx.rect(0, 0, 100, 20);
-    bmd.ctx.fillStyle = '#850015';
+    bmd.ctx.rect(0, 0, unit * 6, unit * .5);
+    bmd.ctx.fillStyle = '#c92e08';
     bmd.ctx.fill();
 
     let widthLife = new Phaser.Rectangle(0, 0, bmd.width, bmd.height);
 
 
     if(window.game.global.dev) {
-      //Bases
-      this.baseEgyptian = new Base(map.tsize, characterSettings[0].baseX, characterSettings[0].baseY, characterSettings[0].skin + '_base');
-      this.baseKnight = new Base(map.tsize, characterSettings[1].baseX, characterSettings[1].baseY, characterSettings[1].skin + '_base');
-      this.baseLucifer = new Base(map.tsize, characterSettings[2].baseX, characterSettings[2].baseY, characterSettings[2].skin + '_base');
-      this.baseKickapoo = new Base(map.tsize, characterSettings[3].baseX, characterSettings[3].baseY, characterSettings[3].skin + '_base');
 
-      // Player 1
-      this.player1 = new Player(1, characterSettings[0].x, characterSettings[0].y, characterSettings[0].skin);
-      let p1HealthBar = this.game.add.sprite(characterSettings[0].x - 50, characterSettings[0].y - 100, bmd);
-      p1HealthBar.cropEnabled = true;
-      p1HealthBar.crop(widthLife);
-      this.game.global.healthBars[1] = p1HealthBar;
-      this.player1.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      let playersDev = new Array();
 
-      // Player 2
-      this.player2 = new Player(2, characterSettings[1].x, characterSettings[1].y, characterSettings[1].skin);
-      let p2HealthBar = this.game.add.sprite(characterSettings[1].x - 50, characterSettings[1].y - 100, bmd);
-      p2HealthBar.cropEnabled = true;
-      p2HealthBar.crop(widthLife);
-      this.game.global.healthBars[2] = p2HealthBar;
-      this.player2.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      for (let index = 0; index < 4; index++) {
+        let character = new Player(index, characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin);
+        let base = new Base(unit,characterSettings[index].baseX, characterSettings[index].baseY, characterSettings[index].skin + '_base', character);
+        character.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+        playersDev[index] = character;
+      }
 
-      //Player 3
-      this.player3 = new Player(3, 75, 313, 'lucifer');
-      let p3HealthBar = this.game.add.sprite(characterSettings[2].x - 50, characterSettings[2].y - 100, bmd);
-      p3HealthBar.cropEnabled = true;
-      p3HealthBar.crop(widthLife);
-      this.game.global.healthBars[3] = p3HealthBar;
-      this.player3.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      this.createMap(map);
 
-      //Player 4
-      this.player4 = new Player(4, this.world.width - 90, 313, 'kickapoo');
-      let p4HealthBar = this.game.add.sprite(characterSettings[3].x - 50, characterSettings[3].y - 100, bmd);
-      p4HealthBar.cropEnabled = true;
-      p4HealthBar.crop(widthLife);
-      this.game.global.healthBars[4] = p4HealthBar;
-      this.player4.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      for (let index = 0; index < 4; index++) {
+        let healthBar = this.game.add.sprite(characterSettings[index].healthbarX, characterSettings[index].healthbarY, bmd);
+        healthBar.cropEnabled = true;
+        healthBar.crop(widthLife);
+        this.game.global.healthBars[index] = healthBar;
+      }
+
+
+      this.player1 = playersDev[0];
+      this.player2 = playersDev[1];
 
       this.cursors = this.game.input.keyboard.createCursorKeys();
 
@@ -178,21 +180,24 @@ export default class extends Phaser.State {
     }
     else {
       let index = 0;
-
       for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
         let character = new Player(deviceId, characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin);
-        let base = new Base(map.tsize,characterSettings[index].baseX, characterSettings[index].baseY, characterSettings[index].skin + '_base', character);
-        let healthBar = this.game.add.sprite(characterSettings[index].baseX - 50, characterSettings[index].baseY - 100, bmd);
-        healthBar.cropEnabled = true;
-        healthBar.crop(widthLife);
-        this.game.global.healthBars[deviceId] = healthBar;
+        let base = new Base(unit,characterSettings[index].baseX, characterSettings[index].baseY, characterSettings[index].skin + '_base', character);
         character.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
         window.game.global.playerManager.setCharacter(deviceId, character);
         index += 1;
       }
-    }
-    this.createMap(map);
 
+      this.createMap(map);
+
+      for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
+        let healthBar = this.game.add.sprite(characterSettings[index].baseX - 50, characterSettings[index].baseY - 100, bmd);
+        healthBar.cropEnabled = true;
+        healthBar.crop(widthLife);
+        this.game.global.healthBars[deviceId] = healthBar;
+        index += 1;
+      }
+    }
   }
 
   update() {
@@ -288,14 +293,15 @@ export default class extends Phaser.State {
   }
 
   createMap(map) {
+    let unit = window.game.global.unit;
+    let scale = window.game.global.scale;
     for (let c = 0; c < map.cols; c++) {
       for (let r = 0; r < map.rows; r++) {
         let tile = map.getTile(c, r);
 
         if (tile !== 0) { // 0 => empty tile
-          let collisionTile = this.game.add.sprite(c * map.tsize + .5 * map.tsize, r * map.tsize + .5 * map.tsize, 'tiles', tile -1);
-          collisionTile.width = map.tsize;
-          collisionTile.height = map.tsize;
+          let collisionTile = this.game.add.sprite(c * unit + .5*unit, r * unit + .5*unit, 'tiles', tile -1);
+          collisionTile.scale.setTo(scale, scale);
           this.game.physics.p2.enable(collisionTile); // enable(collisionTile, true);  too see box
           collisionTile.body.static = true;
 
@@ -324,7 +330,7 @@ export default class extends Phaser.State {
               collisionTile.body.addPolygon({}, 22, 33  ,  4, 33  ,  4, 4  ,  31, 4  );
               break;
             case 8: //Wand nach Rechts schauend
-              collisionTile.body.addPolygon({}, 0, 33  ,  0, 0  ,  20, 0  ,  20, 33   );
+              collisionTile.body.addPolygon({}, 5, 20  ,  5, 5  ,  20, 5  ,  20, 20   );
               break;
             case 9: //Wand nach Links schauend
               collisionTile.body.addPolygon({},  0, 33  ,  0, 0  ,  20, 0  ,  20, 33  );

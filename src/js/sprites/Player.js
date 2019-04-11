@@ -242,10 +242,10 @@ export default class Player {
       this.player.activeItem = '';
     }
     //Style of Respawn Counter
-    let style = { font: "65px Bungee", fill: "#FFFFFF", align: "center" };
+    let style = { font: 3 * this.unit+ 'px Bungee', fill: "#FFFFFF", align: "center" };
 
     let counter = 5;
-    let text = window.game.add.text(this.spawnX , this.spawnY, '', style);
+    let text = window.game.add.text(this.spawnX, this.spawnY - .25 * this.unit, '', style);
     let respawnTimer = setInterval(() => {
       text.setText(counter);
       if(counter < 1) {

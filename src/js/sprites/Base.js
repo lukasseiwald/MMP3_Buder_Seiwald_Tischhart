@@ -5,7 +5,6 @@ import { addImage } from '../utils'
 export default class Base {
 
   constructor (tsize, x, y, asset, character) {
-    console.log(tsize)
     this.character = character;
     this.base = game.add.sprite(x, y, asset);
     this.base.enableBody = true;

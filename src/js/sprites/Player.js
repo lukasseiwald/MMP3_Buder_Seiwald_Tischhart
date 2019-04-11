@@ -172,7 +172,9 @@ export default class Player {
     this.bullets.setAll('outOfBoundsKill', true);
     this.bullets.setAll('checkWorldBounds', true);
 
+
     this.bullets.forEach((bullet)=>{
+      bullet.scale.set(this.scale, this.scale);
       bullet.body.setCollisionGroup(bulletCollisionGroup);
       bullet.body.collides([playerCollisionGroup, tilesCollisionGroup, bulletCollisionGroup]);
       bullet.body.onBeginContact.add(this.hit, bullet);

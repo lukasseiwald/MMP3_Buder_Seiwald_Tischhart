@@ -2,22 +2,40 @@ import Phaser from 'phaser'
 
 export default class Item {
     constructor () {
+      let unit = window.game.global.unit;
+      let scale = window.game.global.scale;
       //random Item
-      let itemTypes = ['health_item', 'jump_item', 'speed_item', 'shield_item'];
+      let itemTypes = ['shield_item'];
       let randomItem = itemTypes[Math.floor(Math.random()*itemTypes.length)];
 
       if(window.game.global.itemPositions.length == 0) { //wenn schon alle Positionen verwendet wurden
-        window.game.global.itemPositions = [{x: 400, y: 500}, {x: 530, y: 200}, {x: 200, y: 150}, {x: 600, y: 850}, {x: 700, y: 450}, {x: window.game.world.width - 430, y: 500}, {x: window.game.world.width - 560, y: 200}, {x: window.game.world.width - 230, y: 150}, {x: window.game.world.width - 630, y: 850}, {x: window.game.world.width - 730, y: 450}, {x: window.game.world.width / 2, y: 100}, {x: window.game.world.width / 2, y: 640}, {x: window.game.world.width / 2, y: 310}];
+        window.game.global.itemPositions =  [
+          {x: 10.5 * unit, y: 16 * unit},
+          {x: 13.5 * unit, y: 7 * unit},
+          {x: 3 * unit, y: 4 * unit},
+          {x: 18 * unit, y: 13 * unit},
+          {x: 19 * unit, y: 28 * unit},
+          {x: window.game.world.width - 10.5 * unit, y: 16 * unit},
+          {x: window.game.world.width - 13.5 * unit, y: 7 * unit},
+          {x: window.game.world.width - 3 * unit, y: 4 * unit},
+          {x: window.game.world.width - 18 * unit, y: 13 * unit},
+          {x: window.game.world.width - 19 * unit, y: 28 * unit},
+          {x: window.game.world.width/2, y: 3 * unit},
+          {x: window.game.world.width/2, y: 9 * unit},
+          {x: window.game.world.width/2, y: 21 * unit}
+        ];
       }
       let randomItemPosition = window.game.global.itemPositions.pop();
-      
+
       this.item = game.add.sprite(randomItemPosition.x, randomItemPosition.y, randomItem);
+      this.item.scale.setTo(scale, scale);
+
       this.item.enableBody = true;
-  
+
       window.game.physics.p2.enable(this.item);
       this.item.body.setCircle(20);
       this.item.physicsBodyType = Phaser.Physics.P2JS;
-  
+
       this.item.body.static = true;
       this.item.body.immovable = true;
       this.item.body.moves = false;
@@ -38,5 +56,9 @@ export default class Item {
 
     collectItem(item, player) {
       item.sprite.kill();
+    }
+
+    createItems() {
+      this.powerItem = new Item();
     }
 }

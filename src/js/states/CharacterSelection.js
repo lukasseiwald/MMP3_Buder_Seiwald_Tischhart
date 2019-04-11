@@ -11,7 +11,7 @@ export default class extends Phaser.State {
   }
 
   create () {
-    
+
     if(window.game.global.charactersSelected) {
       this.state.start('Level1')
     }

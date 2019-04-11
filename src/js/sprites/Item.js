@@ -3,7 +3,7 @@ import Phaser from 'phaser'
 export default class Item {
     constructor () {
       //random Item
-      let itemTypes = ['health_item', 'jump_item', 'speed_item'];
+      let itemTypes = ['health_item', 'jump_item', 'speed_item', 'shield_item'];
       let randomItem = itemTypes[Math.floor(Math.random()*itemTypes.length)];
 
       if(window.game.global.itemPositions.length == 0) { //wenn schon alle Positionen verwendet wurden
@@ -38,9 +38,5 @@ export default class Item {
 
     collectItem(item, player) {
       item.sprite.kill();
-    }
-
-    createItems() {
-      this.powerItem = new Item();
     }
 }

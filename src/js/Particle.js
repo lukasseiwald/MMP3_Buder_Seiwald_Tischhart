@@ -17,7 +17,7 @@ export default class Particle {
 		    let colors = ['0xf4b042', '0xf49d41', '0xf47f41', '0xf44f41'];
 		    this.sparkParticle.prototype = Object.create(Phaser.Particle.prototype);
 		    this.sparkParticle.prototype.constructor = this.sparkParticle;
-		    this.sparkParticle.prototype.onEmit = function(){ 
+		    this.sparkParticle.prototype.onEmit = function(){
 		      this.alpha = 0;
 		      this.tint = colors[Math.floor(Math.random() * 4)];
 		    }
@@ -34,14 +34,14 @@ export default class Particle {
 
 		    this.game.cache.addBitmapData('particleShade', bmd);
 
-			this.emitter = this.game.add.emitter(game.world.centerX, this.game.world.height-this.offset, 200);
+				this.emitter = this.game.add.emitter(game.world.centerX, this.game.world.height-this.offset, 200);
 		    this.emitter.width = game.world.width;
 
 		    // settings
 		    this.emitter.particleClass = this.sparkParticle;
 		    this.emitter.minParticleSpeed.set(0, 0);
 		    this.emitter.maxParticleSpeed.set(0, 0);
-		    this.emitter.setRotation(0, 0);  
+		    this.emitter.setRotation(0, 0);
 		    this.emitter.minParticleScale = 0.1;
 		    this.emitter.maxParticleScale = 0.6;
 		    this.emitter.gravity = -50;
@@ -53,7 +53,7 @@ export default class Particle {
 		    // Create a particle emitter along the bottom of the stage
 		    this.emitter = game.add.emitter(game.world.centerX, game.world.height-this.offset, 50);
 		    this.emitter.width = game.width-50;
-		    
+
 		    // settings
 		    this.emitter.minParticleScale = 0.1;
 		    this.emitter.maxParticleScale = 0.9;
@@ -63,7 +63,7 @@ export default class Particle {
 		    this.emitter.setXSpeed(10, 20);
 		    this.emitter.gravity = -10;
 		    this.emitter.setAlpha(0, 0.2, this.lifetime/2, Phaser.Easing.Quadratic.InOut, true);
-		    
+
 		    // Start the emitter
 		    this.emitter.makeParticles('smoke');
 		    break;
@@ -75,7 +75,7 @@ export default class Particle {
 
 		    FireParticle.prototype = Object.create(Phaser.Particle.prototype);
 		    FireParticle.prototype.constructor = FireParticle;
-		    // FireParticle.prototype.onEmit = function(){ 
+		    // FireParticle.prototype.onEmit = function(){
 		    //       this.tint = colors[Math.floor(Math.random() * 4)];
 		    //     }
 
@@ -90,12 +90,12 @@ export default class Particle {
 		    grd.addColorStop(0, 'rgba(193, 170, 30, 0.6)');
   			grd.addColorStop(1, 'rgba(255, 100, 30, 0.1)');
 		    bmpd.ctx.fillStyle = grd;
-		    
+
 		    bmpd.ctx.arc(pSize / 2, pSize / 2 , pSize / 2, 0, Math.PI * 2);
 		    bmpd.ctx.fill();
-		    
+
 		    game.cache.addBitmapData('flame', bmpd);
-		    
+
 		    // Generate 250 particles
 		    this.emitter = game.add.emitter(game.world.centerX, game.world.height-this.offset, 300);
 		    this.emitter.width = game.world.width;

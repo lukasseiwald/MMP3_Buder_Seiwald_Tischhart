@@ -38,62 +38,63 @@ export default class extends Phaser.State {
     //TEXT ELEMENTS
 
     this.headline = this.add.text(this.world.centerX, this.world.height * .3, 'Select Your Fighter', headlineStyling)
-    this.headline.anchor.setTo(0.5, 0.5)
+    this.headline.anchor.setTo(0.5, 0.5);
 
-    //CHAARACTER PLATEAU's
+    this.players = [];
+    this.player = {
+      id: null,
+      name: '',
+      character: ''
+    }
+
+    //Character Plateau's
     this.plateau1 = addImage(this, this.world.width * (1.5/10), this.world.height * .72, 'characterPlateau', 128 * 1.5, 64);
     this.plateau2 = addImage(this, this.world.width * (3.5/10), this.world.height * .72, 'characterPlateau', 128 * 1.5, 64);
     this.plateau3 = addImage(this, this.world.width * (5.5/10), this.world.height * .72, 'characterPlateau', 128 * 1.5, 64);
     this.plateau4 = addImage(this, this.world.width * (7.5/10), this.world.height * .72, 'characterPlateau', 128 * 1.5, 64);
 
+    //Character Silhouettes
     this.sil1 = addImage(this, this.world.width * (1.1/10), this.world.height / 2.4, 'characterSilhouette', 300, 300);
     this.sil2 = addImage(this, this.world.width * (3.1/10), this.world.height / 2.4, 'characterSilhouette', 300, 300);
     this.sil3 = addImage(this, this.world.width * (5.1/10), this.world.height / 2.4, 'characterSilhouette', 300, 300);
     this.sil4 = addImage(this, this.world.width * (7.1/10), this.world.height / 2.4, 'characterSilhouette', 300, 300);
 
-    // index += 1;
-    
-    // for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
-    //     let character = new Player(deviceId, characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin);
-    //     let base = new Base(map.tsize,characterSettings[index].baseX, characterSettings[index].baseY, characterSettings[index].skin + '_base', character);
-    //     let healthBar = this.game.add.sprite(characterSettings[index].baseX - 50, characterSettings[index].baseY - 100, bmd);
-    //     healthBar.cropEnabled = true;
-    //     healthBar.crop(widthLife);
-    //     this.game.global.healthBars[deviceId] = healthBar;
-    //     character.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
-    //     window.game.global.playerManager.setCharacter(deviceId, character);
-    //     index += 1;
-    //   }
-  }
+    //Player Name
+    let playerNames = this.add.text(this.world.centerX, this.world.height * .5, 'Nakamurasensei', subheadlineStyling);
 
-  update() {
+    //this.playerNames = window.game.global.playerManager.getAllNicknames().toString();
+
+
     window.game.global.airConsole.onMessage = function(deviceId, data) {
       let character = window.game.global.playerManager.getPlayerCharacter(deviceId);
       if(character !== null) {
+        // data= {
+        //   action: 'character_selected',
+        //   selectedCharacter: 'egyptian'
+        // }
         console.log(data.action);
-      //   switch(data.action) {
-      //     case 'right':
-      //       character.moveToRight();
-      //       character.movingTo = 'right';
-      //       break;
-      //     case 'left':
-      //       character.movingTo = 'left';
-      //       break;
-      //     case 'jump':
-      //       character.jump();
-      //       break;
-      //     case 'shoot':
-      //       character.shoot();
-      //       break;
-      //     default:
-      //       character.movingTo = null;
-      //       character.idle()
-      // }
+        switch(data.action) {
+          case 'character_selected':
+            window.game.global.playerManager.setSkin(deviceId,data.selectedCharacter);
+            break;
+          case '':
+            break;
+          default:   
+        }
+      }
     }
-  } 
+
+    function updateScreen() {
+      //this.players = window.game.global.playerManager.getPlayers();
+    }
+  }
+
+  update() {
 
     if(window.game.global.charactersSelected) {
         this.state.start('Level1')
     }
   }
+
+
 }

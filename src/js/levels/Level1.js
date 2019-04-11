@@ -300,53 +300,52 @@ export default class extends Phaser.State {
         let tile = map.getTile(c, r);
 
         if (tile !== 0) { // 0 => empty tile
-          let collisionTile = this.game.add.sprite(c * unit + .5*unit, r * unit + .5*unit, 'tiles', tile -1);
+          let collisionTile = this.game.add.sprite(c * unit + .5 * unit, r * unit + .5 * unit, 'tiles', tile -1);
           collisionTile.scale.setTo(scale, scale);
           this.game.physics.p2.enable(collisionTile); // enable(collisionTile, true);  too see box
           collisionTile.body.static = true;
 
-
-          collisionTile.body.clearShapes();
-          switch (tile) {
-            case 1: //Rampe Rauf
-              collisionTile.body.addPolygon({}, 0, 33, 15, 20, 35, 0);
-              break;
-            case 2: //Block mit Boden
-              collisionTile.body.addPolygon({}, 0, 31  ,  0, 4  ,  33, 4  ,  33, 31   );
-              break;
-            case 3: //Rampe Runter
-              collisionTile.body.addPolygon({},  0, 0, 12, 23, 34, 32 );
-              break;
-            case 4: //Linke Kante
-              collisionTile.body.addPolygon({}, 28, 4  ,  28, 33  ,  10, 33  ,  2, 4  );
-              break;
-            case 5: //Linker Ansatz an Kante
-              collisionTile.body.addPolygon({}, 0, 32  ,  0, 3  ,  33, 3 ,  33, 32 );
-              break;
-            case 6: //Rechter Ansatz an Kante
-              collisionTile.body.addPolygon({},    0, 32  ,  0, 3  ,  33, 3 ,  33, 32  );
-              break;
-            case 7: //Rechte Kante
-              collisionTile.body.addPolygon({}, 22, 33  ,  4, 33  ,  4, 4  ,  31, 4  );
-              break;
-            case 8: //Wand nach Rechts schauend
-              collisionTile.body.addPolygon({}, 5, 20  ,  5, 5  ,  20, 5  ,  20, 20   );
-              break;
-            case 9: //Wand nach Links schauend
-              collisionTile.body.addPolygon({},  0, 33  ,  0, 0  ,  20, 0  ,  20, 33  );
-              break;
-            case 10: //Block
-              collisionTile.body.addPolygon({}, 0, 33  ,  0, 2  ,  33, 2  ,  33, 33   );
-              break;
-            case 11: //Rampen Boden rauf
-              collisionTile.body.addPolygon({}, 1, 33, 15, 15, 32, 2);
-              break;
-            case 12: //Rampen Boden runter
-              collisionTile.body.addPolygon({}, 12, 0, 18, 10, 40, 42 );
-              break;
-            default:
-              collisionTile.body.addPolygon({} , 0, 33, 0, 0, 33, 0, 33, 33 );
-          }
+          // collisionTile.body.clearShapes();
+          // switch (tile) {
+          //   case 1: //Rampe Rauf
+          //     collisionTile.body.addPolygon({}, 0, 33, 15, 20, 35, 0);
+          //     break;
+          //   case 2: //Block mit Boden
+          //     collisionTile.body.addPolygon({}, 0, 31  ,  0, 4  ,  33, 4  ,  33, 31   );
+          //     break;
+          //   case 3: //Rampe Runter
+          //     collisionTile.body.addPolygon({},  0, 0, 12, 23, 34, 32 );
+          //     break;
+          //   case 4: //Linke Kante
+          //     collisionTile.body.addPolygon({}, 28, 4  ,  28, 33  ,  10, 33  ,  2, 4  );
+          //     break;
+          //   case 5: //Linker Ansatz an Kante
+          //     collisionTile.body.addPolygon({}, 0, 32  ,  0, 3  ,  33, 3 ,  33, 32 );
+          //     break;
+          //   case 6: //Rechter Ansatz an Kante
+          //     collisionTile.body.addPolygon({},    0, 32  ,  0, 3  ,  33, 3 ,  33, 32  );
+          //     break;
+          //   case 7: //Rechte Kante
+          //     collisionTile.body.addPolygon({}, 22, 33  ,  4, 33  ,  4, 4  ,  31, 4  );
+          //     break;
+          //   case 8: //Wand nach Rechts schauend
+          //     collisionTile.body.addPolygon({}, 5, 20  ,  5, 5  ,  20, 5  ,  20, 20   );
+          //     break;
+          //   case 9: //Wand nach Links schauend
+          //     collisionTile.body.addPolygon({},  0, 33  ,  0, 0  ,  20, 0  ,  20, 33  );
+          //     break;
+          //   case 10: //Block
+          //     collisionTile.body.addPolygon({}, 0, 33  ,  0, 2  ,  33, 2  ,  33, 33   );
+          //     break;
+          //   case 11: //Rampen Boden rauf
+          //     collisionTile.body.addPolygon({}, 1, 33, 15, 15, 32, 2);
+          //     break;
+          //   case 12: //Rampen Boden runter
+          //     collisionTile.body.addPolygon({}, 12, 0, 18, 10, 40, 42 );
+          //     break;
+          //   default:
+          //     collisionTile.body.addPolygon({} , 0, 33, 0, 0, 33, 0, 33, 33 );
+          // }
           collisionTile.body.setCollisionGroup(this.tilesCollisionGroup);
           collisionTile.body.collides([this.playerCollisionGroup, this.bulletCollisionGroup]);
         }

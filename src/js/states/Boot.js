@@ -22,7 +22,7 @@ export default class extends Phaser.State {
     this.load.image('smoke', '../../assets/images/background/smoke.png');
 
     //LOAD TILES
-    this.load.spritesheet('tiles', '../../assets/tileMap/tileSet.png', 33, 33, 12);
+    this.load.spritesheet('tiles', '../../assets/tileMap/tileSet2.png', 33, 33, 12, 0, 4);
 
     //LOAD BASES
     this.load.image('egyptian_base', '../../assets/bases/egyptian_base.png');

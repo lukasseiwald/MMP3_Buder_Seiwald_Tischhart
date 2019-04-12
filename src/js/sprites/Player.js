@@ -18,6 +18,9 @@ export default class Player {
     this.spawnX = spawnX;
     this.spawnY = spawnY;
     this.skin = skin;
+    //113px hoch!
+    this.scale = window.game.global.scale;
+    this.unit = window.game.global.unit;
   }
 
   isGrounded() {
@@ -89,14 +92,14 @@ export default class Player {
   }
 
   moveToRight() {
-    this.player.scale.x = 1; //1 => facing Right
+    this.player.scale.x = this.scale; //1 => facing Right
     this.player.animations.play('run');
     this.player.body.moveLeft(0);
     if(this.player.activeItem === 'speed_item') {
-      this.player.body.moveRight(800);
+      this.player.body.moveRight(800 * this.scale);
     }
     else {
-      this.player.body.moveRight(400);
+      this.player.body.moveRight(400 * this.scale);
     }
     this.moveSoulWithPlayer();
     this.moveShieldWithPlayer();
@@ -104,14 +107,14 @@ export default class Player {
   }
 
   moveToLeft() {
-    this.player.scale.x = -1; //-1 => facing Left
+    this.player.scale.x = -this.scale; //-1 => facing Left
     this.player.animations.play('run');
     this.player.body.moveRight(0);
     if(this.player.activeItem === 'speed_item') {
-      this.player.body.moveLeft(800);
+      this.player.body.moveLeft(800 * this.scale);
     }
     else {
-      this.player.body.moveLeft(400);
+      this.player.body.moveLeft(400 * this.scale);
     }
     this.moveSoulWithPlayer();
     this.moveShieldWithPlayer();
@@ -122,16 +125,16 @@ export default class Player {
     this.dashTimer = window.game.time.totalElapsedSeconds();
     if(this.canDash == true && (Math.abs(this.dashTimer - this.dashIdleTimer) < 0.3) && (Math.abs(this.dashTimer - this.lastDash) > 2.5)) {
       let dash_smoke = window.game.add.sprite(this.player.x - 30, this.player.y - 80, 'dash_smoke');
-      dash_smoke.scale.setTo(2, 2); //Item Size
+      dash_smoke.scale.setTo(2 * this.scale, 2 * this.scale); //Item Size
       var dash_smoke_animation = dash_smoke.animations.add('smoking');
       dash_smoke_animation.killOnComplete = true;
       switch(this.player.scale.x) {
         case -1:
-          this.player.body.moveLeft(4800);
+          this.player.body.moveLeft(4800 * this.scale);
           dash_smoke.scale.x = -1.5
           break;
         case 1:
-          this.player.body.moveRight(4800);
+          this.player.body.moveRight(4800 * this.scale);
           dash_smoke.scale.x = 1;
           break;
         default:
@@ -151,10 +154,10 @@ export default class Player {
     if (this.jumpCount < 2) {
       this.player.animations.play('jump');
       if(this.player.activeItem === 'jump_item') {
-        this.player.body.moveUp(1900);
+        this.player.body.moveUp(1900 * this.scale);
       }
       else {
-        this.player.body.moveUp(1100);
+        this.player.body.moveUp(1100 * this.scale);
       }
     }
   }
@@ -172,6 +175,7 @@ export default class Player {
   spawnPlayer(playerCollisionGroup, tilesCollisionGroup , bulletCollisionGroup, soulCollisionGroup) {
     this.player = window.game.add.sprite(0,0,this.skin);
     this.player.anchor.set(0.5, 0.5);
+    this.player.scale.setTo(this.scale, this.scale);
     this.player.enableBody = true;
 
     //  Enable if for physics. This creates a default rectangular body.
@@ -182,11 +186,11 @@ export default class Player {
     this.player.body.setZeroDamping();
     this.player.body.fixedRotation = true;
     this.player.body.clearShapes();
-    this.player.body.addPolygon({}, 321, 299, 302, 255, 317, 230, 348, 230, 352, 275, 348, 300);
+    this.player.body.addPolygon({}, 321 * this.scale, 299 * this.scale, 302 * this.scale, 255 * this.scale, 317 * this.scale, 230 * this.scale, 348 * this.scale, 230 * this.scale, 363 * this.scale, 255 * this.scale, 348 * this.scale, 300 * this.scale);
 
     //make player face right direction
     if(this.spawnX > window.game.world.width/2) {
-      this.player.scale.x = -1;
+      this.player.scale.x = -this.player.scale.x;
     }
 
     //few Player properties
@@ -216,7 +220,9 @@ export default class Player {
     this.bullets.setAll('outOfBoundsKill', true);
     this.bullets.setAll('checkWorldBounds', true);
 
+
     this.bullets.forEach((bullet)=>{
+      bullet.scale.set(this.scale, this.scale);
       bullet.body.setCollisionGroup(bulletCollisionGroup);
       bullet.body.collides([playerCollisionGroup, tilesCollisionGroup, bulletCollisionGroup]);
       bullet.body.onBeginContact.add(this.hit, bullet);
@@ -257,6 +263,7 @@ export default class Player {
   }
 
   hit(hitTarget) {
+    let unit = window.game.global.unit;
     if(hitTarget) {
       if (hitTarget.sprite.bulletAsset) {
         if(hitTarget.sprite.alive) {
@@ -268,20 +275,20 @@ export default class Player {
           }
           else {
             hitTarget.sprite.animations.play('hurt', 10, false);
-            hitTarget.sprite.damage(0.35);
+            hitTarget.sprite.damage(1/3 + .01);
             let healthBar = window.game.global.healthBars[hitTarget.sprite.deviceId];
             if(hitTarget.sprite.health <= 0) {
               window.game.add.tween(healthBar).to( { width: 0 }, 200, Phaser.Easing.Linear.None, true);
             }
             else {
-              window.game.add.tween(healthBar).to( { width: (healthBar.width - 34) }, 200, Phaser.Easing.Linear.None, true);
+              window.game.add.tween(healthBar).to( { width: (healthBar.width - 2 * unit) }, 200, Phaser.Easing.Linear.None, true);
             }
           }
         }
       }
     }
   }
-  
+
   died() {
     //remove obtained soul of dead player
     if(this.player.obtainedSoul) {
@@ -290,10 +297,10 @@ export default class Player {
       this.player.activeItem = '';
     }
     //Style of Respawn Counter
-    let style = { font: "65px Bungee", fill: "#FFFFFF", align: "center" };
+    let style = { font: 3 * this.unit+ 'px Bungee', fill: "#FFFFFF", align: "center" };
 
     let counter = 5;
-    let text = window.game.add.text(this.spawnX , this.spawnY, '', style);
+    let text = window.game.add.text(this.spawnX, this.spawnY - .25 * this.unit, '', style);
     let respawnTimer = setInterval(() => {
       text.setText(counter);
       if(counter < 1) {
@@ -308,15 +315,17 @@ export default class Player {
   }
 
   respawn() {
-    let healthBar = window.game.global.healthBars[this.player.deviceId];
-    window.game.add.tween(healthBar).to( { width: 100 }, 200, Phaser.Easing.Linear.None, true);
+    let healthBar = window.game.global.healthBars[this.deviceId];
+    window.game.add.tween(healthBar).to( { width: 6 * this.unit }, 200, Phaser.Easing.Linear.None, true);
     this.player.reset(this.spawnX, this.spawnY);
     this.player.obtainedSoul = null;
   }
 
   spawnDeadBodyWithSoul() {
     //Spawning dead body just to play its dying animation
-    this.deadBody = window.game.add.sprite(this.player.x - 35, this.player.y - 45, this.player.key);
+    this.deadBody = window.game.add.sprite(this.player.x, this.player.y, this.player.key);
+    this.deadBody.anchor.set(0.5, 0.5);
+    this.deadBody.scale.setTo(this.scale, this.scale);
     this.deadBody.animations.add('dying', ['Dying_000','Dying_001','Dying_002','Dying_003','Dying_004','Dying_005','Dying_006','Dying_007','Dying_008','Dying_009','Dying_010','Dying_011','Dying_012','Dying_013','Dying_014'], 17, false);
     this.deadBody.animations.play('dying');
     window.game.time.events.add(Phaser.Timer.SECOND * 6, this.deleteDeadBody, this);
@@ -343,12 +352,12 @@ export default class Player {
 
         if(this.player.scale.x < 0) {
           bullet.reset(this.player.x - 20, this.player.y);
-          bullet.body.moveLeft(1500);
+          bullet.body.moveLeft(1500 * this.scale);
           bullet.body.velocity.y = -500;
         }
         else if(this.player.scale.x > 0){
           bullet.reset(this.player.x + 20, this.player.y);
-          bullet.body.moveRight(1500);
+          bullet.body.moveRight(1500 * this.scale);
           bullet.body.velocity.y = -500;
         }
         bullet.lifespan = 1000;
@@ -394,8 +403,8 @@ export default class Player {
 
   moveShieldWithPlayer() {
     if(this.player.shield) {
-      this.player.shield.x = this.player.x - 65;
-      this.player.shield.y = this.player.y - 65;
+      this.player.shield.x = this.player.x - 2 * this.unit;
+      this.player.shield.y = this.player.y - 2 * this.unit;
     }
   }
 
@@ -405,21 +414,19 @@ export default class Player {
       case 'health_item':
         player.sprite.health = 1;
         let healthBar = window.game.global.healthBars[player.sprite.deviceId];
-        window.game.add.tween(healthBar).to( { width: 100 }, 200, Phaser.Easing.Linear.None, true);
+        window.game.add.tween(healthBar).to( { width: 6 * this.unit }, 200, Phaser.Easing.Linear.None, true);
         break;
       case 'shield_item':
         if(player.sprite.shield != null) {
           player.sprite.shield.kill();
         }
-        player.sprite.shield = window.game.add.sprite(this.player.x - 50, this.player.y - 55, 'shield_character');
+        console.log(this.unit)
+        player.sprite.shield = window.game.add.sprite(this.player.x - 2 * this.unit, this.player.y - 2 * this.unit, 'shield_character');
+        player.sprite.shield.scale.setTo(this.scale, this.scale);
         player.sprite.shield.enableBody = true;
         break;
       default:
         this.player.activeItem = collectedItem
     }
-  }
-
-  inBase() {
-    console.log("in base");
   }
 }

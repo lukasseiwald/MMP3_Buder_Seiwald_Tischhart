@@ -5,7 +5,8 @@ import { addImage } from '../utils'
 export default class Base {
 
   constructor (tsize, x, y, asset, character) {
-    console.log(tsize)
+    this.unit = window.game.global.unit;
+    this.scale = window.game.global.scale;
     this.character = character;
     this.base = game.add.sprite(x, y, asset);
     this.base.enableBody = true;
@@ -75,24 +76,30 @@ export default class Base {
 
   addSoulSpriteToCollection(soulName) {
     let spacingForCollectionStyle = this.base.collectedSouls.length - 1;
-    let soulTrophyX;
-    let soulTrophY
-    if(this.base.x < 600) {
-      soulTrophyX = this.base.x - 87
+    let soulTrophyX, soulTrophY;
+    if(this.base.x < window.game.world.width/2) {
+      soulTrophyX = this.unit;
     }
     else {
-      soulTrophyX = this.base.x + 39
+      soulTrophyX = window.game.world.width - 2 * this.unit;
     }
-    soulTrophY = this.base.y - 99 + 30 * spacingForCollectionStyle;
-    window.game.add.sprite(soulTrophyX, soulTrophY , soulName); //anders bennen da es sonst als eingesammelte seele zählt
+    soulTrophY = this.base.y - 3 * this.unit + .8 * this.unit * spacingForCollectionStyle;
+    let test = window.game.add.sprite(soulTrophyX, soulTrophY , soulName); //anders bennen da es sonst als eingesammelte seele zählt
+    test.scale.setTo(this.scale, this.scale);
+    //soul.scale.setTo(this.scale, this.scale);
+
   }
 
   winning() {
-    let style = { font: "65px Bungee", fill: "#000000", align: "center" };
+    let style = { font: 2 * this.unit + "px Bungee", fill: "#000000", align: "center" };
     let winningText = window.game.global.playerManager.getNickname(this.character.deviceId) + " WON";
 
     let winnerId = this.character.deviceId;
-    window.game.global.playerManager.sendMessageToPlayer(winnerId, {screen: 'game', action: 'winning'});
+    window.game.global.playerManager.sendMessageToPlayer(winnerId,
+    {
+      screen: 'game',
+      action: 'winning'
+    });
 
     this.image = addImage(window.game, 0, 0, 'background1', window.game.world.width, window.game.world.height);
 
@@ -102,11 +109,10 @@ export default class Base {
     for (let [deviceId, player] of window.game.global.playerManager.getPlayers()) {
       if (deviceId !== winnerId) {
         window.game.global.playerManager.sendMessageToPlayer(deviceId,
-          {
-            screen: 'game',
-            action: 'loosing'
-          }
-        )
+        {
+          screen: 'game',
+          action: 'loosing'
+        });
       }
     }
     window.game.time.events.add(Phaser.Timer.SECOND * 5, this.won, this);

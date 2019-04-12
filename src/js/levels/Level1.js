@@ -3,63 +3,107 @@ import Phaser from 'phaser'
 import Base from '../sprites/Base'
 import Player from '../sprites/Player'
 import Item from '../sprites/Item'
-import {playerConfig} from '../configs/playerConfig'
 import { addImage } from '../utils'
 import lang from '../lang'
 import Particle from '../Particle';
 
 export default class extends Phaser.State {
-  init() { }
+  init() {
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+    let gameWidth = this.world.width;
+    let gameHeight = this.world.height;
+    let ratio = this.width/this.height;
+    // 1.8064 is the ratio with that the map was created
+    if(ratio > 1.8064) {
+      this.scale.setGameSize(this.height * 1.8064, this.height);
+      window.game.global.scale = this.world.height/gameHeight;
+    }
+    else {
+      this.scale.setGameSize(this.width, this.width/1.8064);
+      window.game.global.scale = this.world.width/gameWidth;
+    }
+  }
 
   preload() {
     this.game.time.advancedTiming = true; //For indicating FPS
   }
 
   create() {
-    console.log(this);
-    this.game.camera.roundPixels = true;
-
     const map = {
-      cols: 56,
-      rows: 30,
+      cols: 56, //1848
+      rows: 31, //1023
       tsize: 33,
-      tiles: [
-        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 2, 7, 0, 0, 0, 0, 0, 4, 2, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 4, 7, 0, 0, 0, 0, 4, 2, 2, 5, 2, 2, 2, 6, 2, 2, 7, 0, 0, 0, 0, 4, 7, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5, 0, 0, 0, 0, 0, 0, 0, 6, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
-      ],
+      tiles: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 10, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 6, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 6, 2, 7, 0, 0, 0, 0, 0, 0, 4, 2, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 7, 0, 0, 0, 0, 0, 4, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 7, 0, 0, 0, 0, 0, 4, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 4, 2, 7, 0, 0, 0, 0, 4, 2, 2, 2, 5, 10, 10, 10, 10, 6, 2, 2, 2, 7, 0, 0, 0, 0, 4, 2, 7, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 10, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 0, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 10],
       getTile(col, row) {
         return this.tiles[row * map.cols + col]
-      }
+      },
     };
-    map.tsize = Math.ceil(window.game.world.width/map.cols);
-    console.log(map.tsize);
+
+    map.tsize = window.game.world.width/map.cols;
+    window.game.global.unit = map.tsize;
+
+
+
+    let unit = window.game.global.unit;
+    let scale = window.game.global.scale;
+
+    this.game.camera.roundPixels = true;
+
+
+
+    map.itemPositions =  [
+      {x: 10.5 * unit, y: 16 * unit},
+      {x: 13.5 * unit, y: 7 * unit},
+      {x: 3 * unit, y: 4 * unit},
+      {x: 18 * unit, y: 13 * unit},
+      {x: 19 * unit, y: 28 * unit},
+      {x: window.game.world.width - 10.5 * unit, y: 16 * unit},
+      {x: window.game.world.width - 13.5 * unit, y: 7 * unit},
+      {x: window.game.world.width - 3 * unit, y: 4 * unit},
+      {x: window.game.world.width - 18 * unit, y: 13 * unit},
+      {x: window.game.world.width - 19 * unit, y: 28 * unit},
+      {x: window.game.world.width/2, y: 3 * unit},
+      {x: window.game.world.width/2, y: 9 * unit},
+      {x: window.game.world.width/2, y: 21 * unit}
+    ];
+
     const characterSettings = [
       {
         skin:'egyptian',
-        x: map.tsize * 5,
-        y: map.tsize * 26,
-        baseX: 2.5 * map.tsize,
-        baseY: map.tsize * 25.5
+        x: unit * 5,
+        y: unit * 26,
+        baseX: 3 * unit,
+        baseY: this.world.height - 3.5 * unit,
+        healthbarX: .5 * unit,
+        healthbarY: this.world.height - 6.5 * unit
       },
       {
         skin: 'knight',
         x: this.world.width - 90,
-        y: map.tsize * 26,
-        baseX: this.world.width - 2.5 * map.tsize,
-        baseY: map.tsize * 25.5
+        y: unit * 26,
+        baseX: this.world.width - 3 * unit,
+        baseY: this.world.height - 3.5 * unit,
+        healthbarX: this.world.width - unit * 6.5, // - healthbar.width - .5 (half tile on edge)
+        healthbarY: this.world.height - 6.5 * unit
       },
       {
         skin: 'lucifer',
-        x: map.tsize * 3,
-        y: map.tsize * 10,
-        baseX: 2.5 * map.tsize,
-        baseY: map.tsize * 9.5
+        x: 3 * unit,
+        y: 10 * unit,
+        baseX: 3 * unit,
+        baseY: 9.5 * unit,
+        healthbarX:  .5 * unit,
+        healthbarY: 6.6 * unit
       },
       {
         skin: 'kickapoo',
         x: this.world.width - 90,
-        y: map.tsize * 10,
-        baseX: this.world.width - 2.5 * map.tsize,
-        baseY: map.tsize * 9.5
+        y: unit * 10,
+        baseX: this.world.width - 3 * unit,
+        baseY: unit * 9.5,
+        healthbarX: this.world.width - unit * 6.5,
+        healthbarY: 6.5 * unit
       }
     ]
 
@@ -86,19 +130,18 @@ export default class extends Phaser.State {
 
     //IMAGES
     this.bg3 = addImage(this, 0, 0, 'background3', this.world.width, this.world.height);
-    this.bg2 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
     //PARTICLES
 
-    this.glowingParticles = new Particle("spark", 30, 5000, 100);
+    this.glowingParticles = new Particle('spark', 30, 5000, 100);
     this.glowingParticles.startEmitter();
 
-    this.steamParticles = new Particle("smoke", 150, 8000, 100);
-    this.steamParticles.startEmitter();    
+    this.steamParticles = new Particle('smoke', 150, 8000, 100);
+    this.steamParticles.startEmitter();
 
     this.bg2 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
-    this.lavaParticles = new Particle("lava", 0, 4000, 1);
+    this.lavaParticles = new Particle('lava', 0, 4000, 100);
     this.lavaParticles.startEmitter();
 
     //Tiles
@@ -107,59 +150,41 @@ export default class extends Phaser.State {
     this.tiles.physicsBodyType = Phaser.Physics.P2JS;
 
     //create Items ever x seconds
-    let itemPositions = [{x: 400, y: 500}, {x: 530, y: 200}, {x: 200, y: 150}, {x: 600, y: 850}, {x: 700, y: 450}, {x: window.game.world.width - 430, y: 500}, {x: window.game.world.width - 560, y: 200}, {x: window.game.world.width - 230, y: 150}, {x: window.game.world.width - 630, y: 850}, {x: window.game.world.width - 730, y: 450}, {x: window.game.world.width / 2, y: 100}, {x: window.game.world.width / 2, y: 640}, {x: window.game.world.width / 2, y: 310}];
-    this.game.global.itemPositions = this.shuffle(itemPositions);
-    this.game.time.events.repeat(Phaser.Timer.SECOND * 18, 100, this.createItems, this);
+    this.game.global.itemPositions = this.shuffle(map.itemPositions);
+    this.game.time.events.repeat(Phaser.Timer.SECOND * 1, 100, this.createItems, this);
 
     //HealthBar
-    let bmd = this.game.add.bitmapData(100, 20);
+    let bmd = this.game.add.bitmapData(unit * 6, unit * .5);
     bmd.ctx.beginPath();
-    bmd.ctx.rect(0, 0, 100, 20);
-    bmd.ctx.fillStyle = '#850015';
+    bmd.ctx.rect(0, 0, unit * 6, unit * .5);
+    bmd.ctx.fillStyle = '#c92e08';
     bmd.ctx.fill();
 
     let widthLife = new Phaser.Rectangle(0, 0, bmd.width, bmd.height);
 
-    this.createMap(map);
 
     if(window.game.global.dev) {
-      //Bases
-      this.baseEgyptian = new Base(map.tsize, characterSettings[0].baseX, characterSettings[0].baseY, characterSettings[0].skin + '_base');
-      this.baseKnight = new Base(map.tsize, characterSettings[1].baseX, characterSettings[1].baseY, characterSettings[1].skin + '_base');
-      this.baseLucifer = new Base(map.tsize, characterSettings[2].baseX, characterSettings[2].baseY, characterSettings[2].skin + '_base');
-      this.baseKickapoo = new Base(map.tsize, characterSettings[3].baseX, characterSettings[3].baseY, characterSettings[3].skin + '_base');
 
-      // Player 1
-      this.player1 = new Player(1, characterSettings[0].x, characterSettings[0].y, characterSettings[0].skin);
-      let p1HealthBar = this.game.add.sprite(characterSettings[0].x - 50, characterSettings[0].y - 100, bmd);
-      p1HealthBar.cropEnabled = true;
-      p1HealthBar.crop(widthLife);
-      this.game.global.healthBars[1] = p1HealthBar;
-      this.player1.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      let playersDev = new Array();
 
-      // Player 2
-      this.player2 = new Player(2, characterSettings[1].x, characterSettings[1].y, characterSettings[1].skin);
-      let p2HealthBar = this.game.add.sprite(characterSettings[1].x - 50, characterSettings[1].y - 100, bmd);
-      p2HealthBar.cropEnabled = true;
-      p2HealthBar.crop(widthLife);
-      this.game.global.healthBars[2] = p2HealthBar;
-      this.player2.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      for (let index = 0; index < 4; index++) {
+        let character = new Player(index, characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin);
+        let base = new Base(unit,characterSettings[index].baseX, characterSettings[index].baseY, characterSettings[index].skin + '_base', character);
+        character.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+        playersDev[index] = character;
+      }
 
-      //Player 3
-      this.player3 = new Player(3, 75, 313, 'lucifer');
-      let p3HealthBar = this.game.add.sprite(characterSettings[2].x - 50, characterSettings[2].y - 100, bmd);
-      p3HealthBar.cropEnabled = true;
-      p3HealthBar.crop(widthLife);
-      this.game.global.healthBars[3] = p3HealthBar;
-      this.player3.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      this.createMap(map);
 
-      //Player 4
-      this.player4 = new Player(4, this.world.width - 90, 313, 'kickapoo');
-      let p4HealthBar = this.game.add.sprite(characterSettings[3].x - 50, characterSettings[3].y - 100, bmd);
-      p4HealthBar.cropEnabled = true;
-      p4HealthBar.crop(widthLife);
-      this.game.global.healthBars[4] = p4HealthBar;
-      this.player4.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+      for (let index = 0; index < 4; index++) {
+        let healthBar = this.game.add.sprite(characterSettings[index].healthbarX, characterSettings[index].healthbarY, bmd);
+        healthBar.cropEnabled = true;
+        healthBar.crop(widthLife);
+        this.game.global.healthBars[index] = healthBar;
+      }
+
+      this.player1 = playersDev[0];
+      this.player2 = playersDev[1];
 
       this.cursors = this.game.input.keyboard.createCursorKeys();
 
@@ -172,16 +197,21 @@ export default class extends Phaser.State {
     }
     else {
       let index = 0;
-
       for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
         let character = new Player(deviceId, characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin);
-        let base = new Base(map.tsize,characterSettings[index].baseX, characterSettings[index].baseY, characterSettings[index].skin + '_base', character);
+        let base = new Base(unit,characterSettings[index].baseX, characterSettings[index].baseY, characterSettings[index].skin + '_base', character);
+        character.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
+        window.game.global.playerManager.setCharacter(deviceId, character);
+        index += 1;
+      }
+
+      this.createMap(map);
+
+      for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
         let healthBar = this.game.add.sprite(characterSettings[index].baseX - 50, characterSettings[index].baseY - 100, bmd);
         healthBar.cropEnabled = true;
         healthBar.crop(widthLife);
         this.game.global.healthBars[deviceId] = healthBar;
-        character.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
-        window.game.global.playerManager.setCharacter(deviceId, character);
         index += 1;
       }
     }
@@ -223,7 +253,7 @@ export default class extends Phaser.State {
           }
         }
         else {
-          console.info("player is null");
+          console.info('player is null');
         }
       };
     }
@@ -280,42 +310,53 @@ export default class extends Phaser.State {
   }
 
   createMap(map) {
+    let unit = window.game.global.unit;
+    let scale = window.game.global.scale;
     for (let c = 0; c < map.cols; c++) {
       for (let r = 0; r < map.rows; r++) {
         let tile = map.getTile(c, r);
 
         if (tile !== 0) { // 0 => empty tile
-          let collisionTile = this.game.add.sprite(c * map.tsize, r * map.tsize, 'tiles', tile -1);
-          this.game.physics.p2.enable(collisionTile); // enable(collisionTile, true);  too see box
+          let collisionTile = this.game.add.sprite(c * unit, r * unit, 'tiles', tile -1);
+          collisionTile.scale.setTo(scale, scale);
+          this.game.physics.p2.enable(collisionTile, true); // enable(collisionTile, true);  too see box
           collisionTile.body.static = true;
 
           collisionTile.body.clearShapes();
           switch (tile) {
-            case 1:
-              collisionTile.body.addPolygon( {} , 10, 31  ,  4, 32  ,  32, 3  ,  32, 9     );
-              break;
-            case 2:
-              collisionTile.body.addPolygon( {} ,   1, 33  ,  1, 3  ,  32, 3  ,  32, 33   );
-              break;
-            case 3:
-              collisionTile.body.addPolygon( {} ,     24, 31  ,  2, 8  ,  2, 2  ,  32, 32 );
-              break;
-            case 4:
-              collisionTile.body.addPolygon( {} ,   28, 5  ,  28, 33  ,  10, 33  ,  2, 5  );
-              break;
-            case 5:
-              collisionTile.body.addPolygon( {} ,    1, 33  ,  1, 3  ,  32, 3  ,  32, 33  );
-              break;
-            case 6:
-              collisionTile.body.addPolygon( {} ,    1, 33  ,  1, 3  ,  32, 3  ,  32, 33  );
-              break;
-            case 7:
-              collisionTile.body.addPolygon( {} ,   22, 33  ,  4, 33  ,  4, 5  ,  31, 5  );
-              break;
+            // case 1: //Rampe Rauf
+            //   collisionTile.body.addPolygon({}, 0, 33 * scale, 0, 0, 33 * scale, 0, 33 * scale, 33 * scale);
+            //   break;
+            // case 3: //Rampe Runter
+            //   collisionTile.body.addPolygon({},  0, 0, 12 * scale, 23 * scale, 34 * scale, 32 * scale);
+            //   break;
+            // case 4: //Linke Kante
+            //   collisionTile.body.addPolygon({}, 28 * scale, 4 * scale, 28 * scale, 33 * scale, 10, 33 * scale, 2 * scale, 4 * scale);
+            //   break;
+            // case 5: //Linker Ansatz an Kante
+            //   collisionTile.body.addPolygon({}, 0, 32 * scale,  0, 3 * scale,  33 * scale, 3 * scale, 33 * scale, 32 * scale);
+            //   break;
+            // case 6: //Rechter Ansatz an Kante
+            //   collisionTile.body.addPolygon({}, 0, 32 * scale , 0, 3 * scale, 33 * scale, 3 * scale, 33 * scale, 32 * scale);
+            //   break;
+            // case 7: //Rechte Kante
+            //   collisionTile.body.addPolygon({}, 22 * scale, 33 * scale, 4 * scale, 33 * scale,  4 * scale, 4 * scale, 31 * scale, 4 * scale);
+            //   break;
+            // case 8: //Wand nach Rechts schauend
+            //   collisionTile.body.addPolygon({}, 0, 33 * scale, 0, 0, 33 * scale, 0, 33 * scale, 33 * scale);
+            //   break;
+            // case 9: //Wand nach Links schauend
+            //   collisionTile.body.addPolygon({}, 0, 33 * scale, 0, 0, 33 * scale, 0, 33 * scale, 33 * scale);
+            //   break;
+            // case 11: //Rampen Boden rauf
+            //   collisionTile.body.addPolygon({}, 1 * scale, 33 * scale, 15 * scale, 15 * scale, 32 * scale, 2 * scale);
+            //   break;
+            // case 12: //Rampen Boden runter
+            //   collisionTile.body.addPolygon({}, 12 * scale, 0, 18 * scale, 10 * scale, 40 * scale, 42 * scale);
+            //   break;
             default:
-              collisionTile.body.addPolygon( {} ,    0, 33  ,  0, 0  ,  33, 0  ,  33, 33  );
+              collisionTile.body.addPolygon({}, 0, 33 * scale, 0, 0, 33 * scale, 0, 33 * scale, 33 * scale);
           }
-
           collisionTile.body.setCollisionGroup(this.tilesCollisionGroup);
           collisionTile.body.collides([this.playerCollisionGroup, this.bulletCollisionGroup]);
         }

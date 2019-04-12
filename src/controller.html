@@ -203,6 +203,16 @@
           opacity: 0;
         }
 
+        .button--arrow {
+          width: 12%;
+          height: auto;
+        }
+
+        #button__select_left {
+          transform: scaleX(-1);
+
+        }
+
     </style>
 </head>
 
@@ -219,14 +229,14 @@
     <div id="state--character_selection" class="state character_selection">
       <p class="selection__headline">CHOOSE YOUR CHARACTER</p>
       <div class="selection__wrapper">
-        <img src="./assets/images/controller/arrow_left.gif" id="button__select_left">
+        <img src="./assets/images/controller/arrow.png" class="button--arrow" id="button__select_left">
         <div class="selection__character_preview">
           <img class="character character--invisible" src="./assets/images/controller/egyptian.png" data-character="egyptian">
           <img class="character character--invisible" src="./assets/images/controller/kickapoo.png" data-character="kickapoo">
           <img class="character character--invisible" src="./assets/images/controller/knight.png" data-character="knight">
           <img class="character character--invisible" src="./assets/images/controller/lucifer.png" data-character="lucifer">
         </div>
-        <img src="./assets/images/controller/arrow_right.gif" id="button__select_right">
+        <img src="./assets/images/controller/arrow.png"class="button--arrow" id="button__select_right">
       </div>
       <button class="button__select button" id="button__select">SELECT</button>
     </div>

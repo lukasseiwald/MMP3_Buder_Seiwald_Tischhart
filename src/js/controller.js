@@ -11,7 +11,8 @@ csm.setState('game', 'state--game');
 csm.setState('winning', 'state--winning');
 csm.setState('loosing', 'state--loosing');
 
-csm.startState('waiting');
+csm.startState('characterSelection');
+setUpCharacterSelection();
 
 airConsole.onReady = function() {
   let name = document.getElementsByClassName('waiting__name')[0];

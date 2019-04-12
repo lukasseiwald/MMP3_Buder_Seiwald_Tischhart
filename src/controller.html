@@ -64,22 +64,12 @@
           align-items: center;
         }
 
-        .button__select {
-          font-family: 'Bungee', cursive;
-          border-radius: 0 !important;
-          height: 50px !important;
-          flex: 1;
-          margin-bottom:2%;
-
-
-        }
-
         .selection__headline {
           text-align: center;
         }
 
         .selection__character_preview img {
-          height: 30vh;
+          height: 55vh;
           margin: 5vw;
         }
 
@@ -211,13 +201,26 @@
         }
 
         .button--arrow {
-          width: 12%;
+          width: 15vw;
           height: auto;
         }
 
         #button__select_left {
           transform: scaleX(-1);
+        }
 
+        .button__select {
+          border-radius: 0;
+          font-family: 'Bungee', cursive;
+          width: 20vw;
+          height: 6vw;
+          flex: 1;
+          margin-bottom:2%;
+          bottom: 0;
+          position: absolute;
+          background-image: url('./assets/images/controller/shield.png');
+          background-size: 100% 100%;
+          background-repeat: no-repeat;
         }
 
     </style>
@@ -244,7 +247,7 @@
         </div>
         <img src="./assets/images/controller/arrow.png"class="button--arrow" id="button__select_right">
       </div>
-      <button class="button__select button" id="button__select">SELECT</button>
+      <div class="button__select button" id="button__select">SELECT</div>
     </div>
 
     <!-- CONTROLLER STATE -->

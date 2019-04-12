@@ -130,7 +130,7 @@ export default class Player {
       dash_smoke_animation.killOnComplete = true;
       switch(this.player.scale.x) {
         case -1:
-          this.player.body.moveLeft(4800 * this.scale);
+          this.player.body.moveLeft(4800 * this.scale); //multiply with delta time
           dash_smoke.scale.x = -1.5
           break;
         case 1:

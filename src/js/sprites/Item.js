@@ -5,7 +5,7 @@ export default class Item {
       let unit = window.game.global.unit;
       let scale = window.game.global.scale;
       //random Item
-      let itemTypes = ['shield_item'];
+      let itemTypes = ['shield_item', 'health_item', 'speed_item', 'jump_item'];
       let randomItem = itemTypes[Math.floor(Math.random()*itemTypes.length)];
 
       if(window.game.global.itemPositions.length == 0) { //wenn schon alle Positionen verwendet wurden

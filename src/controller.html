@@ -223,6 +223,12 @@
           background-repeat: no-repeat;
         }
 
+        .character_selection__name {
+          position: absolute;
+          top: 5%;
+          font-size: 2em;
+        }
+
     </style>
 </head>
 
@@ -237,15 +243,18 @@
 
     <!-- CHARACTER SELECTION STATE -->
     <div id="state--character_selection" class="state character_selection">
+      <div class="character_selection__name" id="name">
+        Placeholder
+      </div>
       <div class="selection__wrapper">
-        <img src="./assets/images/controller/arrow.png" class="button--arrow" id="button__select_left">
+        <img src="./assets/images/controller/arrow.png" class="button--arrow" id="button__select_left"/>
         <div class="selection__character_preview">
-          <img class="character character--invisible" src="./assets/images/controller/egyptian.png" data-character="egyptian" data-name="Tutu">
-          <img class="character character--invisible" src="./assets/images/controller/kickapoo.png" data-character="kickapoo" data-name="Kickapoo">
-          <img class="character character--invisible" src="./assets/images/controller/knight.png" data-character="knight" data-name="Ser Gregor">
-          <img class="character character--invisible" src="./assets/images/controller/lucifer.png" data-character="lucifer" data-name="Lucifer">
+          <img class="character character--invisible" src="./assets/images/controller/egyptian.png" data-name="Egypt" data-character="egyptian" data-name="Tutu">
+          <img class="character character--invisible" src="./assets/images/controller/kickapoo.png" data-name="Kickapoo" data-character="kickapoo" data-name="Kickapoo">
+          <img class="character character--invisible" src="./assets/images/controller/knight.png" data-name="Knighty boi" data-character="knight" data-name="Ser Gregor">
+          <img class="character character--invisible" src="./assets/images/controller/lucifer.png" data-name="Lucifer" data-character="lucifer" data-name="Lucifer">
         </div>
-        <img src="./assets/images/controller/arrow.png"class="button--arrow" id="button__select_right">
+        <img src="./assets/images/controller/arrow.png"class="button--arrow" id="button__select_right"/>
       </div>
       <div class="button__select button" id="button__select">SELECT</div>
     </div>

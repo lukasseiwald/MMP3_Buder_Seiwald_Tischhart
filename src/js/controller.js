@@ -108,9 +108,11 @@ function setUpController(){
 function setUpCharacterSelection() {
   let index = 0;
   let characters = document.getElementsByClassName('character');
+  let name = document.getElementById('name');
 
   characters[0].classList.remove('character--invisible');
   characters[0].id = 'character--selected';
+  name.innerText = characters[0].dataset.name;
 
   document.getElementById('button__select_left').addEventListener('click', ()=> {
     //prev
@@ -119,6 +121,7 @@ function setUpCharacterSelection() {
     index = index == 0 ? characters.length - 1 : index - 1;
     characters[index].classList.remove('character--invisible');
     characters[index].id = 'character--selected';
+    name.innerText = characters[index].dataset.name;
   });
   document.getElementById('button__select_right').addEventListener('click', ()=> {
     //next
@@ -127,6 +130,7 @@ function setUpCharacterSelection() {
     index = index == characters.length - 1 ? 0 : index + 1;
     characters[index].classList.remove('character--invisible');
     characters[index].id = 'character--selected';
+    name.innerText = characters[index].dataset.name;
   });
 
   document.getElementById('button__select').addEventListener('click', (e)=> {
@@ -138,5 +142,7 @@ function setUpCharacterSelection() {
       selectedCharacter: document.getElementById('character--selected').dataset.character
     });
     e.currentTarget.remove();
+    document.getElementById('button__select_left').style.opacity = 0;
+    document.getElementById('button__select_right').style.opacity = 0;
   });
 }

@@ -1,5 +1,6 @@
 import {isTouchDevice} from './utils';
 import CSM from './controllerStateManager';
+import nipplejs from 'nipplejs';
 
 let airConsole = new AirConsole({"orientation": "landscape"});
 
@@ -78,8 +79,73 @@ function sendToScreen(action) {
   airConsole.message(AirConsole.SCREEN, {action: action});
 }
 
+function createStick() {
+  let stick = document.getElementsByClassName('movement__stick')[0];
+
+    let options = {
+      zone: stick,                 // active zone
+      color: "#FFFFFF",              // no dom element whatsoever
+      position: {left: '50%', top: '50%'}, // preset position for 'static' mode
+      restJoystick: true,          //
+      restOpacity: 1,              // opacity
+      size: 200,                   // nipple size
+      mode: 'static'               // 'dynamic', 'static' or 'semi'       
+  };
+
+  let draggable = nipplejs.create(options);
+  let canDash = false;
+
+  draggable.on('move', function(evt, data) {
+    // console.log(data)
+    if(!canDash) {
+      if(data.distance > 40) {
+        sendToScreen(data.direction.x);
+      }
+      else {
+        sendToScreen('idle');
+      }
+    }
+  })
+
+  let touchBorderCnt = 0;
+  let previousDistance = undefined;
+
+  draggable.on('move', function(evt, data) {
+    console.log(touchBorderCnt)
+    if(data.distance > 90 && previousDistance < 80) {
+      touchBorderCnt++;
+    }
+    if(touchBorderCnt == 2) {
+      canDash = true;
+      if(data.direction.x == 'right'){
+        sendToScreen('dashRight');
+      }
+      else {
+        sendToScreen('dashLeft')
+      }
+      canDash = false;
+      touchBorderCnt = 0;
+    }
+    previousDistance = data.distance;
+  })
+
+  draggable.on('end', function(evt, data) {
+    sendToScreen('idle');
+  })
+
+  // stick.addEventListener('touchmove', function(event) {
+  //   for (let i = 0; i < event.targetTouches.length; i++) {
+  //     let touch = event.targetTouches.item(i);
+  //     console.log(draggable)
+  //     console.log('touched ' + touch.identifier);
+  //     airConsole.message(AirConsole.SCREEN, {action: null, move: "right"});
+  //   }
+  // }, false);
+}
+
 function setUpController(){
   let buttons = document.getElementsByClassName('button');
+  createStick();
 
   if (isTouchDevice) {
     for (let button of buttons) {
@@ -89,9 +155,6 @@ function setUpController(){
       },{passive: true});
 
       button.addEventListener("touchend", function(e){
-        if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
-          sendToScreen('idle');
-        }
         button.classList.remove('button--active');
       });
     }
@@ -104,9 +167,6 @@ function setUpController(){
       },{passive: true});
 
       button.addEventListener("mouseup", function(e){
-        if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
-          sendToScreen('idle');
-        }
         button.classList.remove('button--active');
       });
     }

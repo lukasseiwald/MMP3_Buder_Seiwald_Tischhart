@@ -103,7 +103,7 @@ export default class Player {
     }
     this.moveSoulWithPlayer();
     this.moveShieldWithPlayer();
-    this.dash();
+    // this.dash();
   }
 
   moveToLeft() {
@@ -118,16 +118,18 @@ export default class Player {
     }
     this.moveSoulWithPlayer();
     this.moveShieldWithPlayer();
-    this.dash();
+    // this.dash();
   }
 
-  dash() {
-    this.dashTimer = window.game.time.totalElapsedSeconds();
-    if(this.canDash == true && (Math.abs(this.dashTimer - this.dashIdleTimer) < 0.3) && (Math.abs(this.dashTimer - this.lastDash) > 2.5)) {
+  dash(direction) {
+    // this.dashTimer = window.game.time.totalElapsedSeconds();
+    // if(this.canDash == true && (Math.abs(this.dashTimer - this.dashIdleTimer) < 0.3) && (Math.abs(this.dashTimer - this.lastDash) > 2.5)) {
+      this.player.scale.x = (direction == 'right') ? 1 : -1;
       let dash_smoke = window.game.add.sprite(this.player.x - 30, this.player.y - 80, 'dash_smoke');
       dash_smoke.scale.setTo(2 * this.scale, 2 * this.scale); //Item Size
       var dash_smoke_animation = dash_smoke.animations.add('smoking');
       dash_smoke_animation.killOnComplete = true;
+      console.log(this.player.scale.x)
       switch(this.player.scale.x) {
         case -1:
           this.player.body.moveLeft(4800 * this.scale); //multiply with delta time
@@ -141,10 +143,10 @@ export default class Player {
           break;
       }
       dash_smoke_animation.play(16);
-      this.canDash = false;
-      this.lastDash = window.game.time.totalElapsedSeconds();
-      this.dashTimer = 0;
-    }
+      // this.canDash = false;
+      // this.lastDash = window.game.time.totalElapsedSeconds();
+      // this.dashTimer = 0;
+    // }
   }
 
   jump() {

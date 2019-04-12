@@ -120,7 +120,7 @@ export default class Base {
 
   won() {
     this.image.destroy();
-    window.game.global.playerManager.broadcast({screen: 'game', action: 'restart'});
-    window.game.state.start('Level1');
+    window.game.global.playerManager.broadcast({screen: 'waiting', action: 'characterSelection'});
+    window.game.state.start('CharacterSelection');
   }
 }

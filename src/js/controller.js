@@ -113,10 +113,11 @@ function setUpCharacterSelection() {
   let test = document.getElementsByClassName(deviceId)[0];
   let index = 0;
   let characters = test.getElementsByClassName('character');
-  console.log(characters);
+  let name = document.getElementById('name');
 
   characters[0].classList.remove('character--invisible');
   characters[0].id = 'character--selected';
+  name.innerText = characters[0].dataset.name;
 
   console.log(test.querySelector('#button__select_left'));
 
@@ -127,6 +128,7 @@ function setUpCharacterSelection() {
     index = (((index-1)%(characters.length-1))+(characters.length-1))%(characters.length-1);
     characters[index].classList.remove('character--invisible');
     characters[index].id = 'character--selected';
+    name.innerText = characters[index].dataset.name;
   });
   test.querySelector('#button__select_right').addEventListener('click', ()=> {
     //next
@@ -135,6 +137,7 @@ function setUpCharacterSelection() {
     index = (((index+1)%(characters.length-1))+(characters.length-1))%(characters.length-1);
     characters[index].classList.remove('character--invisible');
     characters[index].id = 'character--selected';
+    name.innerText = characters[index].dataset.name;
   });
 
   test.querySelector('#button__select').addEventListener('click', (e)=> {
@@ -146,5 +149,7 @@ function setUpCharacterSelection() {
       selectedCharacter: document.getElementById('character--selected').dataset.character
     });
     e.currentTarget.remove();
+    document.getElementById('button__select_left').style.opacity = 0;
+    document.getElementById('button__select_right').style.opacity = 0;
   });
 }

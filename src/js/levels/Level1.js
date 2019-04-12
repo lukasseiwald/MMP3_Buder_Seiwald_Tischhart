@@ -206,12 +206,12 @@ export default class extends Phaser.State {
       }
 
       this.createMap(map);
-
+      index = 0;
       for (let [deviceId, value] of window.game.global.playerManager.getPlayers()) {
-        let healthBar = this.game.add.sprite(characterSettings[index].baseX - 50, characterSettings[index].baseY - 100, bmd);
+        let healthBar = window.game.add.sprite(characterSettings[index].healthbarX,characterSettings[index].healthbarY, bmd);
         healthBar.cropEnabled = true;
         healthBar.crop(widthLife);
-        this.game.global.healthBars[deviceId] = healthBar;
+        window.game.global.healthBars[deviceId] = healthBar;
         index += 1;
       }
     }
@@ -324,7 +324,7 @@ export default class extends Phaser.State {
 
           collisionTile.body.clearShapes();
           switch (tile) {
-            case 1: //Rampe Rauf  0, 33, 15, 20, 35, 0
+            case 1: //Rampe Rauf 
               collisionTile.body.addPolygon({}, 0, 33 * scale, 15 * scale, 20, 34 * scale, -4 * scale);
               break;
             case 3: //Rampe Runter

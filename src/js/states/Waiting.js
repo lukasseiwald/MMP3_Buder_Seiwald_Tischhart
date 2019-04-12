@@ -63,12 +63,6 @@ export default class extends Phaser.State {
         updateScreen();
       }
       if (window.game.global.playerManager.getConnectedPlayerNum() >= 4) {
-        window.game.global.airConsole.broadcast(
-          {
-            screen: 'waiting',
-            action: 'change_to_controller'
-          })
-        that.state.start('Level1')
         let masterId = window.game.global.playerManager.getMaster();
         touchToContinue.text = 'Master Player (' + window.game.global.playerManager.getNickname(masterId) + ') please tap on Touchscreen to continue';
         window.game.global.playerManager.sendMessageToPlayer(masterId,

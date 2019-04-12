@@ -34,6 +34,7 @@ function handleWaiting(data){
     case 'characterSelection':
       csm.startState('characterSelection');
       setUpCharacterSelection();
+    case 'get_id':
   }
 }
 
@@ -174,7 +175,12 @@ function setUpController(){
 }
 
 function setUpCharacterSelection() {
+  let deviceId = airConsole.getDeviceId();
+  console.log();
+
+  document.getElementById('stage').classList.add(deviceId);
   let index = 0;
+  let test = document.getElementsByClassName(airConsole.getDeviceId())[0];
   let characters = document.getElementsByClassName('character');
   let name = document.getElementById('name');
 
@@ -182,26 +188,27 @@ function setUpCharacterSelection() {
   characters[0].id = 'character--selected';
   name.innerText = characters[0].dataset.name;
 
-  document.getElementById('button__select_left').addEventListener('click', ()=> {
+
+  test.querySelector('#button__select_left').addEventListener('touchstart', (e)=> {
     //prev
     characters[index].id = '';
     characters[index].classList.add('character--invisible');
-    index = index == 0 ? characters.length - 1 : index - 1;
+    index = (((index-1)%(characters.length))+(characters.length))%(characters.length);
     characters[index].classList.remove('character--invisible');
     characters[index].id = 'character--selected';
     name.innerText = characters[index].dataset.name;
   });
-  document.getElementById('button__select_right').addEventListener('click', ()=> {
+  test.querySelector('#button__select_right').addEventListener('touchstart', ()=> {
     //next
     characters[index].classList.add('character--invisible');
     characters[index].id = '';
-    index = index == characters.length - 1 ? 0 : index + 1;
+    index = (((index+1)%(characters.length))+(characters.length))%(characters.length);
     characters[index].classList.remove('character--invisible');
     characters[index].id = 'character--selected';
     name.innerText = characters[index].dataset.name;
   });
 
-  document.getElementById('button__select').addEventListener('click', (e)=> {
+  test.querySelector('#button__select').addEventListener('touchstart', (e)=> {
     console.log(document.getElementById('character--selected').dataset.character);
     airConsole.message(AirConsole.SCREEN,
     {

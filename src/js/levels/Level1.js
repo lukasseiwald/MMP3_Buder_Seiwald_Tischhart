@@ -243,6 +243,7 @@ export default class extends Phaser.State {
               break;
             case 'jump':
               character.jump();
+              character.movingTo = 'jump';
               break;
             case 'shoot':
               character.shoot();
@@ -319,13 +320,14 @@ export default class extends Phaser.State {
         if (tile !== 0) { // 0 => empty tile
           let collisionTile = this.game.add.sprite(c * unit, r * unit, 'tiles', tile -1);
           collisionTile.scale.setTo(scale, scale);
-          this.game.physics.p2.enable(collisionTile, true); // enable(collisionTile, true);  too see box
+          this.game.physics.p2.enable(collisionTile); // enable(collisionTile, true);  too see box
           collisionTile.body.static = true;
 
           collisionTile.body.clearShapes();
           switch (tile) {
             case 1: //Rampe Rauf 
-              collisionTile.body.addPolygon({}, 0, 33 * scale, 15 * scale, 20, 34 * scale, -4 * scale);
+              collisionTile.body.addPolygon({}, 0, 33 * scale, 33 * scale, 0, 17, 23);
+              //collisionTile.body.addPolygon({}, 0, 33 * scale, 15 * scale, 20, 34 * scale, -4 * scale);
               break;
             case 3: //Rampe Runter
               collisionTile.body.addPolygon({},  0, 0, 12 * scale, 23 * scale, 34 * scale, 32 * scale);

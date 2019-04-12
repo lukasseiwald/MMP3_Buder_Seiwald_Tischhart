@@ -25,8 +25,8 @@ export default class Soul {
     this.soul.body.collides(playerCollisionGroup);
     this.soul.body.collides(baseCollisionGroup, this.basedSoul, this);
     this.soul.body.data.gravityScale = 0;
-    this.soul.fixedX = true;
-    this.soul.fixedY = true;
+    this.soul.fixedX = false;
+    this.soul.fixedY = false;
     this.soul.beingCarried = false;
 
     this.soul.animations.add('souling');

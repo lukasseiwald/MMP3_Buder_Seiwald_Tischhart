@@ -56,14 +56,21 @@
 
         /* Character Selection State*/
         .selection__wrapper {
+          width: 90%;
           z-index: 2;
+          flex: 4;
           display:flex;
-          justify-content: space-around;
+          justify-content: space-between;
           align-items: center;
         }
 
-        .selection__wrapper button {
+        .button__select {
           font-family: 'Bungee', cursive;
+          border-radius: 0 !important;
+          height: 50px !important;
+          flex: 1;
+          margin-bottom:2%;
+
 
         }
 
@@ -217,14 +224,13 @@
 
     <!-- CHARACTER SELECTION STATE -->
     <div id="state--character_selection" class="state character_selection">
-      <p class="selection__headline">CHOOSE YOUR CHARACTER</p>
       <div class="selection__wrapper">
         <img src="./assets/images/controller/arrow_left.gif" id="button__select_left">
         <div class="selection__character_preview">
-          <img class="character character--invisible" src="./assets/images/controller/egyptian.png" data-character="egyptian">
-          <img class="character character--invisible" src="./assets/images/controller/kickapoo.png" data-character="kickapoo">
-          <img class="character character--invisible" src="./assets/images/controller/knight.png" data-character="knight">
-          <img class="character character--invisible" src="./assets/images/controller/lucifer.png" data-character="lucifer">
+          <img class="character character--invisible" src="./assets/images/controller/egyptian.png" data-character="egyptian" data-name="Tutu">
+          <img class="character character--invisible" src="./assets/images/controller/kickapoo.png" data-character="kickapoo" data-name="Kickapoo">
+          <img class="character character--invisible" src="./assets/images/controller/knight.png" data-character="knight" data-name="Ser Gregor">
+          <img class="character character--invisible" src="./assets/images/controller/lucifer.png" data-character="lucifer" data-name="Lucifer">
         </div>
         <img src="./assets/images/controller/arrow_right.gif" id="button__select_right">
       </div>

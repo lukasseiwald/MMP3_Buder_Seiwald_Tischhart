@@ -31,7 +31,7 @@ export default class PlayerManager {
     player.skin = skin;
     this.players.set(deviceId, player);
   }
-
+  
   getPlayer(deviceId) {
     return this.players.get(deviceId);
   }

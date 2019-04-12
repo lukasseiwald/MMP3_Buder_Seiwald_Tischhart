@@ -11,8 +11,7 @@ csm.setState('game', 'state--game');
 csm.setState('winning', 'state--winning');
 csm.setState('loosing', 'state--loosing');
 
-csm.startState('characterSelection');
-setUpCharacterSelection();
+csm.startState('waiting');
 
 airConsole.onReady = function() {
   let name = document.getElementsByClassName('waiting__name')[0];
@@ -38,6 +37,7 @@ function handleWaiting(data){
     case 'characterSelection':
       csm.startState('characterSelection');
       setUpCharacterSelection();
+    case 'get_id':
   }
 }
 
@@ -106,30 +106,38 @@ function setUpController(){
 }
 
 function setUpCharacterSelection() {
+  let deviceId = airConsole.getDeviceId();
+  console.log(airConsole.getDeviceId());
+
+  document.getElementById('stage').classList.add(deviceId);
+  let test = document.getElementsByClassName(deviceId)[0];
   let index = 0;
-  let characters = document.getElementsByClassName('character');
+  let characters = test.getElementsByClassName('character');
+  console.log(characters);
 
   characters[0].classList.remove('character--invisible');
   characters[0].id = 'character--selected';
 
-  document.getElementById('button__select_left').addEventListener('click', ()=> {
+  console.log(test.querySelector('#button__select_left'));
+
+  test.querySelector('#button__select_left').addEventListener('click', ()=> {
     //prev
     characters[index].id = '';
     characters[index].classList.add('character--invisible');
-    index = index == 0 ? characters.length - 1 : index - 1;
+    index = (((index-1)%(characters.length-1))+(characters.length-1))%(characters.length-1);
     characters[index].classList.remove('character--invisible');
     characters[index].id = 'character--selected';
   });
-  document.getElementById('button__select_right').addEventListener('click', ()=> {
+  test.querySelector('#button__select_right').addEventListener('click', ()=> {
     //next
     characters[index].classList.add('character--invisible');
     characters[index].id = '';
-    index = index == characters.length - 1 ? 0 : index + 1;
+    index = (((index+1)%(characters.length-1))+(characters.length-1))%(characters.length-1);
     characters[index].classList.remove('character--invisible');
     characters[index].id = 'character--selected';
   });
 
-  document.getElementById('button__select').addEventListener('click', (e)=> {
+  test.querySelector('#button__select').addEventListener('click', (e)=> {
     console.log(document.getElementById('character--selected').dataset.character);
     airConsole.message(AirConsole.SCREEN,
     {

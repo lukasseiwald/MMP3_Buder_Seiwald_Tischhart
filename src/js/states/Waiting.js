@@ -53,10 +53,12 @@ export default class extends Phaser.State {
     //FUNCTIONS & LISTENERS
   
     window.game.global.airConsole.onConnect = function(deviceId) {
+      window.game.global.playerManager.sendMessageToPlayer(deviceId, {screen: 'waiting', action:'get_id'});
+      
       if(window.game.global.playerManager.getConnectedPlayerNum() < 4) {
         window.game.global.playerManager.addPlayer(deviceId);
         updateScreen();
-      }
+        }
       if (window.game.global.playerManager.getConnectedPlayerNum() >= 4) {
         // window.game.global.airConsole.broadcast(
         //   {

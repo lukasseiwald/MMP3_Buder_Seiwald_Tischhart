@@ -58,17 +58,33 @@ export default class Player {
         this.player.body.moveLeft(0);
     }
 
-    if(this.player.body.y > window.game.height - 10) {
-      this.player.body.y = 0;
+    if(this.player.body.y > window.game.height) {
+      this.player.body.y = 60;
+      this.moveSoulWithPlayer();
+      if(this.player.obtainedSoul != null) {
+        this.player.obtainedSoul.reset(this.player.body.x, this.player.body.y - 50);
+      }
     }
     else if(this.player.body.y < 0){
-      this.player.body.y = window.game.height;
+      this.player.body.y = window.game.height - 50;
+      this.moveSoulWithPlayer();
+      if(this.player.obtainedSoul != null) {
+        this.player.obtainedSoul.reset(this.player.body.x, this.player.body.y - 50);
+      }
     }
-    if(this.player.body.x > window.game.width -10) {
-      this.player.body.x = 5;
+    if(this.player.body.x > window.game.width) {
+      this.player.body.x = 40;
+      this.moveSoulWithPlayer();
+      if(this.player.obtainedSoul != null) {
+        this.player.obtainedSoul.reset(this.player.body.x, this.player.body.y - 50);
+      }
     }
     else if(this.player.body.x < 0){
-      this.player.body.x = window.game.width - 10;
+      this.player.body.x = window.game.width - 50;
+      this.moveSoulWithPlayer();
+      if(this.player.obtainedSoul != null) {
+        this.player.obtainedSoul.reset(this.player.body.x, this.player.body.y - 50);
+      }
     }
     if(this.jumpCount > 0 && this.isGrounded()) {
       this.jumpCount = 0;
@@ -84,7 +100,6 @@ export default class Player {
     //Keep on playing hurt animation
     if(this.player.animations.name === 'hurt') {
       this.player.animations.killOnComplete;
-      this.player.animations.play("idle");
     }
     else {
       this.player.animations.play('idle');
@@ -129,18 +144,13 @@ export default class Player {
       dash_smoke.scale.setTo(2 * this.scale, 2 * this.scale); //Item Size
       var dash_smoke_animation = dash_smoke.animations.add('smoking');
       dash_smoke_animation.killOnComplete = true;
-      console.log(this.player.scale.x)
-      switch(this.player.scale.x) {
-        case -1:
+      if(this.player.scale.x < 0) {
           this.player.body.moveLeft(4800 * this.scale); //multiply with delta time
-          dash_smoke.scale.x = -1.5
-          break;
-        case 1:
+          dash_smoke.scale.x = - this.scale;
+      }
+      else if(this.player.scale.x > 0) {
           this.player.body.moveRight(4800 * this.scale);
-          dash_smoke.scale.x = 1;
-          break;
-        default:
-          break;
+          dash_smoke.scale.x = this.scale;
       }
       dash_smoke_animation.play(16);
       // this.canDash = false;
@@ -369,7 +379,6 @@ export default class Player {
   }
 
   obtainedSoul(player, soul) {
-    console.log(this.player.obtainedSoul);
     //check if player already carries a soul and if player already previous obtained the soul
     if(this.player.collectedSouls.includes(soul.sprite.key)) {
       if(!soul.beingCarried) {
@@ -398,6 +407,14 @@ export default class Player {
 
   moveSoulWithPlayer() {
     if(this.player.obtainedSoul) {
+      //this.player.obtainedSoul.reset(this.player.x, this.player.y - 50)
+      this.player.obtainedSoul.x = this.player.x;
+      this.player.obtainedSoul.y = this.player.y - 50;
+    }
+  }
+
+  jumpSoulWithPlayer() {
+    if(this.player.obtainedSoul) {
       this.player.obtainedSoul.x = this.player.x;
       this.player.obtainedSoul.y = this.player.y - 50;
     }
@@ -422,7 +439,6 @@ export default class Player {
         if(player.sprite.shield != null) {
           player.sprite.shield.kill();
         }
-        console.log(this.unit)
         player.sprite.shield = window.game.add.sprite(this.player.x - 2 * this.unit, this.player.y - 2 * this.unit, 'shield_character');
         player.sprite.shield.scale.setTo(this.scale, this.scale);
         player.sprite.shield.enableBody = true;

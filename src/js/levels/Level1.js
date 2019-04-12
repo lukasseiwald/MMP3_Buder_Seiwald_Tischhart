@@ -319,7 +319,7 @@ export default class extends Phaser.State {
         if (tile !== 0) { // 0 => empty tile
           let collisionTile = this.game.add.sprite(c * unit, r * unit, 'tiles', tile -1);
           collisionTile.scale.setTo(scale, scale);
-          this.game.physics.p2.enable(collisionTile, true); // enable(collisionTile, true);  too see box
+          this.game.physics.p2.enable(collisionTile); // enable(collisionTile, true);  too see box
           collisionTile.body.static = true;
 
           collisionTile.body.clearShapes();

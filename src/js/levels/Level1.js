@@ -324,36 +324,38 @@ export default class extends Phaser.State {
 
           collisionTile.body.clearShapes();
           switch (tile) {
-            // case 1: //Rampe Rauf
-            //   collisionTile.body.addPolygon({}, 0, 33 * scale, 0, 0, 33 * scale, 0, 33 * scale, 33 * scale);
-            //   break;
-            // case 3: //Rampe Runter
-            //   collisionTile.body.addPolygon({},  0, 0, 12 * scale, 23 * scale, 34 * scale, 32 * scale);
-            //   break;
-            // case 4: //Linke Kante
-            //   collisionTile.body.addPolygon({}, 28 * scale, 4 * scale, 28 * scale, 33 * scale, 10, 33 * scale, 2 * scale, 4 * scale);
-            //   break;
+            case 1: //Rampe Rauf  0, 33, 15, 20, 35, 0
+              collisionTile.body.addPolygon({}, 0, 33 * scale, 15 * scale, 20, 34 * scale, -4 * scale);
+              break;
+            case 3: //Rampe Runter
+              collisionTile.body.addPolygon({},  0, 0, 12 * scale, 23 * scale, 34 * scale, 32 * scale);
+              break;
+            case 4: //Linke Kante
+              collisionTile.body.addPolygon({}, 0, 33 * scale, 0, 0, 33 * scale, 0, 33 * scale, 33 * scale);
+              //collisionTile.body.addPolygon({}, 28 * scale, 4 * scale, 28 * scale, 33 * scale, 10, 33 * scale, 1 * scale, 1 * scale);
+              break;
             // case 5: //Linker Ansatz an Kante
             //   collisionTile.body.addPolygon({}, 0, 32 * scale,  0, 3 * scale,  33 * scale, 3 * scale, 33 * scale, 32 * scale);
             //   break;
             // case 6: //Rechter Ansatz an Kante
             //   collisionTile.body.addPolygon({}, 0, 32 * scale , 0, 3 * scale, 33 * scale, 3 * scale, 33 * scale, 32 * scale);
             //   break;
-            // case 7: //Rechte Kante
-            //   collisionTile.body.addPolygon({}, 22 * scale, 33 * scale, 4 * scale, 33 * scale,  4 * scale, 4 * scale, 31 * scale, 4 * scale);
-            //   break;
+            case 7: //Rechte Kante
+              collisionTile.body.addPolygon({}, 0, 33 * scale, 0, 0, 33 * scale, 0, 33 * scale, 33 * scale);
+              //collisionTile.body.addPolygon({}, 22 * scale, 33 * scale, 4 * scale, 33 * scale,  4 * scale, 4 * scale, 31 * scale, 4 * scale);
+              break;
             // case 8: //Wand nach Rechts schauend
-            //   collisionTile.body.addPolygon({}, 0, 33 * scale, 0, 0, 33 * scale, 0, 33 * scale, 33 * scale);
+            //   collisionTile.body.addPolygon({}, 0, 22 * scale, 0, 0, 15 * scale, 0, 15 * scale, 22 * scale);
             //   break;
             // case 9: //Wand nach Links schauend
             //   collisionTile.body.addPolygon({}, 0, 33 * scale, 0, 0, 33 * scale, 0, 33 * scale, 33 * scale);
             //   break;
-            // case 11: //Rampen Boden rauf
-            //   collisionTile.body.addPolygon({}, 1 * scale, 33 * scale, 15 * scale, 15 * scale, 32 * scale, 2 * scale);
-            //   break;
-            // case 12: //Rampen Boden runter
-            //   collisionTile.body.addPolygon({}, 12 * scale, 0, 18 * scale, 10 * scale, 40 * scale, 42 * scale);
-            //   break;
+            case 11: //Rampen Boden rauf
+              collisionTile.body.addPolygon({}, 1 * scale, 33 * scale, 15 * scale, 15 * scale, 32 * scale, 2 * scale);
+              break;
+            case 12: //Rampen Boden runter
+              collisionTile.body.addPolygon({}, 12 * scale, 0, 18 * scale, 10 * scale, 40 * scale, 33 * scale);
+              break;
             default:
               collisionTile.body.addPolygon({}, 0, 33 * scale, 0, 0, 33 * scale, 0, 33 * scale, 33 * scale);
           }

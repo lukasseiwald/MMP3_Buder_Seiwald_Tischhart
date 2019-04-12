@@ -61,6 +61,12 @@ export default class Player {
     else if(this.player.body.y < 0){
       this.player.body.y = window.game.height;
     }
+    if(this.player.body.x > window.game.width -10) {
+      this.player.body.x = 5;
+    }
+    else if(this.player.body.x < 0){
+      this.player.body.x = window.game.width - 10;
+    }
     if(this.jumpCount > 0 && this.isGrounded()) {
       this.jumpCount = 0;
     }
@@ -75,6 +81,7 @@ export default class Player {
     //Keep on playing hurt animation
     if(this.player.animations.name === 'hurt') {
       this.player.animations.killOnComplete;
+      this.player.animations.play("idle");
     }
     else {
       this.player.animations.play('idle');

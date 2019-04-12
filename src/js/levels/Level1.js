@@ -108,7 +108,7 @@ export default class extends Phaser.State {
     ]
 
     this.game.physics.startSystem(Phaser.Physics.P2JS);
-    this.game.physics.p2.setBoundsToWorld(false, false, false, false);
+    this.game.physics.p2.setBoundsToWorld(true, true, false, false);
     this.game.physics.p2.gravity.y = 4000;
 
     //  little bouncey
@@ -243,7 +243,7 @@ export default class extends Phaser.State {
               break;
             case 'jump':
               character.jump();
-              character.movingTo = 'jump';
+              // character.movingTo = 'jump';
               break;
             case 'shoot':
               character.shoot();

@@ -51,8 +51,6 @@ export default class Player {
       case 'left':
         this.moveToLeft();
         break;
-      case 'jump':
-        break; 
       default:
         this.moveSoulWithPlayer();
         this.moveShieldWithPlayer();
@@ -60,26 +58,30 @@ export default class Player {
         this.player.body.moveLeft(0);
     }
 
-    if(this.player.body.y > window.game.height - 10) {
-      this.player.body.y = 0;
+    if(this.player.body.y > window.game.height) {
+      this.player.body.y = 60;
+      this.moveSoulWithPlayer();
       if(this.player.obtainedSoul != null) {
         this.player.obtainedSoul.reset(this.player.body.x, this.player.body.y - 50);
       }
     }
     else if(this.player.body.y < 0){
-      this.player.body.y = window.game.height;
+      this.player.body.y = window.game.height - 50;
+      this.moveSoulWithPlayer();
       if(this.player.obtainedSoul != null) {
         this.player.obtainedSoul.reset(this.player.body.x, this.player.body.y - 50);
       }
     }
-    if(this.player.body.x > window.game.width -10) {
-      this.player.body.x = 5;
+    if(this.player.body.x > window.game.width) {
+      this.player.body.x = 40;
+      this.moveSoulWithPlayer();
       if(this.player.obtainedSoul != null) {
         this.player.obtainedSoul.reset(this.player.body.x, this.player.body.y - 50);
       }
     }
     else if(this.player.body.x < 0){
-      this.player.body.x = window.game.width - 10;
+      this.player.body.x = window.game.width - 50;
+      this.moveSoulWithPlayer();
       if(this.player.obtainedSoul != null) {
         this.player.obtainedSoul.reset(this.player.body.x, this.player.body.y - 50);
       }
@@ -158,7 +160,7 @@ export default class Player {
 
   jump() {
     this.jumpCount += 1;
-    this.jumpSoulWithPlayer();
+    this.moveSoulWithPlayer();
     this.moveShieldWithPlayer();
     if (this.jumpCount < 2) {
       this.player.animations.play('jump');
@@ -404,9 +406,9 @@ export default class Player {
 
   moveSoulWithPlayer() {
     if(this.player.obtainedSoul) {
-      this.player.obtainedSoul.reset(this.player.x, this.player.y - 50)
-      // this.player.obtainedSoul.x = this.player.x;
-      // this.player.obtainedSoul.y = this.player.y - 50;
+      //this.player.obtainedSoul.reset(this.player.x, this.player.y - 50)
+      this.player.obtainedSoul.x = this.player.x;
+      this.player.obtainedSoul.y = this.player.y - 50;
     }
   }
 

@@ -90,7 +90,7 @@ function createStick() {
       restJoystick: true,          //
       restOpacity: 1,              // opacity
       size: 200,                   // nipple size
-      mode: 'static'               // 'dynamic', 'static' or 'semi'       
+      mode: 'static'               // 'dynamic', 'static' or 'semi'
   };
 
   let draggable = nipplejs.create(options);
@@ -112,7 +112,6 @@ function createStick() {
   let previousDistance = undefined;
 
   draggable.on('move', function(evt, data) {
-    console.log(touchBorderCnt)
     if(data.distance > 90 && previousDistance < 80) {
       touchBorderCnt++;
     }
@@ -176,7 +175,6 @@ function setUpController(){
 
 function setUpCharacterSelection() {
   let deviceId = airConsole.getDeviceId();
-  console.log();
 
   document.getElementById('stage').classList.add(deviceId);
   let index = 0;
@@ -209,7 +207,6 @@ function setUpCharacterSelection() {
   });
 
   test.querySelector('#button__select').addEventListener('touchstart', (e)=> {
-    console.log(document.getElementById('character--selected').dataset.character);
     airConsole.message(AirConsole.SCREEN,
     {
       screen: 'character_selection',

@@ -13,7 +13,7 @@ class Game extends Phaser.Game {
   constructor () {
     //1840 1020
 
-    super(1848, 1023, Phaser.CANVAS, 'content', null)
+    super(1848, 1023, Phaser.AUTO, 'content', null)
 
     this.state.add('Boot', BootState, false);
     this.state.add('Splash', SplashState, false);

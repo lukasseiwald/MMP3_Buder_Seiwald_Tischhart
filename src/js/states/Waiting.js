@@ -55,7 +55,7 @@ export default class extends Phaser.State {
     numberOfPlayers.anchor.setTo(0.5, 0.5);
 
     //FUNCTIONS & LISTENERS
-  
+
     window.game.global.airConsole.onConnect = function(deviceId) {
       console.log('someone connected');
       if(window.game.global.playerManager.getConnectedPlayerNum() < 4) {

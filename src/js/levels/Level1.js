@@ -324,7 +324,7 @@ export default class extends Phaser.State {
 
           collisionTile.body.clearShapes();
           switch (tile) {
-            case 1: //Rampe Rauf 
+            case 1: //Rampe Rauf
               collisionTile.body.addPolygon({}, 0, 33 * scale, 15 * scale, 20, 34 * scale, -4 * scale);
               break;
             case 3: //Rampe Runter

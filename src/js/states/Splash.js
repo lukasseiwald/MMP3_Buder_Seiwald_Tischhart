@@ -22,7 +22,7 @@ export default class extends Phaser.State {
     window.game.global.healthBars = [];
 
     if(window.game.global.dev) {
-      this.state.start('Level1')
+      this.state.start('CharacterSelection')
     }
     else {
       this.state.start('Waiting')

@@ -13,7 +13,6 @@ export default class extends Phaser.State {
   }
 
   create () {
-    window.game.scale.onResize = this.resize;
     window.game.global.playerManager = new PlayerManager();
     window.game.global.playerManager.setConnectedPlayers();
 
@@ -83,13 +82,13 @@ export default class extends Phaser.State {
 
     window.game.global.airConsole.onMessage = function(deviceId, data) {
       switch (data.action) {
-        case 'start_game':
+        case 'start_character_selection':
           window.game.global.airConsole.broadcast(
             {
               screen: 'waiting',
-              action: 'change_to_controller'
+              action: 'characterSelection'
             })
-          that.state.start('Level1')
+          that.state.start('CharacterSelection')
           break;
       }
     }
@@ -98,12 +97,6 @@ export default class extends Phaser.State {
       numberOfPlayers.text = window.game.global.playerManager.getConnectedPlayerNum() + '/4 players connected';
       playerNames.text = window.game.global.playerManager.getAllNicknames().toString();
     }
-  }
-
-  resize() {
-    console.log('resize')
-    // this.bg1.width = window.game.world.width;
-    // this.bg1.height = window.game.world.height;
   }
 
   update() {

@@ -6,6 +6,7 @@ let airConsole = new AirConsole({"orientation": "landscape"});
 let csm = new CSM('stage');
 
 csm.setState('waiting', 'state--waiting');
+csm.setState('characterSelection', 'state--character_selection')
 csm.setState('game', 'state--game');
 csm.setState('winning', 'state--winning');
 csm.setState('loosing', 'state--loosing');
@@ -25,14 +26,13 @@ function handleWaiting(data){
         airConsole.message(AirConsole.SCREEN,
           {
             screen: 'waiting',
-            action: 'start_game'
+            action: 'start_character_selection'
           });
       })
       break;
-    case 'change_to_controller':
-      csm.startState('game');
-      setUpController();
-      break;
+    case 'characterSelection':
+      csm.startState('characterSelection');
+      setUpCharacterSelection();
   }
 }
 
@@ -50,6 +50,16 @@ function handleGame(data) {
   }
 }
 
+function handleCharacterSelection(data) {
+  switch (data.action) {
+  case 'change_to_controller':
+    csm.startState('game');
+    setUpController();
+    break;
+  }
+}
+
+
 airConsole.onMessage = function(from, data) {
   switch (data.screen) {
     case 'waiting':
@@ -57,6 +67,9 @@ airConsole.onMessage = function(from, data) {
       break;
     case 'game':
       handleGame(data);
+      break;
+    case 'characterSelection':
+      handleCharacterSelection(data);
       break;
   }
 }
@@ -98,4 +111,46 @@ function setUpController(){
       });
     }
   }
+}
+
+function setUpCharacterSelection() {
+  let index = 0;
+  let characters = document.getElementsByClassName('character');
+  let name = document.getElementById('name');
+
+  characters[0].classList.remove('character--invisible');
+  characters[0].id = 'character--selected';
+  name.innerText = characters[0].dataset.name;
+
+  document.getElementById('button__select_left').addEventListener('click', ()=> {
+    //prev
+    characters[index].id = '';
+    characters[index].classList.add('character--invisible');
+    index = index == 0 ? characters.length - 1 : index - 1;
+    characters[index].classList.remove('character--invisible');
+    characters[index].id = 'character--selected';
+    name.innerText = characters[index].dataset.name;
+  });
+  document.getElementById('button__select_right').addEventListener('click', ()=> {
+    //next
+    characters[index].classList.add('character--invisible');
+    characters[index].id = '';
+    index = index == characters.length - 1 ? 0 : index + 1;
+    characters[index].classList.remove('character--invisible');
+    characters[index].id = 'character--selected';
+    name.innerText = characters[index].dataset.name;
+  });
+
+  document.getElementById('button__select').addEventListener('click', (e)=> {
+    console.log(document.getElementById('character--selected').dataset.character);
+    airConsole.message(AirConsole.SCREEN,
+    {
+      screen: 'character_selection',
+      action: 'character_selected',
+      selectedCharacter: document.getElementById('character--selected').dataset.character
+    });
+    e.currentTarget.remove();
+    document.getElementById('button__select_left').style.opacity = 0;
+    document.getElementById('button__select_right').style.opacity = 0;
+  });
 }

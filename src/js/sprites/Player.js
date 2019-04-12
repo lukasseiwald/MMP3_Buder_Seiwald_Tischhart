@@ -18,7 +18,7 @@ export default class Player {
     this.spawnX = spawnX;
     this.spawnY = spawnY;
     this.skin = skin;
-    //113px hoch!
+
     this.scale = window.game.global.scale;
     this.unit = window.game.global.unit;
   }

@@ -1,10 +1,11 @@
 export default class Particle {
 	constructor(type, offset = 0, lifetime, amount){
+		this.type = type;
 		this.amount = amount;
 		this.game = window.game;
 		this.lifetime = lifetime;
 		this.offset = offset;
-		this.setParticle(type);
+		this.setParticle(this.type);
 	}
 
 	setParticle(type) {

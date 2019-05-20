@@ -4,13 +4,9 @@ import Particle from '../Particle';
 import { headlineStyling, subheadlineStyling } from '../stylings'
 
 export default class extends Phaser.State {
-  init () {
-    console.log("Character Selection")
-  }
+  init () {}
 
-  preload () {
-
-  }
+  preload () {}
 
   create () {
     this.timer = 0;
@@ -60,7 +56,7 @@ export default class extends Phaser.State {
         x: this.world.width * .21,
         y: this.world.height * .58,
         nickname : 'player 1',
-        xText: this.world.width * (2.2/10),
+        xText: this.world.width * 0.22,
         yText: this.world.height * .79
       },
       {
@@ -68,7 +64,7 @@ export default class extends Phaser.State {
         x: this.world.width * .41,
         y: this.world.height * .58,
         nickname : 'player 2',
-        xText: this.world.width * (4.2/10),
+        xText: this.world.width * 0.42,
         yText: this.world.height * .79
       },
       {
@@ -76,7 +72,7 @@ export default class extends Phaser.State {
         x: this.world.width * .62,
         y: this.world.height * .58,
         nickname : 'player 3',
-        xText: this.world.width * (6.2/10),
+        xText: this.world.width * 0.62,
         yText: this.world.height * .79
       },
       {
@@ -84,16 +80,16 @@ export default class extends Phaser.State {
         x: this.world.width * .82,
         y: this.world.height * .58,
         nickname : 'player 4',
-        xText: this.world.width * (8.2/10),
+        xText: this.world.width * 0.82,
         yText: this.world.height * .79
       }
     ]
 
     // //Character Silhouettes
-    let player1 = addImage(this, this.world.width * (1.1/10), this.world.height / 2.4, 'characterSilhouette', 300, 300);
-    let player2 = addImage(this, this.world.width * (3.1/10), this.world.height / 2.4, 'characterSilhouette', 300, 300);
-    let player3 = addImage(this, this.world.width * (5.1/10), this.world.height / 2.4, 'characterSilhouette', 300, 300);
-    let player4 = addImage(this, this.world.width * (7.1/10), this.world.height / 2.4, 'characterSilhouette', 300, 300);
+    let player1 = addImage(this, this.world.width * 0.11, this.world.height / 2.4, 'characterSilhouette', 300, 300);
+    let player2 = addImage(this, this.world.width * 0.31, this.world.height / 2.4, 'characterSilhouette', 300, 300);
+    let player3 = addImage(this, this.world.width * 0.51, this.world.height / 2.4, 'characterSilhouette', 300, 300);
+    let player4 = addImage(this, this.world.width * 0.71, this.world.height / 2.4, 'characterSilhouette', 300, 300);
 
     window.game.global.airConsole.onMessage = function(deviceId, data) {
       let character = window.game.global.playerManager.getPlayerCharacter(deviceId);

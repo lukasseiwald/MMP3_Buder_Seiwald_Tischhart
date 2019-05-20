@@ -61,6 +61,12 @@ export default class extends Phaser.State {
     this.load.spritesheet('shield_item', '../../assets/items/shield.png', 50, 50, 5);
     this.load.image('shield_character', '../../assets/items/shield2.png'); 
 
+    //LOAD CHARACTER HEAD FOR SCORE
+    this.load.image('egyptian_head', '../../assets/images/controller/egyptian.png');
+    this.load.image('knight_head', '../../assets/images/controller/knight.png');
+    this.load.image('lucifer_head', '../../assets/images/controller/lucifer.png');
+    this.load.image('kickapoo_head', '../../assets/images/controller/kickapoo.png');
+
     //LOADING EXTRAS
     this.load.spritesheet('dash_smoke', '../../assets/extras/dash/dash_smoke.png', 60, 60, 9);
 

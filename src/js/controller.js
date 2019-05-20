@@ -1,6 +1,5 @@
 import {isTouchDevice} from './utils';
 import CSM from './controllerStateManager';
-import nipplejs from 'nipplejs';
 import '../scss/style.scss'
 
 let airConsole = new AirConsole({"orientation": "landscape"});

@@ -74,6 +74,11 @@ body {
   margin: 5vw;
 }
 
+.selection__character_inactive {
+  filter: grayscale(100%);
+  pointer-events: none;
+}
+
 /* Winning/ Losing State*/
 .loosing,
 .winning {

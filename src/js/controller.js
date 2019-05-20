@@ -1,6 +1,7 @@
 import {isTouchDevice} from './utils';
 import CSM from './controllerStateManager';
 import nipplejs from 'nipplejs';
+import '../scss/style.scss'
 
 let airConsole = new AirConsole({"orientation": "landscape"});
 
@@ -90,7 +91,7 @@ function sendToScreen(action) {
 //       restJoystick: true,          //
 //       restOpacity: 1,              // opacity
 //       size: 200,                   // nipple size
-//       mode: 'static'               // 'dynamic', 'static' or 'semi'       
+//       mode: 'static'               // 'dynamic', 'static' or 'semi'
 //   };
 
 //   let draggable = nipplejs.create(options);

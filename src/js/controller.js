@@ -164,12 +164,12 @@ function sendToScreen(action) {
 function setUpController(){
   let buttons = document.getElementsByClassName('button');
   for (let button of buttons) {
-    button.addEventListener("touchstart", function(e){
+    button.addEventListener('touchstart', function(e){
       sendToScreen(e.currentTarget.dataset.direction);
       button.classList.add('button--active');
     },{passive: true});
 
-    button.addEventListener("touchend", function(e){
+    button.addEventListener('touchend', function(e){
       if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
         sendToScreen('idle');
       }
@@ -263,16 +263,18 @@ function setUpCharacterSelection() {
 
 function setUpEmotes() {
   let buttons = document.getElementsByClassName('emote__button');
-  console.log(buttons);
-
   for(let button of buttons) {
-    button.addEventListener('touchstart', (e)=> {
+    button.addEventListener('touchstart', function(e){
       let target = e.currentTarget;
       let emoteType = button.dataset.emote;
       airConsole.message(AirConsole.SCREEN, {
         screen: 'emotes',
         emote: emoteType
       });
+      button.classList.add('button--active');
+    },{passive: true});
+    button.addEventListener('touchend', function(e){
+      button.classList.remove('button--active');
     });
   }
 }

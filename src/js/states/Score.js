@@ -102,23 +102,29 @@ export default class extends Phaser.State {
 
     function playEmote(emoteType, deviceId) {
       let player = that.characters.get(deviceId);
-      console.log(player);
       switch(emoteType) {
         case 'emote1': 
           player.animations.play('slash');
+          player.animations.currentAnim.onComplete.add(playIdleAnim(), this); 
           break;
         case 'emote2': 
           player.animations.play('dying');
           break;
         case 'emote3': 
           player.animations.play('kicking');
+          player.animations.currentAnim.onComplete.add(playIdleAnim(), this); 
           break;
         case 'emote4': 
           player.animations.play('throw');
+          player.animations.currentAnim.onComplete.add(playIdleAnim(), this); 
           break;
         default:
           break;
-      }          
+      } 
+    }
+
+    function playIdleAnim() { 
+      player.animations.play('idle'); 
     }
 
     function countToFight() {

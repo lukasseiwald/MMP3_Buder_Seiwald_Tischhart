@@ -43,14 +43,10 @@ export default class extends Phaser.State {
     map.tsize = window.game.world.width/map.cols;
     window.game.global.unit = map.tsize;
 
-
-
     let unit = window.game.global.unit;
     let scale = window.game.global.scale;
 
     this.game.camera.roundPixels = true;
-
-
 
     map.itemPositions =  [
       {x: 10.5 * unit, y: 16 * unit},
@@ -319,6 +315,7 @@ export default class extends Phaser.State {
   createMap(map) {
     let unit = window.game.global.unit;
     let scale = window.game.global.scale;
+
     for (let c = 0; c < map.cols; c++) {
       for (let r = 0; r < map.rows; r++) {
         let tile = map.getTile(c, r);
@@ -331,7 +328,7 @@ export default class extends Phaser.State {
 
           collisionTile.body.clearShapes();
           switch (tile) {
-            case 1: //Rampe Rauf 
+            case 1: //Rampe Rauf
               collisionTile.body.addPolygon({}, 0, 33 * scale, 33 * scale, 0, 17, 23);
               //collisionTile.body.addPolygon({}, 0, 33 * scale, 15 * scale, 20, 34 * scale, -4 * scale);
               break;

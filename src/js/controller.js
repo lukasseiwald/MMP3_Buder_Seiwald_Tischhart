@@ -1,5 +1,6 @@
 import {isTouchDevice} from './utils';
 import CSM from './controllerStateManager';
+import '../scss/style.scss'
 
 let airConsole = new AirConsole({"orientation": "landscape"});
 
@@ -12,6 +13,9 @@ csm.setState('winning', 'state--winning');
 csm.setState('loosing', 'state--loosing');
 
 csm.startState('waiting');
+
+let takenSkins = new Map();
+let selectedCharacter = '';
 
 airConsole.onReady = function() {
   let name = document.getElementsByClassName('waiting__name')[0];
@@ -57,6 +61,13 @@ function handleCharacterSelection(data) {
     csm.startState('game');
     setUpController();
     break;
+  case 'selected_character':
+    takenSkins.set(data.selectedCharacterIndex, data.selectedCharacter);
+    if(selectedCharacter !== data.selectedCharacter) {
+      document.getElementsByClassName(data.selectedCharacter)[0].classList.add('selection__character_inactive');
+      document.getElementById('button__select').classList.add('selection__character_inactive');
+    }
+    break;
   }
 }
 
@@ -89,7 +100,7 @@ function sendToScreen(action) {
 //       restJoystick: true,          //
 //       restOpacity: 1,              // opacity
 //       size: 200,                   // nipple size
-//       mode: 'static'               // 'dynamic', 'static' or 'semi'       
+//       mode: 'static'               // 'dynamic', 'static' or 'semi'
 //   };
 
 //   let draggable = nipplejs.create(options);
@@ -193,12 +204,24 @@ function setUpCharacterSelection() {
   characters[0].id = 'character--selected';
   name.innerText = characters[0].dataset.name;
 
+  function checkIfSkinTaken(index) {
+    let skin = takenSkins.get(index);
+    if(skin) {
+      document.getElementsByClassName(skin)[0].classList.add('selection__character_inactive');
+      document.getElementById('button__select').classList.add('selection__character_inactive');
+    }
+    else {
+      document.getElementById('button__select').classList.remove('selection__character_inactive');
+    }
+  }
+
 
   test.querySelector('#button__select_left').addEventListener('touchstart', (e)=> {
     //prev
     characters[index].id = '';
     characters[index].classList.add('character--invisible');
     index = (((index-1)%(characters.length))+(characters.length))%(characters.length);
+    checkIfSkinTaken(index);
     characters[index].classList.remove('character--invisible');
     characters[index].id = 'character--selected';
     name.innerText = characters[index].dataset.name;
@@ -208,6 +231,7 @@ function setUpCharacterSelection() {
     characters[index].classList.add('character--invisible');
     characters[index].id = '';
     index = (((index+1)%(characters.length))+(characters.length))%(characters.length);
+    checkIfSkinTaken(index);
     characters[index].classList.remove('character--invisible');
     characters[index].id = 'character--selected';
     name.innerText = characters[index].dataset.name;
@@ -218,8 +242,10 @@ function setUpCharacterSelection() {
     {
       screen: 'character_selection',
       action: 'character_selected',
-      selectedCharacter: document.getElementById('character--selected').dataset.character
+      selectedCharacter: document.getElementById('character--selected').dataset.character,
+      selectedCharacterIndex: index
     });
+    selectedCharacter = document.getElementById('character--selected').dataset.character;
     e.currentTarget.remove();
     document.getElementById('button__select_left').style.opacity = 0;
     document.getElementById('button__select_right').style.opacity = 0;

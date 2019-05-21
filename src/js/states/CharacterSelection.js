@@ -98,6 +98,13 @@ export default class extends Phaser.State {
           case 'character_selected':
             window.game.global.playerManager.setSkin(deviceId,data.selectedCharacter);
             getPlayers();
+            window.game.global.airConsole.broadcast(
+             {
+               screen: 'characterSelection',
+               action: 'selected_character',
+               selectedCharacter: data.selectedCharacter,
+               selectedCharacterIndex: data.selectedCharacterIndex
+             });
             break;
           case '':
             break;

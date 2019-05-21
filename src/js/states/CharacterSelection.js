@@ -1,5 +1,5 @@
-import Phaser from 'phaser'
-import { addImage } from '../utils'
+import Phaser from 'phaser';
+import { addImage } from '../utils';
 import Particle from '../Particle';
 import { headlineStyling, subheadlineStyling } from '../stylings'
 

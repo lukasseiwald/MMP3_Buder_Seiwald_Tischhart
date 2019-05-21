@@ -191,6 +191,8 @@ function setUpController(){
   let directionButtons = document.getElementsByClassName('controller__buttons__direction')[0];
   let actionButtons = document.getElementsByClassName('button__wrapper')[0];
   let controller = document.getElementsByClassName('controller')[0];
+  let buttonLeft = document.getElementsByClassName('button--left')[0];
+  let buttonRight = document.getElementsByClassName('button--right')[0];
   let previousTarget = undefined
   directionButtons.addEventListener('touchmove', function(event) {
     let touch = event.touches[0];
@@ -208,6 +210,31 @@ function setUpController(){
     for(let button of buttons) {
       button.classList.remove('button--active');
     }
+  });
+
+  let doubleTap = function(direction) {
+    let cnt = 0;
+    return function(direction) {
+      cnt++;
+      setTimeout(function() {
+        cnt--;
+        if(cnt < 0){
+          cnt = 0;
+        }
+      }, 200)
+      if(cnt == 2) {
+        sendToScreen(direction);
+        cnt = 0;
+      }
+    }
+  }();
+
+  buttonRight.addEventListener('touchstart', function() {
+    doubleTap('dashRight')
+  });
+
+  buttonLeft.addEventListener('touchstart', function() {
+    doubleTap('dashLeft')
   });
 }
 

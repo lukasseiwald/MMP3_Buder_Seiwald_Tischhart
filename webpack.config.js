@@ -1,18 +1,18 @@
-var path = require('path')
-var webpack = require('webpack')
-var HtmlWebpackPlugin = require('html-webpack-plugin')
-var BrowserSyncPlugin = require('browser-sync-webpack-plugin')
-var CopyWebpackPlugin = require('copy-webpack-plugin')
-var CleanWebpackPlugin = require('clean-webpack-plugin')
+const path = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 // Phaser webpack config
-var phaserModule = path.join(__dirname, '/node_modules/phaser-ce/')
-var phaser = path.join(phaserModule, 'build/custom/phaser-split.js')
-var pixi = path.join(phaserModule, 'build/custom/pixi.js')
-var p2 = path.join(phaserModule, 'build/custom/p2.js')
+const phaserModule = path.join(__dirname, '/node_modules/phaser-ce/')
+const phaser = path.join(phaserModule, 'build/custom/phaser-split.js')
+const pixi = path.join(phaserModule, 'build/custom/pixi.js')
+const p2 = path.join(phaserModule, 'build/custom/p2.js')
 
-var definePlugin = new webpack.DefinePlugin({
+const definePlugin = new webpack.DefinePlugin({
   __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'true'))
 })
 
@@ -129,21 +129,21 @@ module.exports = {
             use:['css-loader','sass-loader'],
             publicPath: ''
         })
-    },
-    {
-      test: /\.(jpe?g|png|gif|svg)$/i,
-      exclude: [
-        path.resolve(__dirname, './node_modules'),
-      ],
-      use: {
-        loader: 'file-loader',
-        options: {
-          name: '[name]-[hash].[ext]',
-          outputPath: '../images',
-          publicPath: ''
-        },
-      }
-    }
+	    },
+	    {
+	      test: /\.(jpe?g|png|gif|svg)$/i,
+	      exclude: [
+	        path.resolve(__dirname, './node_modules'),
+	      ],
+	      use: {
+	        loader: 'file-loader',
+	        options: {
+	          name: '[name]-[hash].[ext]',
+	          outputPath: '../images',
+	          publicPath: ''
+	        },
+	      }
+	    }
     ]
   },
   node: {

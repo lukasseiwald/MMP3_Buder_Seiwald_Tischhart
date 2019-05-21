@@ -1,10 +1,10 @@
 import Phaser from 'phaser'
-import { centerGameObjects, addImage } from '../utils'
+import {addImage } from '../utils'
 import Particle from '../Particle';
 import { headlineStyling, subheadlineStyling } from '../stylings'
 
 export default class extends Phaser.State {
-  init ()  { 
+  init ()  {
     this.scale = window.game.global.scale;
     this.unit = window.game.global.unit;
   }
@@ -120,7 +120,7 @@ export default class extends Phaser.State {
           break;
       }          
     }
-       
+
     function countToFight() {
       that.headline.setText("GET READY TO FIGHT!")
 

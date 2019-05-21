@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { centerGameObjects, addImage } from '../utils'
+import { addImage } from '../utils'
 import { headlineStyling, subheadlineStyling } from '../stylings'
 import PlayerManager from '../PlayerManager';
 import Particle from '../Particle';

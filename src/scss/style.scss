@@ -205,6 +205,7 @@ body {
   border-bottom: 30px solid transparent;
   border-right: 40px solid #97602b;
   z-index: 3;
+  pointer-events: none;
 }
 
 .button__triangle--right {

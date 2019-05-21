@@ -1,161 +1,155 @@
-import Phaser from 'phaser'
-import {addImage } from '../utils'
+import {headlineStyling, subheadlineStyling} from '../stylings';
+import {addImage} from '../utils';
 import Particle from '../Particle';
-import { headlineStyling, subheadlineStyling } from '../stylings'
+import Phaser from 'phaser';
 
 export default class extends Phaser.State {
-  init ()  {
-    this.scale = window.game.global.scale;
-    this.unit = window.game.global.unit;
-  }
+	init () {
+		this.scale = window.game.global.scale;
+		this.unit = window.game.global.unit;
+	}
+	create () {
+		this.timer = 0;
+		const that = this;
 
-  preload () { }
+		// IMAGES
+		this.bg1 = addImage(this, 0, 0, 'background1', this.world.width, this.world.height);
 
-  create () {
-    this.timer = 0;
-    let that = this;
+		this.glowingParticles = new Particle('spark', 30, 5000, 100);
+		this.glowingParticles.startEmitter();
 
-    //IMAGES
-    this.bg1 = addImage(this, 0, 0, 'background1', this.world.width, this.world.height);
+		this.steamParticles = new Particle('smoke', 150, 8000, 100);
+		this.steamParticles.startEmitter();
 
-    this.glowingParticles = new Particle("spark", 30, 5000, 100);
-    this.glowingParticles.startEmitter();
+		// Lava Bg
+		// this.bg3 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
-    this.steamParticles = new Particle("smoke", 150, 8000, 100);
-    this.steamParticles.startEmitter();
+		this.lavaParticles = new Particle('lava', 0, 4000, 1);
+		this.lavaParticles.startEmitter();
 
-    //Lava Bg
-    // this.bg3 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
+		// Background Frame
+		this.bg4 = addImage(this, 0, 0, 'backgroundCharacterSelection', this.world.width, this.world.height);
 
-    this.lavaParticles = new Particle("lava", 0, 4000, 1);
-    this.lavaParticles.startEmitter();
+		// TEXT ELEMENTS
+		this.headline = this.add.text(this.world.centerX, this.world.height * 0.3, '', headlineStyling);
+		this.headline.anchor.setTo(0.5, 0.5);
 
-    //Background Frame
-    this.bg4 = addImage(this, 0, 0, 'backgroundCharacterSelection', this.world.width, this.world.height);
+		const playerSettings = [
+			{
+				deviceId: null,
+				character: null,
+				x: window.game.world.centerX - this.unit * 20
+			},
+			{
+				deviceId: null,
+				character: null,
+				x: window.game.world.centerX - this.unit * 10
+			},
+			{
+				deviceId: null,
+				character: null,
+				x: window.game.world.centerX + this.unit * 10
+			},
+			{
+				deviceId: null,
+				character: null,
+				x: window.game.world.centerX + this.unit * 20
+			}
+		];
 
-    //TEXT ELEMENTS
+		this.characters = new Map();
 
-    this.headline = this.add.text(this.world.centerX, this.world.height * .3, '', headlineStyling)
-    this.headline.anchor.setTo(0.5, 0.5);
+		function getPlayers() {
+			const players = window.game.global.playerManager.getPlayers();
+			let index = 0;
 
-    let playerSettings = [
-      {
-        deviceId: null,
-        character: null,
-        x: window.game.world.centerX - this.unit * 20,
-      },
-      {
-        deviceId: null,
-        character: null,
-        x: window.game.world.centerX - this.unit * 10,
-      },
-      {
-        deviceId: null,
-        character: null,
-        x: window.game.world.centerX + this.unit * 10,
-      },
-      {
-        deviceId: null,
-        character: null,
-        x: window.game.world.centerX + this.unit * 20,
-      }
-    ]
+			for (const [key, value] of players) {
+				// Sprite
+				const character = window.game.add.sprite(playerSettings[index].x, window.game.world.height * 0.4, value.skin);
 
-    this.characters = new Map();
+				if(index < 2) {
+					character.scale.setTo(that.scale * 2, that.scale * 2);
+				}
+				else {
+					character.scale.setTo(-(that.scale * 2), that.scale * 2);
+				}
+				character.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
+				character.animations.add('throw', ['Throwing_000', 'Throwing_001', 'Throwing_002', 'Throwing_003', 'Throwing_004', 'Throwing_005', 'Throwing_006', 'Throwing_007', 'Throwing_008', 'Throwing_009', 'Throwing_010', 'Throwing_011'], 20, false);
+				character.animations.add('slash', ['Slashing_000', 'Slashing_001', 'Slashing_002', 'Slashing_003', 'Slashing_004', 'Slashing_005', 'Slashing_006', 'Slashing_007', 'Slashing_008', 'Slashing_009', 'Slashing_010', 'Slashing_011'], 15, false);
+				character.animations.add('dying', ['Dying_000', 'Dying_001', 'Dying_002', 'Dying_003', 'Dying_004', 'Dying_005', 'Dying_006', 'Dying_007', 'Dying_008', 'Dying_009', 'Dying_010', 'Dying_011', 'Dying_012', 'Dying_013', 'Dying_014'], 17, false);
+				character.animations.add('kicking', ['Kicking_000', 'Kicking_001', 'Kicking_002', 'Kicking_003', 'Kicking_004', 'Kicking_005', 'Kicking_006', 'Kicking_007', 'Kicking_008', 'Kicking_009', 'Kicking_010', 'Kicking_011'], 17, false);
+				character.animations.play('idle');
 
-    function getPlayers() {
-      let players = window.game.global.playerManager.getPlayers();
-      let index = 0;
+				const nickname = that.add.text(character.x + character.width / 2, character.top - character.height / 7, value.nickname, subheadlineStyling);
+				const score = that.add.text(character.x + character.width / 2, character.bottom + character.height / 5, value.score, subheadlineStyling);
 
-      for (let [key, value] of players) {
-        //Sprite
-        let character = window.game.add.sprite(playerSettings[index].x, window.game.world.height * .4, value.skin);
-        if(index < 2) {
-          character.scale.setTo(that.scale * 2, that.scale * 2);
-        }
-        else {
-          character.scale.setTo(- (that.scale * 2), that.scale * 2);
-        }
-        
-        character.animations.add('idle', ['Idle_000','Idle_001','Idle_002','Idle_003','Idle_004','Idle_005','Idle_006','Idle_007','Idle_008','Idle_009','Idle_010','Idle_011','Idle_012','Idle_013','Idle_014','Idle_015','Idle_016','Idle_017',], 18, true);
-        character.animations.add('throw', ['Throwing_000','Throwing_001','Throwing_002','Throwing_003','Throwing_004','Throwing_005','Throwing_006','Throwing_007','Throwing_008','Throwing_009','Throwing_010','Throwing_011'], 20, false);
-        character.animations.add('slash', ['Slashing_000','Slashing_001','Slashing_002','Slashing_003','Slashing_004','Slashing_005','Slashing_006','Slashing_007','Slashing_008','Slashing_009','Slashing_010','Slashing_011'], 15, false);
-        character.animations.add('dying', ['Dying_000','Dying_001','Dying_002','Dying_003','Dying_004','Dying_005','Dying_006','Dying_007','Dying_008','Dying_009','Dying_010','Dying_011','Dying_012','Dying_013','Dying_014'], 17, false);
-        character.animations.add('kicking', ['Kicking_000','Kicking_001','Kicking_002','Kicking_003','Kicking_004','Kicking_005','Kicking_006','Kicking_007','Kicking_008','Kicking_009','Kicking_010','Kicking_011'], 17, false);
-        character.animations.play('idle');
-        let nickname = that.add.text(character.x + character.width / 2, character.top - character.height / 7, value.nickname, subheadlineStyling);
-        nickname.anchor.setTo(0.5, 0.5);
-        let score = that.add.text(character.x + character.width / 2, character.bottom + character.height / 5, value.score, subheadlineStyling);
-        score.anchor.setTo(0.5, 0.5);
+				nickname.anchor.setTo(0.5, 0.5);
+				score.anchor.setTo(0.5, 0.5);
+				that.characters.set(value.deviceId, character);
+				index += 1;
+			}
+		}
 
-        that.characters.set(value.deviceId, character);
-        index++;
-      }
-    }
+		window.game.global.airConsole.onMessage = function(deviceId, data) {
+			if(data.screen === 'emotes') {
+				if(data.emote) {
+					playEmote(data.emote, deviceId);
+				}
+				else if(data.ready) {
+					countToFight();
+				}
+			}
+		};
 
-    window.game.global.airConsole.onMessage = function(deviceId, data) { 
-      if(data.screen == 'emotes') {
-        if(data.emote) {
-          let emoteType = data.emote;
-          playEmote(emoteType, deviceId);
-        }
-        else if(data.ready) {
-          countToFight();
-        }
-      }
-    }
+		function playEmote(emoteType, deviceId) {
+			const player = that.characters.get(deviceId);
 
-    function playEmote(emoteType, deviceId) {
-      let player = that.characters.get(deviceId);
-      switch(emoteType) {
-        case 'emote1': 
-          player.animations.play('slash');
-          //player.animations.currentAnim.onComplete.add(playIdleAnim(player), this); 
-          break;
-        case 'emote2': 
-          player.animations.play('dying');
-          break;
-        case 'emote3': 
-          player.animations.play('kicking');
-          //player.animations.currentAnim.onComplete.add(playIdleAnim(player), this); 
-          break;
-        case 'emote4': 
-          player.animations.play('throw');
-          //player.animations.currentAnim.onComplete.add(playIdleAnim(player), this); 
-          break;
-        default:
-          break;
-      } 
-    }
+			switch(emoteType) {
+			case 'emote1':
+				player.animations.play('slash');
+				// player.animations.currentAnim.onComplete.add(playIdleAnim(player), this);
+				break;
+			case 'emote2':
+				player.animations.play('dying');
+				break;
+			case 'emote3':
+				player.animations.play('kicking');
+				// player.animations.currentAnim.onComplete.add(playIdleAnim(player), this);
+				break;
+			case 'emote4':
+				player.animations.play('throw');
+				// player.animations.currentAnim.onComplete.add(playIdleAnim(player), this);
+				break;
+			default:
+				break;
+			}
+		}
 
-    function playIdleAnim(player) { 
-      player.animations.play('idle'); 
-    }
+		function playIdleAnim(player) {
+			player.animations.play('idle');
+		}
 
-    function countToFight() {
-      that.headline.setText("GET READY TO FIGHT!")
+		function countToFight() {
+			that.headline.setText('GET READY TO FIGHT!');
 
-      //Style of Fight Counter
-     let style = { font: "45px Bungee", fill: "#111111", align: "center" };
-
-    let counter = 5; //5 Sekunden Timer
-    let text = window.game.add.text(that.world.width / 2 - 20, that.world.height / 14, '', style);
-    let startGameTimer = setInterval(() => {
-      text.setText(counter);
-      if(counter < 1) {
-        clearInterval(startGameTimer);
-        window.game.global.airConsole.broadcast(
-          {
-            screen: 'emotes',
-            action: 'change_to_controller'
-          })
-        that.state.start('Level1');
-      }
-      counter = counter - 1;
-     }, 1000);
-    }
-
-    //countToFight();
-    getPlayers();
-  }
+			// Style of Fight Counter
+			const style = {font: '45px Bungee', fill: '#111111', align: 'center'};
+			// 5 Sekunden Timer
+			let counter = 5;
+			const text = window.game.add.text(that.world.width / 2 - 20, that.world.height / 14, '', style);
+			const startGameTimer = setInterval(() => {
+				text.setText(counter);
+				if(counter < 1) {
+					clearInterval(startGameTimer);
+					window.game.global.airConsole.broadcast({
+						screen: 'emotes',
+						action: 'change_to_controller'
+					});
+					that.state.start('Level1');
+				}
+				counter = counter - 1;
+				}, 1000);
+			}
+		getPlayers();
+	}
 }

@@ -9,6 +9,7 @@
     "browser": true
   },
   "rules": {
+		"no-array-constructor": 0,
 		"space-before-function-paren": 0,
     "array-bracket-spacing": [2, "never"],
     "arrow-body-style": [2, "always"],

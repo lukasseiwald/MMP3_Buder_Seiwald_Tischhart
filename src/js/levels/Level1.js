@@ -1,9 +1,9 @@
 import { addImage } from '../utils';
 import Base from '../sprites/Base';
+import Item from '../sprites/Item';
 import Particle from '../Particle';
 import Phaser from 'phaser';
 import Player from '../sprites/Player';
-import Item from '../sprites/Item';
 
 export default class extends Phaser.State {
 	init() {
@@ -65,7 +65,7 @@ export default class extends Phaser.State {
 
 		const characterSettings = [
 			{
-				skin:'egyptian',
+				skin: 'egyptian',
 				x: unit * 5,
 				y: unit * 26,
 				baseX: 3 * unit,
@@ -89,7 +89,7 @@ export default class extends Phaser.State {
 				y: 10 * unit,
 				baseX: 3 * unit,
 				baseY: 9.5 * unit,
-				healthbarX:  .5 * unit,
+				healthbarX: 0.5 * unit,
 				healthbarY: 6.6 * unit
 			},
 			{
@@ -101,7 +101,7 @@ export default class extends Phaser.State {
 				healthbarX: this.world.width - unit * 6.5,
 				healthbarY: 6.5 * unit
 			}
-		]
+		];
 
 		this.game.physics.startSystem(Phaser.Physics.P2JS);
 		this.game.physics.p2.setBoundsToWorld(true, true, false, false);
@@ -114,20 +114,26 @@ export default class extends Phaser.State {
 		this.game.physics.p2.setImpactEvents(true);
 
 		// Create our collision groups.
-		this.playerCollisionGroup = this.game.physics.p2.createCollisionGroup();  //Mask: 4
-		this.tilesCollisionGroup = this.game.physics.p2.createCollisionGroup();   //Mask: 8
-		this.bulletCollisionGroup = this.game.physics.p2.createCollisionGroup();  //Mask: 16
-		this.soulCollisionGroup = this.game.physics.p2.createCollisionGroup();    //Mask: 32
-		this.baseCollisionGroup = this.game.physics.p2.createCollisionGroup();    //Mask: 64
-		this.itemCollisionGroup = this.game.physics.p2.createCollisionGroup();    //Mask: 128
+		// Mask: 4
+		this.playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
+		// Mask: 8
+		this.tilesCollisionGroup = this.game.physics.p2.createCollisionGroup();
+		// Mask: 16
+		this.bulletCollisionGroup = this.game.physics.p2.createCollisionGroup();
+		// Mask: 32
+		this.soulCollisionGroup = this.game.physics.p2.createCollisionGroup();
+		// Mask: 64
+		this.baseCollisionGroup = this.game.physics.p2.createCollisionGroup();
+		// Mask: 128
+		this.itemCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
 		this.game.physics.p2.updateBoundsCollisionGroup();
 		this.game.physics.setBoundsToWorld();
 
-		//IMAGES
+		// IMAGES
 		this.bg3 = addImage(this, 0, 0, 'background3', this.world.width, this.world.height);
 
-		//PARTICLES
+		// PARTICLES
 
 		this.glowingParticles = new Particle('spark', 30, 5000, 100);
 		this.glowingParticles.startEmitter();
@@ -140,40 +146,41 @@ export default class extends Phaser.State {
 		this.lavaParticles = new Particle('lava', 0, 4000, 100);
 		this.lavaParticles.startEmitter();
 
-		//Tiles
+		// Tiles
 		this.tiles = this.game.add.group();
 		this.game.physics.p2.enable(this.tiles);
 		this.tiles.physicsBodyType = Phaser.Physics.P2JS;
 
-		//create Items ever x seconds
+		// create Items ever x seconds
 		this.game.global.itemPositions = this.shuffle(map.itemPositions);
 		this.game.time.events.repeat(Phaser.Timer.SECOND * 17, 100, this.createItems, this);
 
-		//HealthBar
-		let bmd = this.game.add.bitmapData(unit * 6, unit * .5);
+		// HealthBar
+		const bmd = this.game.add.bitmapData(unit * 6, unit * 0.5);
+
 		bmd.ctx.beginPath();
-		bmd.ctx.rect(0, 0, unit * 6, unit * .5);
+		bmd.ctx.rect(0, 0, unit * 6, unit * 0.5);
 		bmd.ctx.fillStyle = '#c92e08';
 		bmd.ctx.fill();
 
-		let widthLife = new Phaser.Rectangle(0, 0, bmd.width, bmd.height);
-
+		const widthLife = new Phaser.Rectangle(0, 0, bmd.width, bmd.height);
 
 		if(window.game.global.dev) {
+			const playersDev = new Array();
 
-			let playersDev = new Array();
+			for (let index = 0; index < 4; index += 1) {
+				const character = new Player(index, characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin);
+				const base = new Base(unit, characterSettings[index].baseX, characterSettings[index].baseY, characterSettings[index].skin + '_base', character);
 
-			for (let index = 0; index < 4; index++) {
-				let character = new Player(index, characterSettings[index].x, characterSettings[index].y, characterSettings[index].skin);
-				let base = new Base(unit,characterSettings[index].baseX, characterSettings[index].baseY, characterSettings[index].skin + '_base', character);
 				character.spawnPlayer(this.playerCollisionGroup, this.tilesCollisionGroup, this.bulletCollisionGroup, this.soulCollisionGroup, this.baseCollisionGroup);
 				playersDev[index] = character;
 			}
 
 			this.createMap(map);
 
-			for (let index = 0; index < 4; index++) {
-				let healthBar = this.game.add.sprite(characterSettings[index].healthbarX, characterSettings[index].healthbarY, bmd);
+			for (let index = 0; index < 4; index += 1) {
+				const healthBar = this.game.add.sprite(characterSettings[index].healthbarX, characterSettings[index].healthbarY, bmd);
+
 				healthBar.cropEnabled = true;
 				healthBar.crop(widthLife);
 				this.game.global.healthBars[index] = healthBar;
@@ -252,7 +259,7 @@ export default class extends Phaser.State {
 						character.movingTo = 'dashRight';
 						break;
 					case 'dashLeft':
-					  character.movingTo = 'dashLeft';
+						character.movingTo = 'dashLeft';
 						break;
 					default:
 						character.movingTo = null;

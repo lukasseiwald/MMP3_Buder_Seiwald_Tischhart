@@ -29,7 +29,6 @@ export default class extends Phaser.State {
 		this.bg4 = addImage(this, 0, 0, 'backgroundCharacterSelection', this.world.width, this.world.height);
 
 		// TEXT ELEMENTS
-
 		this.headline = this.add.text(this.world.centerX, this.world.height * 0.3, 'Select Your Fighter', headlineStyling);
 		this.headline.anchor.setTo(0.5, 0.5);
 

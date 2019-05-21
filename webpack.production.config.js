@@ -1,16 +1,17 @@
-var path = require('path')
-var webpack = require('webpack')
-var CleanWebpackPlugin = require('clean-webpack-plugin')
-var HtmlWebpackPlugin = require('html-webpack-plugin')
-var CopyWebpackPlugin = require('copy-webpack-plugin')
+const path = require('path')
+const webpack = require('webpack')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 // Phaser webpack config
-var phaserModule = path.join(__dirname, '/node_modules/phaser-ce/')
-var phaser = path.join(phaserModule, 'build/custom/phaser-split.js')
-var pixi = path.join(phaserModule, 'build/custom/pixi.js')
-var p2 = path.join(phaserModule, 'build/custom/p2.js')
+const phaserModule = path.join(__dirname, '/node_modules/phaser-ce/')
+const phaser = path.join(phaserModule, 'build/custom/phaser-split.js')
+const pixi = path.join(phaserModule, 'build/custom/pixi.js')
+const p2 = path.join(phaserModule, 'build/custom/p2.js')
 
-var definePlugin = new webpack.DefinePlugin({
+const definePlugin = new webpack.DefinePlugin({
   __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'false'))
 })
 
@@ -32,6 +33,7 @@ module.exports = {
     filename: '[name].bundle.js'
   },
   plugins: [
+		new ExtractTextPlugin('../css/styles.css'),
     definePlugin,
     new CleanWebpackPlugin(['build']),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
@@ -83,10 +85,45 @@ module.exports = {
   ],
   module: {
     rules: [
-      { test: /\.js$/, use: ['babel-loader'], include: path.join(__dirname, 'src') },
-      { test: /pixi\.js/, use: ['expose-loader?PIXI'] },
-      { test: /phaser-split\.js$/, use: ['expose-loader?Phaser'] },
-      { test: /p2\.js/, use: ['expose-loader?p2'] }
+      {
+				test: /\.js$/,
+				use: ['babel-loader'],
+				include: path.join(__dirname, 'src')
+			},
+      {
+				test: /pixi\.js/,
+				use: ['expose-loader?PIXI']
+			},
+      {
+				test: /phaser-split\.js$/,
+				use: ['expose-loader?Phaser']
+			},
+      {
+				test: /p2\.js/,
+				use: ['expose-loader?p2']
+			},
+			{
+        test:/\.scss$/,
+        use: ExtractTextPlugin.extract({
+            fallback:'style-loader',
+            use:['css-loader','sass-loader'],
+            publicPath: ''
+        })
+	    },
+	    {
+	      test: /\.(jpe?g|png|gif|svg)$/i,
+	      exclude: [
+	        path.resolve(__dirname, './node_modules'),
+	      ],
+	      use: {
+	        loader: 'file-loader',
+	        options: {
+	          name: '[name]-[hash].[ext]',
+	          outputPath: '../images',
+	          publicPath: ''
+	        },
+	      }
+	    }
     ]
   },
   node: {

@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { centerGameObjects, addImage } from '../utils'
+import { addImage } from '../utils'
 import Particle from '../Particle';
 import { headlineStyling, subheadlineStyling } from '../stylings'
 
@@ -112,7 +112,7 @@ export default class extends Phaser.State {
         }
       }
     }
-    
+
     function getPlayers() {
       let index = 0;
       characterSelectedCounter += 1;

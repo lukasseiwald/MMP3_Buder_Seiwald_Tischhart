@@ -107,7 +107,7 @@ export default class extends Phaser.State {
                screen: 'characterSelection',
                action: 'selected_character',
                selectedCharacter: data.selectedCharacter,
-               selectedCharacterIndex: data.selectedCharacterIndex
+               selectedCharacterIndex: data.selectedCharacterIndex,
              });
             break;
           case '':

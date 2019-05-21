@@ -8,6 +8,7 @@ let csm = new CSM('stage');
 
 csm.setState('waiting', 'state--waiting');
 csm.setState('characterSelection', 'state--character_selection')
+csm.setState('emotes', 'state--emotes')
 csm.setState('game', 'state--game');
 csm.setState('winning', 'state--winning');
 csm.setState('loosing', 'state--loosing');
@@ -52,6 +53,10 @@ function handleGame(data) {
     case 'restart':
       csm.startState('game');
       break;
+    case 'emotes':
+      csm.startState('emotes');
+      setUpEmotes();
+      break;
   }
 }
 
@@ -73,6 +78,7 @@ function handleCharacterSelection(data) {
 
 
 airConsole.onMessage = function(from, data) {
+  console.log(data);
   switch (data.screen) {
     case 'waiting':
       handleWaiting(data);
@@ -253,4 +259,20 @@ function setUpCharacterSelection() {
     document.getElementById('button__select_left').style.opacity = 0;
     document.getElementById('button__select_right').style.opacity = 0;
   });
+}
+
+function setUpEmotes() {
+  let buttons = document.getElementsByClassName('emote__button');
+  console.log(buttons);
+
+  for(let button of buttons) {
+    button.addEventListener('touchstart', (e)=> {
+      let target = e.currentTarget;
+      let emoteType = button.dataset.emote;
+      airConsole.message(AirConsole.SCREEN, {
+        screen: 'emotes',
+        emote: emoteType
+      });
+    });
+  }
 }

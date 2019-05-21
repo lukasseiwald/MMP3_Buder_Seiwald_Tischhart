@@ -79,6 +79,28 @@ body {
   pointer-events: none;
 }
 
+/* Emotes State*/
+.emotes__wrapper {
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.emote__button {
+  width: 40%;
+  height: 40%;
+  background-image: url('../assets/images/controller/shield.png');
+  background-size: 100% 100%;
+  background-color: transparent;
+  outline: none;
+  text-align: center;
+  font-size: 1.5em;
+}
+
 /* Winning/ Losing State*/
 .loosing,
 .winning {

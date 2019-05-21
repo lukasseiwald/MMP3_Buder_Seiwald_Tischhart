@@ -6,8 +6,7 @@ let airConsole = new AirConsole({"orientation": "landscape"});
 let csm = new CSM('stage');
 
 csm.setState('waiting', 'state--waiting');
-csm.setState('characterSelection', 'state--character_selection');
-csm.setState('emotes', 'state--emotes');
+csm.setState('characterSelection', 'state--character_selection')
 csm.setState('game', 'state--game');
 csm.setState('winning', 'state--winning');
 csm.setState('loosing', 'state--loosing');
@@ -34,8 +33,6 @@ function handleWaiting(data){
     case 'characterSelection':
       csm.startState('characterSelection');
       setUpCharacterSelection();
-    case 'emotes':
-      csm.startState('emotes');
     case 'get_id':
   }
 }
@@ -63,14 +60,6 @@ function handleCharacterSelection(data) {
   }
 }
 
-function handleEmotes(data) {
-  switch (data.action) {
-  case 'change_to_controller':
-    csm.startState('game');
-    setUpController();
-    break;
-  }
-}
 
 airConsole.onMessage = function(from, data) {
   switch (data.screen) {
@@ -82,9 +71,6 @@ airConsole.onMessage = function(from, data) {
       break;
     case 'characterSelection':
       handleCharacterSelection(data);
-      break;
-    case 'emotes':
-      handleEmotes(data);
       break;
   }
 }

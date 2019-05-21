@@ -142,11 +142,11 @@ export default class Base {
 
   won() {
     if(!window.game.global.dev) {
-      window.game.global.airConsole.broadcast(
-        {
-          screen: 'game',
-          action: 'emotes'
-        })
+      // window.game.global.airConsole.broadcast(
+      //   {
+      //     screen: 'game',
+      //     action: 'emotes'
+      //   })
       window.game.state.start('Score');
     }
     else {

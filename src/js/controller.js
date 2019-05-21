@@ -76,6 +76,14 @@ function handleCharacterSelection(data) {
   }
 }
 
+function handleEmotes(data) {
+  switch (data.action) {
+  case 'change_to_controller':
+    csm.startState('game');
+    setUpController();
+    break;
+  }
+}
 
 airConsole.onMessage = function(from, data) {
   console.log(data);
@@ -88,6 +96,9 @@ airConsole.onMessage = function(from, data) {
       break;
     case 'characterSelection':
       handleCharacterSelection(data);
+      break;
+    case 'emotes':
+      handleEmotes(data);
       break;
   }
 }
@@ -164,12 +175,12 @@ function sendToScreen(action) {
 function setUpController(){
   let buttons = document.getElementsByClassName('button');
   for (let button of buttons) {
-    button.addEventListener("touchstart", function(e){
+    button.addEventListener('touchstart', function(e){
       sendToScreen(e.currentTarget.dataset.direction);
       button.classList.add('button--active');
     },{passive: true});
 
-    button.addEventListener("touchend", function(e){
+    button.addEventListener('touchend', function(e){
       if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
         sendToScreen('idle');
       }
@@ -180,6 +191,8 @@ function setUpController(){
   let directionButtons = document.getElementsByClassName('controller__buttons__direction')[0];
   let actionButtons = document.getElementsByClassName('button__wrapper')[0];
   let controller = document.getElementsByClassName('controller')[0];
+  let buttonLeft = document.getElementsByClassName('button--left')[0];
+  let buttonRight = document.getElementsByClassName('button--right')[0];
   let previousTarget = undefined
   directionButtons.addEventListener('touchmove', function(event) {
     let touch = event.touches[0];
@@ -197,6 +210,31 @@ function setUpController(){
     for(let button of buttons) {
       button.classList.remove('button--active');
     }
+  });
+
+  let doubleTap = function(direction) {
+    let cnt = 0;
+    return function(direction) {
+      cnt++;
+      setTimeout(function() {
+        cnt--;
+        if(cnt < 0){
+          cnt = 0;
+        }
+      }, 200)
+      if(cnt == 2) {
+        sendToScreen(direction);
+        cnt = 0;
+      }
+    }
+  }();
+
+  buttonRight.addEventListener('touchstart', function() {
+    doubleTap('dashRight')
+  });
+
+  buttonLeft.addEventListener('touchstart', function() {
+    doubleTap('dashLeft')
   });
 }
 
@@ -263,16 +301,39 @@ function setUpCharacterSelection() {
 
 function setUpEmotes() {
   let buttons = document.getElementsByClassName('emote__button');
-  console.log(buttons);
-
   for(let button of buttons) {
-    button.addEventListener('touchstart', (e)=> {
+    button.addEventListener('touchstart', function(e){
       let target = e.currentTarget;
       let emoteType = button.dataset.emote;
       airConsole.message(AirConsole.SCREEN, {
         screen: 'emotes',
         emote: emoteType
       });
+      button.classList.add('button--active');
+    },{passive: true});
+    button.addEventListener('touchend', function(e){
+      button.classList.remove('button--active');
     });
+  }
+
+  //Ready Button Only For Master
+  let deviceId = airConsole.getDeviceId();
+  let masterId = airConsole.getMasterControllerDeviceId();
+  if(deviceId === masterId) {
+    console.log("master found: " + deviceId);
+    document.getElementById('score__ready__wrapper').style.display = "block";
+
+    let readyButton = document.getElementById('button__score__ready');
+
+    readyButton.addEventListener('touchstart', function(e){
+      airConsole.message(AirConsole.SCREEN, {
+        screen: 'emotes',
+        ready: true
+      });
+      readyButton.classList.add('button--active');
+    });
+  }
+  else {
+    console.log("not a master");
   }
 }

@@ -157,38 +157,41 @@ function sendToScreen(action) {
 
 function setUpController(){
   let buttons = document.getElementsByClassName('button');
-  // createStick();
+  for (let button of buttons) {
+    button.addEventListener("touchstart", function(e){
+      sendToScreen(e.currentTarget.dataset.direction);
+      button.classList.add('button--active');
+    },{passive: true});
 
-  if (isTouchDevice) {
-    for (let button of buttons) {
-      button.addEventListener("touchstart", function(e){
-        sendToScreen(e.currentTarget.dataset.direction);
-        button.classList.add('button--active');
-      },{passive: true});
-
-      button.addEventListener("touchend", function(e){
-        if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
-          sendToScreen('idle');
-        }
-        button.classList.remove('button--active');
-      });
-    }
+    button.addEventListener("touchend", function(e){
+      if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
+        sendToScreen('idle');
+      }
+      button.classList.remove('button--active');
+    });
   }
-  else {
-    for (let button of buttons) {
-      button.addEventListener("mousedown", function(e){
-        sendToScreen(e.currentTarget.dataset.direction);
-        button.classList.add('button--active');
-      },{passive: true});
 
-      button.addEventListener("mouseup", function(e){
-        if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
-          sendToScreen('idle');
-        }
-        button.classList.remove('button--active');
-      });
+  let directionButtons = document.getElementsByClassName('controller__buttons__direction')[0];
+  let actionButtons = document.getElementsByClassName('button__wrapper')[0];
+  let controller = document.getElementsByClassName('controller')[0];
+  let previousTarget = undefined
+  directionButtons.addEventListener('touchmove', function(event) {
+    let touch = event.touches[0];
+    let coordX = touch.pageX;
+    let coordY = touch.pageY;
+    let currentTarget = document.elementFromPoint(coordX, coordY);
+    if(previousTarget != currentTarget) {
+      previousTarget && previousTarget.classList.remove('button--active');
+      currentTarget.classList.add('button--active');
+      previousTarget = currentTarget;
+      sendToScreen(currentTarget.dataset.direction);
     }
-  }
+  });
+  controller.addEventListener('touchend', function(event) {
+    for(let button of buttons) {
+      button.classList.remove('button--active');
+    }
+  });
 }
 
 function setUpCharacterSelection() {

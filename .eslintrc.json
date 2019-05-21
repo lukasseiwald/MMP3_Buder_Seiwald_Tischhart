@@ -9,13 +9,14 @@
     "browser": true
   },
   "rules": {
+		"space-before-function-paren": 0,
     "array-bracket-spacing": [2, "never"],
     "arrow-body-style": [2, "always"],
     "arrow-parens": [2, "always"],
     "arrow-spacing": 2,
     "block-scoped-var": 2,
     "block-spacing": 2,
-    "brace-style": 2,
+    "brace-style": [2, "stroustrup"],
     "callback-return": 2,
     "camelcase": 2,
     "comma-dangle": 2,
@@ -32,9 +33,8 @@
     "function-paren-newline": [2, "never"],
     "handle-callback-err": 2,
     "indent": [2, "tab"],
-    "keyword-spacing": 2,
+    "keyword-spacing": 0,
     "linebreak-style": 2,
-    "max-len": 2,
     "new-cap": 2,
     "newline-after-var": 2,
     "no-alert": 2,
@@ -70,6 +70,7 @@
     "space-before-blocks": 2,
     "space-in-parens": 2,
     "spaced-comment": 2,
+		"no-tabs": 0,
     "import/no-unresolved": [2]
   },
   "globals": {

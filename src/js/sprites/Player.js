@@ -51,6 +51,12 @@ export default class Player {
       case 'left':
         this.moveToLeft();
         break;
+      case 'dashRight':
+        this.moveToRight(true);
+        break;
+      case 'dashLeft':
+        this.moveToLeft(true);
+        break;
       default:
         this.moveSoulWithPlayer();
         this.moveShieldWithPlayer();
@@ -106,7 +112,7 @@ export default class Player {
     }
   }
 
-  moveToRight() {
+  moveToRight(dash) {
     this.player.scale.x = this.scale; //1 => facing Right
     this.player.animations.play('run');
     this.player.body.moveLeft(0);
@@ -118,10 +124,12 @@ export default class Player {
     }
     this.moveSoulWithPlayer();
     this.moveShieldWithPlayer();
-    // this.dash();
+    if(dash) {
+      this.dash();
+    }
   }
 
-  moveToLeft() {
+  moveToLeft(dash) {
     this.player.scale.x = -this.scale; //-1 => facing Left
     this.player.animations.play('run');
     this.player.body.moveRight(0);
@@ -133,30 +141,31 @@ export default class Player {
     }
     this.moveSoulWithPlayer();
     this.moveShieldWithPlayer();
-    // this.dash();
+    if(dash) {
+      this.dash();
+    }
   }
 
   dash(direction) {
-    // this.dashTimer = window.game.time.totalElapsedSeconds();
-    // if(this.canDash == true && (Math.abs(this.dashTimer - this.dashIdleTimer) < 0.3) && (Math.abs(this.dashTimer - this.lastDash) > 2.5)) {
-      this.player.scale.x = (direction == 'right') ? 1 : -1;
-      let dash_smoke = window.game.add.sprite(this.player.x - 30, this.player.y - 80, 'dash_smoke');
+    this.dashTimer = window.game.time.totalElapsedSeconds();
+    if(this.canDash == true && (Math.abs(this.dashTimer - this.dashIdleTimer) < 0.3) && (Math.abs(this.dashTimer - this.lastDash) > 2.5)) {
+      let dash_smoke = this.player.scale.x === 1 ? window.game.add.sprite(this.player.x - 30, this.player.y - 80, 'dash_smoke') : window.game.add.sprite(this.player.x + 30, this.player.y - 80, 'dash_smoke');
       dash_smoke.scale.setTo(2 * this.scale, 2 * this.scale); //Item Size
       var dash_smoke_animation = dash_smoke.animations.add('smoking');
       dash_smoke_animation.killOnComplete = true;
       if(this.player.scale.x < 0) {
-          this.player.body.moveLeft(4800 * this.scale); //multiply with delta time
-          dash_smoke.scale.x = - this.scale;
+          this.player.body.moveLeft(8000 * this.scale); //multiply with delta time
+          dash_smoke.scale.x = -this.scale;
       }
       else if(this.player.scale.x > 0) {
-          this.player.body.moveRight(4800 * this.scale);
+          this.player.body.moveRight(8000 * this.scale);
           dash_smoke.scale.x = this.scale;
       }
       dash_smoke_animation.play(16);
-      // this.canDash = false;
-      // this.lastDash = window.game.time.totalElapsedSeconds();
-      // this.dashTimer = 0;
-    // }
+      this.canDash = false;
+      this.lastDash = window.game.time.totalElapsedSeconds();
+      this.dashTimer = 0;
+    }
   }
 
   jump() {

@@ -24,6 +24,7 @@ export default class extends Phaser.State {
     this.steamParticles = new Particle("smoke", 150, 8000, 100);
     this.steamParticles.startEmitter();
 
+    //Lava Bg
     // this.bg3 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
     this.lavaParticles = new Particle("lava", 0, 4000, 1);
@@ -39,57 +40,85 @@ export default class extends Phaser.State {
 
     let playerSettings = [
       {
-        skin: 'egyptian_head',
-        score: 0,
+        deviceId: null,
+        character: null,
         x: window.game.world.centerX - this.unit * 20,
-        nickname: ''
       },
       {
-        skin: 'knight_head',
-        score: 0,
-        x: window.game.world.centerX - this.unit * 9,
-        nickname: ''
+        deviceId: null,
+        character: null,
+        x: window.game.world.centerX - this.unit * 10,
       },
       {
-        skin: 'lucifer_head',
-        score: 0,
-        x: window.game.world.centerX + this.unit * 2,
-        nickname: ''
+        deviceId: null,
+        character: null,
+        x: window.game.world.centerX + this.unit * 10,
       },
       {
-        skin: 'kickapoo_head',
-        score: 0,
-        x: window.game.world.centerX + this.unit * 12,
-        nickname: ''
+        deviceId: null,
+        character: null,
+        x: window.game.world.centerX + this.unit * 20,
       }
     ]
 
+    this.characters = new Map();
+
     function getPlayers() {
-      let characters = {};
       let players = window.game.global.playerManager.getPlayers();
-      console.log(players);
       let index = 0;
 
       for (let [key, value] of players) {
-        // playerSettings[index].skin = value.skin;
-        // playerSettings[index].nickname = value.nickname;
         //Sprite
-        let player = window.game.add.sprite(playerSettings[index].x, window.game.world.height * .4, value.skin);
-        player.scale.setTo(that.scale * 2, that.scale * 2);
-        player.animations.add('idle', ['Idle_000','Idle_001','Idle_002','Idle_003','Idle_004','Idle_005','Idle_006','Idle_007','Idle_008','Idle_009','Idle_010','Idle_011','Idle_012','Idle_013','Idle_014','Idle_015','Idle_016','Idle_017',], 18, true);
-        player.animations.play('idle');
-        //Nickname
-        console.log(player);
-        let nickname = that.add.text(player.x + player.width / 2, player.top - player.height / 7, value.nickname, subheadlineStyling);
+        let character = window.game.add.sprite(playerSettings[index].x, window.game.world.height * .4, value.skin);
+        if(index < 2) {
+          character.scale.setTo(that.scale * 2, that.scale * 2);
+        }
+        else {
+          character.scale.setTo(- (that.scale * 2), that.scale * 2);
+        }
+        
+        character.animations.add('idle', ['Idle_000','Idle_001','Idle_002','Idle_003','Idle_004','Idle_005','Idle_006','Idle_007','Idle_008','Idle_009','Idle_010','Idle_011','Idle_012','Idle_013','Idle_014','Idle_015','Idle_016','Idle_017',], 18, true);
+        character.animations.add('throw', ['Throwing_000','Throwing_001','Throwing_002','Throwing_003','Throwing_004','Throwing_005','Throwing_006','Throwing_007','Throwing_008','Throwing_009','Throwing_010','Throwing_011'], 20, false);
+        character.animations.add('slash', ['Slashing_000','Slashing_001','Slashing_002','Slashing_003','Slashing_004','Slashing_005','Slashing_006','Slashing_007','Slashing_008','Slashing_009','Slashing_010','Slashing_011'], 15, false);
+        character.animations.add('dying', ['Dying_000','Dying_001','Dying_002','Dying_003','Dying_004','Dying_005','Dying_006','Dying_007','Dying_008','Dying_009','Dying_010','Dying_011','Dying_012','Dying_013','Dying_014'], 17, false);
+        character.animations.add('kicking', ['Kicking_000','Kicking_001','Kicking_002','Kicking_003','Kicking_004','Kicking_005','Kicking_006','Kicking_007','Kicking_008','Kicking_009','Kicking_010','Kicking_011'], 17, false);
+        character.animations.play('idle');
+        let nickname = that.add.text(character.x + character.width / 2, character.top - character.height / 7, value.nickname, subheadlineStyling);
         nickname.anchor.setTo(0.5, 0.5);
-        let score = that.add.text(player.x + player.width / 2, player.bottom + player.height / 5, value.score, subheadlineStyling);
+        let score = that.add.text(character.x + character.width / 2, character.bottom + character.height / 5, value.score, subheadlineStyling);
         score.anchor.setTo(0.5, 0.5);
+
+        that.characters.set(value.deviceId, character);
         index++;
       }
     }
 
     window.game.global.airConsole.onMessage = function(deviceId, data) { 
-      //countToFight();
+      if(data.screen == 'emotes') {
+        let emoteType = data.emote;
+        playEmote(emoteType, deviceId);
+      }
+    }
+
+    function playEmote(emoteType, deviceId) {
+      let player = that.characters.get(deviceId);
+      console.log(player);
+      switch(emoteType) {
+        case 'emote1': 
+          player.animations.play('slash');
+          break;
+        case 'emote2': 
+          player.animations.play('dying');
+          break;
+        case 'emote3': 
+          player.animations.play('kicking');
+          break;
+        case 'emote4': 
+          player.animations.play('throw');
+          break;
+        default:
+          break;
+      }          
     }
        
     function countToFight() {

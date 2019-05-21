@@ -30,7 +30,7 @@ export default class extends Phaser.State {
     // this.lavaParticles.startEmitter();
 
     //Background Frame
-    this.bg4 = addImage(this, 0, 0, 'backgroundCharacterSelection', window.innerWidth, window.innerHeight);
+    this.bg4 = addImage(this, 0, 0, 'backgroundCharacterSelection', this.world.width, this.world.height);
 
     //TEXT ELEMENTS
 
@@ -177,7 +177,7 @@ export default class extends Phaser.State {
       let style = { font: "45px Bungee", fill: "#111111", align: "center" };
 
       let counter = 5;
-      let text = window.game.add.text(that.world.width / 2, that.world.height / 14, '', style);
+      let text = window.game.add.text(that.world.width / 2 - 20, that.world.height / 14, '', style);
       let startGameTimer = setInterval(() => {
         text.setText(counter);
         if(counter < 1) {

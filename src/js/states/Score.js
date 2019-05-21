@@ -95,8 +95,13 @@ export default class extends Phaser.State {
 
     window.game.global.airConsole.onMessage = function(deviceId, data) { 
       if(data.screen == 'emotes') {
-        let emoteType = data.emote;
-        playEmote(emoteType, deviceId);
+        if(data.emote) {
+          let emoteType = data.emote;
+          playEmote(emoteType, deviceId);
+        }
+        else if(data.ready) {
+          countToFight();
+        }
       }
     }
 
@@ -105,25 +110,25 @@ export default class extends Phaser.State {
       switch(emoteType) {
         case 'emote1': 
           player.animations.play('slash');
-          player.animations.currentAnim.onComplete.add(playIdleAnim(), this); 
+          //player.animations.currentAnim.onComplete.add(playIdleAnim(player), this); 
           break;
         case 'emote2': 
           player.animations.play('dying');
           break;
         case 'emote3': 
           player.animations.play('kicking');
-          player.animations.currentAnim.onComplete.add(playIdleAnim(), this); 
+          //player.animations.currentAnim.onComplete.add(playIdleAnim(player), this); 
           break;
         case 'emote4': 
           player.animations.play('throw');
-          player.animations.currentAnim.onComplete.add(playIdleAnim(), this); 
+          //player.animations.currentAnim.onComplete.add(playIdleAnim(player), this); 
           break;
         default:
           break;
       } 
     }
 
-    function playIdleAnim() { 
+    function playIdleAnim(player) { 
       player.animations.play('idle'); 
     }
 
@@ -133,7 +138,7 @@ export default class extends Phaser.State {
       //Style of Fight Counter
      let style = { font: "45px Bungee", fill: "#111111", align: "center" };
 
-    let counter = 5;
+    let counter = 5; //5 Sekunden Timer
     let text = window.game.add.text(that.world.width / 2 - 20, that.world.height / 14, '', style);
     let startGameTimer = setInterval(() => {
       text.setText(counter);
@@ -141,7 +146,7 @@ export default class extends Phaser.State {
         clearInterval(startGameTimer);
         window.game.global.airConsole.broadcast(
           {
-            screen: 'game',
+            screen: 'emotes',
             action: 'change_to_controller'
           })
         that.state.start('Level1');

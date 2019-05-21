@@ -76,6 +76,14 @@ function handleCharacterSelection(data) {
   }
 }
 
+function handleEmotes(data) {
+  switch (data.action) {
+  case 'change_to_controller':
+    csm.startState('game');
+    setUpController();
+    break;
+  }
+}
 
 airConsole.onMessage = function(from, data) {
   console.log(data);
@@ -88,6 +96,9 @@ airConsole.onMessage = function(from, data) {
       break;
     case 'characterSelection':
       handleCharacterSelection(data);
+      break;
+    case 'emotes':
+      handleEmotes(data);
       break;
   }
 }
@@ -276,5 +287,26 @@ function setUpEmotes() {
     button.addEventListener('touchend', function(e){
       button.classList.remove('button--active');
     });
+  }
+
+  //Ready Button Only For Master
+  let deviceId = airConsole.getDeviceId();
+  let masterId = airConsole.getMasterControllerDeviceId();
+  if(deviceId === masterId) {
+    console.log("master found: " + deviceId);
+    document.getElementById('score__ready__wrapper').style.display = "block";
+
+    let readyButton = document.getElementById('button__score__ready');
+
+    readyButton.addEventListener('touchstart', function(e){
+      airConsole.message(AirConsole.SCREEN, {
+        screen: 'emotes',
+        ready: true
+      });
+      readyButton.classList.add('button--active');
+    });
+  }
+  else {
+    console.log("not a master");
   }
 }

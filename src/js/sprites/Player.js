@@ -140,17 +140,20 @@ export default class Player {
     // this.dashTimer = window.game.time.totalElapsedSeconds();
     // if(this.canDash == true && (Math.abs(this.dashTimer - this.dashIdleTimer) < 0.3) && (Math.abs(this.dashTimer - this.lastDash) > 2.5)) {
       this.player.scale.x = (direction == 'right') ? 1 : -1;
-      let dash_smoke = window.game.add.sprite(this.player.x - 30, this.player.y - 80, 'dash_smoke');
+      let dash_smoke = this.player.scale.x === 1 ? window.game.add.sprite(this.player.x - 30, this.player.y - 80, 'dash_smoke') : window.game.add.sprite(this.player.x + 30, this.player.y - 80, 'dash_smoke');
       dash_smoke.scale.setTo(2 * this.scale, 2 * this.scale); //Item Size
       var dash_smoke_animation = dash_smoke.animations.add('smoking');
       dash_smoke_animation.killOnComplete = true;
       if(this.player.scale.x < 0) {
-          this.player.body.moveLeft(4800 * this.scale); //multiply with delta time
-          dash_smoke.scale.x = - this.scale;
+          this.player.body.moveLeft(14800 * this.scale); //multiply with delta time
+          dash_smoke.scale.x = -this.scale;
       }
       else if(this.player.scale.x > 0) {
-          this.player.body.moveRight(4800 * this.scale);
+          this.player.body.moveRight(14800 * this.scale);
           dash_smoke.scale.x = this.scale;
+      }
+      else {
+        console.log("else")
       }
       dash_smoke_animation.play(16);
       // this.canDash = false;

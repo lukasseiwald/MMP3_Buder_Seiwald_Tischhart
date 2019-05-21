@@ -247,7 +247,7 @@ export default class extends Phaser.State {
             case 'dashRight':
               character.dash('right');
               break;
-            case 'dashRight':
+            case 'dashLeft':
               character.dash('left');
               break;
             default:

@@ -231,7 +231,6 @@ export default class extends Phaser.State {
         if(character !== null) {
           switch(data.action) {
             case 'right':
-              character.moveToRight();
               character.movingTo = 'right';
               break;
             case 'left':
@@ -245,10 +244,10 @@ export default class extends Phaser.State {
               character.shoot();
               break;
             case 'dashRight':
-              character.dash('right');
+              character.movingTo = 'dashRight';
               break;
             case 'dashLeft':
-              character.dash('left');
+              character.movingTo = 'dashLeft';
               break;
             default:
               character.movingTo = null;

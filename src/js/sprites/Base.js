@@ -7,7 +7,6 @@ export default class Base {
   constructor (tsize, x, y, asset, character) {
     this.unit = window.game.global.unit;
     this.scale = window.game.global.scale;
-    this.gamePauseTime;
     this.character = character;
     this.base = game.add.sprite(x, y, asset);
     this.base.enableBody = true;
@@ -63,10 +62,7 @@ export default class Base {
         console.log("soul already included");
       }
       // if(base.sprite.collectedSouls.includes("kickapoo_soul") && base.sprite.collectedSouls.includes("lucifer_soul") && base.sprite.collectedSouls.includes("egyptian_soul") && base.sprite.collectedSouls.includes("knight_soul")) {
-      if(base.sprite.collectedSouls.includes("egyptian_soul") && base.sprite.collectedSouls.includes("knight_soul")) {
-        console.log(this.player.key)
-        window.game.global.score[this.player.key]++;
-        console.log(window.game.global.score);
+      if(base.sprite.collectedSouls.includes("egyptian_soul")) { //For dev only
         this.winning();
       }
     }
@@ -91,31 +87,35 @@ export default class Base {
   winning() {
     let winningText = 'Player Won';
     if(!window.game.global.dev) {
-      let style = { font: 2 * this.unit + "px Bungee", fill: "#000000", align: "center" };
-      winningText = window.game.global.playerManager.getNickname(this.character.deviceId) + " WON";
+      // let style = { font: 2 * this.unit + "px Bungee", fill: "#000000", align: "center" };
+      // winningText = window.game.global.playerManager.getNickname(this.character.deviceId) + " WON";
 
-      let winnerId = this.character.deviceId;
-      window.game.global.playerManager.sendMessageToPlayer(winnerId,
-      {
-        screen: 'game',
-        action: 'winning'
-      });
+      // let winnerId = this.character.deviceId;
+      // window.game.global.playerManager.sendMessageToPlayer(winnerId,
+      // {
+      //   screen: 'game',
+      //   action: 'winning'
+      // });
 
-      this.image = addImage(window.game, 0, 0, 'background1', window.game.world.width, window.game.world.height);
+      // this.image = addImage(window.game, 0, 0, 'background1', window.game.world.width, window.game.world.height);
 
-      let test = window.game.add.text(window.game.world.centerX, window.game.world.centerY, winningText, headlineStyling);
+      // let test = window.game.add.text(window.game.world.centerX, window.game.world.centerY, winningText, headlineStyling);
+      // test.anchor.setTo(0.5, 0.5);
+
+      // for (let [deviceId, player] of window.game.global.playerManager.getPlayers()) {
+      //   if (deviceId !== winnerId) {
+      //     window.game.global.playerManager.sendMessageToPlayer(deviceId,
+      //     {
+      //       screen: 'game',
+      //       action: 'loosing'
+      //     });
+      //   }
+      // }
+      //For Testing
+      window.game.global.playerManager.incrementScore(this.character.deviceId);
+      let test = window.game.add.text(window.game.world.centerX, window.game.world.centerY - 30, winningText, headlineStyling);
       test.anchor.setTo(0.5, 0.5);
-
-      for (let [deviceId, player] of window.game.global.playerManager.getPlayers()) {
-        if (deviceId !== winnerId) {
-          window.game.global.playerManager.sendMessageToPlayer(deviceId,
-          {
-            screen: 'game',
-            action: 'loosing'
-          });
-        }
-      }
-      this.gamePause();
+      this.pauseGame();
     }
     else {
       let test = window.game.add.text(window.game.world.centerX, window.game.world.centerY - 30, winningText, headlineStyling);
@@ -142,13 +142,14 @@ export default class Base {
 
   won() {
     if(!window.game.global.dev) {
-      this.image.destroy();
-      window.game.global.playerManager.broadcast({screen: 'waiting', action: 'characterSelection'});
+      window.game.global.airConsole.broadcast(
+        {
+          screen: 'game',
+          action: 'emotes'
+        })
       window.game.state.start('Score');
     }
     else {
-      console.log("won");
-      this.gamePauseTime = false;
       window.game.state.start('Score');
     }
   }

@@ -106,7 +106,6 @@ export default class extends Phaser.State {
       }
     }
     
-    
     function getPlayers() {
       let index = 0;
       characterSelectedCounter += 1;
@@ -163,27 +162,28 @@ export default class extends Phaser.State {
         countToFight();
       }
     }
+
     function countToFight() {
       that.headline.setText("GET READY TO FIGHT!")
 
       //Style of Fight Counter
-     let style = { font: "45px Bungee", fill: "#111111", align: "center" };
+      let style = { font: "45px Bungee", fill: "#111111", align: "center" };
 
-     let counter = 5;
-     let text = window.game.add.text(that.world.width / 2.32, that.world.height / 14, '', style);
-     let startGameTimer = setInterval(() => {
-       text.setText(counter);
-       if(counter < 1) {
-         clearInterval(startGameTimer);
-         window.game.global.airConsole.broadcast(
-           {
-             screen: 'characterSelection',
-             action: 'change_to_controller'
-           })
-         that.state.start('Level1')
-       }
-       counter = counter - 1;
-     }, 1000);
+      let counter = 5;
+      let text = window.game.add.text(that.world.width / 2, that.world.height / 14, '', style);
+      let startGameTimer = setInterval(() => {
+        text.setText(counter);
+        if(counter < 1) {
+          clearInterval(startGameTimer);
+          window.game.global.airConsole.broadcast(
+            {
+              screen: 'characterSelection',
+              action: 'change_to_controller'
+            })
+          that.state.start('Level1')
+        }
+        counter = counter - 1;
+      }, 1000);
     }
   }
 }

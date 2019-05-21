@@ -31,6 +31,16 @@ export default class PlayerManager {
     player.skin = skin;
     this.players.set(deviceId, player);
   }
+
+  incrementScore(deviceId) {
+    let player = this.getPlayer(deviceId);
+    player.score++;
+    this.players.set(deviceId, player);
+  }
+
+  getScore(deviceId) {
+    return this.players.get(deviceId).score;
+  }
   
   getPlayer(deviceId) {
     return this.players.get(deviceId);
@@ -48,6 +58,7 @@ export default class PlayerManager {
       deviceId,
       nickname: window.game.global.airConsole.getNickname(deviceId),
       skin: undefined,
+      score: 0,
       character: undefined
     }
 

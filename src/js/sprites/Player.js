@@ -14,7 +14,7 @@ export default class Player {
     this.lastDash = 0;
     this.canDash = false;
     this.jumpCount = 0;
-
+    
     this.spawnX = spawnX;
     this.spawnY = spawnY;
     this.skin = skin;

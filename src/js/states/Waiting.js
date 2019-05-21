@@ -84,6 +84,7 @@ export default class extends Phaser.State {
     window.game.global.airConsole.onMessage = function(deviceId, data) {
       switch (data.action) {
         case 'start_character_selection':
+          console.log('start_character_selection');
           window.game.global.airConsole.broadcast(
             {
               screen: 'waiting',

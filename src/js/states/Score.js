@@ -32,7 +32,7 @@ export default class extends Phaser.State {
 
 		// TEXT ELEMENTS
 		this.headline = this.add.text(this.world.centerX, this.world.height * 0.3, '', headlineStyling);
-		this.headline.anchor.setTo(0.5, 0.5);
+    this.headline.anchor.setTo(0.5, 0.5)		// Character Plateau's
 
 		const playerSettings = [
 			{
@@ -64,8 +64,10 @@ export default class extends Phaser.State {
 			let index = 0;
 
 			for (const [key, value] of players) {
+        //Add Plateau before so player wont get cover by it;
+        const plateau = addImage(that, playerSettings[index].x, window.game.world.height * 0.35, 'characterPlateau', 128 * 1.5, 64);
 				// Sprite
-				const character = window.game.add.sprite(playerSettings[index].x, window.game.world.height * 0.4, value.skin);
+				const character = window.game.add.sprite(playerSettings[index].x, window.game.world.height * 0.45, value.skin);
 
 				if(index < 2) {
 					character.scale.setTo(that.scale * 2, that.scale * 2);
@@ -78,14 +80,22 @@ export default class extends Phaser.State {
 				character.animations.add('slash', ['Slashing_000', 'Slashing_001', 'Slashing_002', 'Slashing_003', 'Slashing_004', 'Slashing_005', 'Slashing_006', 'Slashing_007', 'Slashing_008', 'Slashing_009', 'Slashing_010', 'Slashing_011'], 15, false);
 				character.animations.add('dying', ['Dying_000', 'Dying_001', 'Dying_002', 'Dying_003', 'Dying_004', 'Dying_005', 'Dying_006', 'Dying_007', 'Dying_008', 'Dying_009', 'Dying_010', 'Dying_011', 'Dying_012', 'Dying_013', 'Dying_014'], 17, false);
 				character.animations.add('kicking', ['Kicking_000', 'Kicking_001', 'Kicking_002', 'Kicking_003', 'Kicking_004', 'Kicking_005', 'Kicking_006', 'Kicking_007', 'Kicking_008', 'Kicking_009', 'Kicking_010', 'Kicking_011'], 17, false);
-				character.animations.play('idle');
-
-				const nickname = that.add.text(character.x + character.width / 2, character.top - character.height / 7, value.nickname, subheadlineStyling);
-				const score = that.add.text(character.x + character.width / 2, character.bottom + character.height / 5, value.score, subheadlineStyling);
-
+        character.animations.play('idle');
+        
+        plateau.x = character.x + character.width / 2;
+        plateau.y = character.bottom - character.height / 6.1;
+				const nickname = that.add.text(character.x + character.width / 2, character.bottom + character.height / 7, value.nickname, subheadlineStyling);
+        const score = that.add.text(character.x + character.width / 2, character.bottom + character.height / 4, value.score, subheadlineStyling);
+        
+        plateau.anchor.setTo(0.5, 0.5);
 				nickname.anchor.setTo(0.5, 0.5);
 				score.anchor.setTo(0.5, 0.5);
-				that.characters.set(value.deviceId, character);
+        that.characters.set(value.deviceId, character);
+        
+        if(value.score > 1) {
+          addImage(that, character.x + character.width / 3 + that.unit, character.top, 'crown', 40, 23);
+          that.headline.setText(value.nickname + ' WON THE GAME');
+        }
 				index += 1;
 			}
 		}
@@ -106,28 +116,39 @@ export default class extends Phaser.State {
 
 			switch(emoteType) {
 			case 'emote1':
-				player.animations.play('slash');
-				// player.animations.currentAnim.onComplete.add(playIdleAnim(player), this);
+        player.animations.play('slash');
+        player.animations.currentAnim.onComplete.add(function () { player.animations.play('idle'); }, this);
+        playSpeechEmote(player, 'meatEmote');
 				break;
 			case 'emote2':
-				player.animations.play('dying');
+        player.animations.play('dying');
+        playSpeechEmote(player, 'frogEmote');
 				break;
 			case 'emote3':
 				player.animations.play('kicking');
-				// player.animations.currentAnim.onComplete.add(playIdleAnim(player), this);
+        player.animations.currentAnim.onComplete.add(function () { player.animations.play('idle'); }, this);
+        playSpeechEmote(player, 'curseEmote');
 				break;
 			case 'emote4':
 				player.animations.play('throw');
-				// player.animations.currentAnim.onComplete.add(playIdleAnim(player), this);
+        player.animations.currentAnim.onComplete.add(function () { player.animations.play('idle'); }, this);
+        playSpeechEmote(player, 'fingerEmote');
 				break;
 			default:
 				break;
 			}
-		}
-
-		function playIdleAnim(player) {
-			player.animations.play('idle');
-		}
+    }
+    
+    function playSpeechEmote(player, emoteType) {
+      const curseEmote = window.game.add.sprite(player.x + player.width * 0.75, player.y - 40, emoteType);
+      if(player.scale.x < 0) {
+        curseEmote.x = player.x + player.width * 0.25;
+      }
+      curseEmote.scale.setTo(that.scale * 2, that.scale * 2);
+      curseEmote.animations.add('emoteBegin');
+      curseEmote.animations.play('emoteBegin', 10, false);
+      window.game.time.events.add(Phaser.Timer.SECOND * 2, function () { curseEmote.destroy(); }, this);
+    }
 
 		function countToFight() {
 			that.headline.setText('GET READY TO FIGHT!');

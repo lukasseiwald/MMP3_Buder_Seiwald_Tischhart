@@ -263,8 +263,7 @@ function setUpEmotes() {
 	const masterId = airConsole.getMasterControllerDeviceId();
 
 	if(deviceId === masterId) {
-		console.log('master found: ' + deviceId);
-		document.getElementById('score__ready__wrapper').style.display = 'block';
+		document.getElementById('score__ready__wrapper').style.display = 'flex';
 
 		const readyButton = document.getElementById('button__score__ready');
 
@@ -275,8 +274,5 @@ function setUpEmotes() {
 			});
 			readyButton.classList.add('button--active');
 		});
-	}
-	else {
-		console.log('not a master');
 	}
 }

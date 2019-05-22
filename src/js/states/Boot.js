@@ -67,8 +67,15 @@ export default class extends Phaser.State {
 		this.load.image('lucifer_head', '../../assets/images/controller/lucifer.png');
 		this.load.image('kickapoo_head', '../../assets/images/controller/kickapoo.png');
 
-		// LOADING EXTRAS
-		this.load.spritesheet('dash_smoke', '../../assets/extras/dash/dash_smoke.png', 60, 60, 9);
+		// LOAD EMOTES
+		this.load.spritesheet('curseEmote', '../../assets/images/emotes/curseEmote.png', 50, 50, 10);
+		this.load.spritesheet('meatEmote', '../../assets/images/emotes/meatEmote.png', 50, 50, 10);
+		this.load.spritesheet('fingerEmote', '../../assets/images/emotes/fingerEmote.png', 50, 50, 10);
+		this.load.spritesheet('frogEmote', '../../assets/images/emotes/frogEmote.png', 50, 50, 10);
+
+		// LOAD EXTRAS
+		this.load.image('crown', '../../assets/extras/crown.png');
+		this.load.spritesheet('dash_smoke', '../../assets/extras/dash_smoke.png', 60, 60, 9);
 
 		if(config.webfonts.length) {
 			WebFont.load({

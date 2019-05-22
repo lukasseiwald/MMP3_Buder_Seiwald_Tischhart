@@ -65,7 +65,7 @@ export default class extends Phaser.State {
 
 		const characterSettings = [
 			{
-				skin: 'egyptian',
+				skin: 'mage',
 				x: unit * 5,
 				y: unit * 26,
 				baseX: 3 * unit,
@@ -74,7 +74,7 @@ export default class extends Phaser.State {
 				healthbarY: this.world.height - 6.5 * unit
 			},
 			{
-				skin: 'knight',
+				skin: 'inca',
 				x: this.world.width - 90,
 				y: unit * 26,
 				baseX: this.world.width - 3 * unit,
@@ -84,7 +84,7 @@ export default class extends Phaser.State {
 				healthbarY: this.world.height - 6.5 * unit
 			},
 			{
-				skin: 'lucifer',
+				skin: 'knight',
 				x: 3 * unit,
 				y: 10 * unit,
 				baseX: 3 * unit,
@@ -93,7 +93,7 @@ export default class extends Phaser.State {
 				healthbarY: 6.6 * unit
 			},
 			{
-				skin: 'kickapoo',
+				skin: 'lucifer',
 				x: this.world.width - 90,
 				y: unit * 10,
 				baseX: this.world.width - 3 * unit,

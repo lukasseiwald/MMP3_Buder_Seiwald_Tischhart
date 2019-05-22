@@ -86,7 +86,7 @@ export default class extends Phaser.State {
 		let player4 = addImage(this, this.world.width * 0.71, this.world.height / 2.4, 'characterSilhouette', 300, 300);
 
 		window.game.global.airConsole.onMessage = function(deviceId, data) {
-			const character = window.game.global.playerManager.getPlayerCharacter(deviceId);
+			const character = window.game.global.playerManager.getCharacter(deviceId);
 
 			if(character !== null) {
 				switch(data.action) {

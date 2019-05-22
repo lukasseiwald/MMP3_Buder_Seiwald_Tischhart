@@ -104,7 +104,9 @@ export default class Player {
 		}
 		// Keep on playing hurt animation
 		if(this.player.animations.name === 'hurt') {
-			this.player.animations.killOnComplete;
+			this.player.animations.currentAnim.onComplete.add(function() {
+				this.player.animations.play('idle');
+			}, this);
 		}
 		else {
 			this.player.animations.play('idle');
@@ -226,6 +228,7 @@ export default class Player {
 		this.player.soulAsset = this.player.key + '_soul';
 		this.player.activeItem = '';
 		this.player.shield = null;
+		this.player.stuckBullets = [];
 		// Für Healthbar
 		this.player.deviceId = this.deviceId;
 		this.player.anchor.set(0.5, 0.5);
@@ -246,7 +249,7 @@ export default class Player {
 		this.bullets.setAll('checkWorldBounds', true);
 
 		this.bullets.forEach((bullet) => {
-			bullet.scale.set(this.scale, this.scale);
+			bullet.scale.set(this.scale * 1.1, this.scale * 1.5);
 			bullet.body.setCollisionGroup(bulletCollisionGroup);
 			bullet.body.collides([playerCollisionGroup, tilesCollisionGroup, bulletCollisionGroup]);
 			bullet.body.onBeginContact.add(this.hit, bullet);
@@ -298,6 +301,17 @@ export default class Player {
 						}
 					}
 					else {
+						const stuckBullet = window.game.add.sprite(this.x, this.y, this.key);
+
+						stuckBullet.anchor.set(0.3, 0.5);
+						if(this.x > hitTarget.sprite.x) {
+							stuckBullet.anchor.set(1, 0.5);
+							stuckBullet.scale.x = -stuckBullet.scale.x;
+						}
+						hitTarget.sprite.stuckBullets.push(stuckBullet);
+						// places player ontop of stuck bullet
+						window.game.world.bringToTop(hitTarget.sprite);
+						this.kill();
 						hitTarget.sprite.animations.play('hurt', 10, false);
 						hitTarget.sprite.damage(1 / 3 + 0.01);
 						const healthBar = window.game.global.healthBars[hitTarget.sprite.deviceId];
@@ -321,6 +335,10 @@ export default class Player {
 			this.player.obtainedSoul = null;
 			this.player.activeItem = '';
 		}
+		// remove stuck bullet of dead player
+		this.player.stuckBullets.forEach((bullet) => {
+			bullet.kill();
+		});
 		// Style of Respawn Counter
 		const style = {font: 3 * this.unit + 'px Bungee', fill: '#FFFFFF', align: 'center'};
 		let counter = 5;
@@ -344,11 +362,12 @@ export default class Player {
 		window.game.add.tween(healthBar).to({width: 6 * this.unit}, 200, Phaser.Easing.Linear.None, true);
 		this.player.reset(this.spawnX, this.spawnY);
 		this.player.obtainedSoul = null;
+		this.player.stuckBullets = [];
 	}
 
 	spawnDeadBodyWithSoul() {
 		// Spawning dead body just to play its dying animation
-		this.deadBody = window.game.add.sprite(this.player.x, this.player.y, this.player.key);
+		this.deadBody = window.game.add.sprite(this.player.x, this.player.y + 10, this.player.key);
 		this.deadBody.anchor.set(0.5, 0.5);
 		this.deadBody.scale.setTo(this.scale, this.scale);
 		this.deadBody.animations.add('dying', ['Dying_000', 'Dying_001', 'Dying_002', 'Dying_003', 'Dying_004', 'Dying_005', 'Dying_006', 'Dying_007', 'Dying_008', 'Dying_009', 'Dying_010', 'Dying_011', 'Dying_012', 'Dying_013', 'Dying_014'], 17, false);
@@ -372,19 +391,21 @@ export default class Player {
 		if(window.game.time.now > this.player.nextFire && this.player.alive) {
 			const bullet = this.bullets.getFirstExists(false);
 
+			bullet.body.rotateRight(225);
+
 			if(bullet) {
 				this.player.animations.play('shoot');
 
 				if(this.player.scale.x < 0) {
+					bullet.scale.x = -bullet.scale.x;
 					bullet.reset(this.player.x - 20, this.player.y);
-					bullet.body.moveLeft(1500 * this.scale);
-					bullet.body.velocity.y = -500;
+					bullet.body.moveLeft(1150 * this.scale);
 				}
 				else if(this.player.scale.x > 0) {
 					bullet.reset(this.player.x + 20, this.player.y);
-					bullet.body.moveRight(1500 * this.scale);
-					bullet.body.velocity.y = -500;
+					bullet.body.moveRight(1150 * this.scale);
 				}
+				bullet.body.velocity.y = -650;
 				bullet.lifespan = 1000;
 				this.player.nextFire = window.game.time.now + 900;
 			}
@@ -424,6 +445,15 @@ export default class Player {
 			this.player.obtainedSoul.x = this.player.x;
 			this.player.obtainedSoul.y = this.player.y - 50;
 		}
+		if(this.player.stuckBullets.length > 0) {
+			let index = this.player.stuckBullets.length;
+
+			this.player.stuckBullets.forEach((bullet) => {
+				bullet.x = this.player.x - 30;
+				bullet.y = this.player.top + 15 * index;
+				index = index - 1;
+			});
+		}
 	}
 
 	jumpSoulWithPlayer() {
@@ -448,6 +478,9 @@ export default class Player {
 			player.sprite.health = 1;
 			const healthBar = window.game.global.healthBars[player.sprite.deviceId];
 
+			player.sprite.stuckBullets.forEach((bullet) => {
+				bullet.kill();
+			});
 			window.game.add.tween(healthBar).to({width: 6 * this.unit}, 200, Phaser.Easing.Linear.None, true);
 			break;
 		case 'shield_item':

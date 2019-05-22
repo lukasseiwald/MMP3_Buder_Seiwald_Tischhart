@@ -35,24 +35,32 @@ export default class extends Phaser.State {
 		this.load.image('knight_base', '../../assets/bases/knight_base.png');
 		this.load.image('lucifer_base', '../../assets/bases/lucifer_base.png');
 		this.load.image('kickapoo_base', '../../assets/bases/kickapoo_base.png');
+		this.load.image('inca_base', '../../assets/bases/inca_base.png');
+		this.load.image('mage_base', '../../assets/bases/mage_base.png');
 
 		// LOAD PLAYERS
 		this.load.atlasJSONHash('egyptian', '../../assets/characters/egyptian/egyptian.png', '../../assets/characters/egyptian/egyptian.json');
 		this.load.atlasJSONHash('knight', '../../assets/characters/knight/knight.png', '../../assets/characters/knight/knight.json');
 		this.load.atlasJSONHash('lucifer', '../../assets/characters/lucifer/lucifer.png', '../../assets/characters/lucifer/lucifer.json');
 		this.load.atlasJSONHash('kickapoo', '../../assets/characters/kickapoo/kickapoo.png', '../../assets/characters/kickapoo/kickapoo.json');
+		this.load.atlasJSONHash('inca', '../../assets/characters/inca/inca.png', '../../assets/characters/inca/inca.json');
+		this.load.atlasJSONHash('mage', '../../assets/characters/mage/mage.png', '../../assets/characters/mage/mage.json');
 
 		// LOAD SOULS
 		this.load.spritesheet('egyptian_soul', '../../assets/characters/egyptian/egyptian_soul.png', 50, 50, 2);
 		this.load.spritesheet('knight_soul', '../../assets/characters/knight/knight_soul.png', 50, 50, 2);
 		this.load.spritesheet('lucifer_soul', '../../assets/characters/lucifer/lucifer_soul.png', 50, 50, 2);
 		this.load.spritesheet('kickapoo_soul', '../../assets/characters/kickapoo/kickapoo_soul.png', 50, 50, 2);
+		this.load.spritesheet('inca_soul', '../../assets/characters/inca/inca_soul.png', 50, 50, 2);
+		this.load.spritesheet('mage_soul', '../../assets/characters/mage/mage_soul.png', 50, 50, 2);
 
 		// LOAD BULLETS
 		this.load.image('egyptian_bullet', '../../assets/characters/egyptian/egyptian_bullet.png');
 		this.load.image('knight_bullet', '../../assets/characters/knight/knight_bullet.png');
 		this.load.image('lucifer_bullet', '../../assets/characters/lucifer/lucifer_bullet.png');
 		this.load.image('kickapoo_bullet', '../../assets/characters/kickapoo/kickapoo_bullet.png');
+		this.load.image('inca_bullet', '../../assets/characters/inca/inca_bullet.png');
+		this.load.image('mage_bullet', '../../assets/characters/mage/mage_bullet.png');
 
 		// LOAD ITEMS
 		this.load.spritesheet('health_item', '../../assets/items/health.png', 50, 50, 5);
@@ -60,12 +68,6 @@ export default class extends Phaser.State {
 		this.load.spritesheet('speed_item', '../../assets/items/speed.png', 50, 50, 4);
 		this.load.spritesheet('shield_item', '../../assets/items/shield.png', 50, 50, 5);
 		this.load.image('shield_character', '../../assets/items/shield2.png');
-
-		// LOAD CHARACTER HEAD FOR SCORE
-		this.load.image('egyptian_head', '../../assets/images/controller/egyptian.png');
-		this.load.image('knight_head', '../../assets/images/controller/knight.png');
-		this.load.image('lucifer_head', '../../assets/images/controller/lucifer.png');
-		this.load.image('kickapoo_head', '../../assets/images/controller/kickapoo.png');
 
 		// LOAD EMOTES
 		this.load.spritesheet('curseEmote', '../../assets/images/emotes/curseEmote.png', 50, 50, 10);

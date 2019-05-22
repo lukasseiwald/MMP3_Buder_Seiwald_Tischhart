@@ -38,64 +38,64 @@ export default class PlayerManager {
     this.players.set(deviceId, player);
   }
 
-  getScore(deviceId) {
-    return this.players.get(deviceId).score;
-  }
+	getScore(deviceId) {
+		return this.players.get(deviceId).score;
+	}
   
-  getPlayer(deviceId) {
-    return this.players.get(deviceId);
-  }
+	getPlayer(deviceId) {
+		return this.players.get(deviceId);
+	}
 
-  getPlayerCharacter(deviceId) {
-    let character = this.getPlayer(deviceId).character;
-    return this.getPlayer(deviceId).character;
-  }
+	layerCharacter(deviceId) {
+		let character = this.getPlayer(deviceId).character;
+		return this.getPlayer(deviceId).character;
+	}
 
-  addPlayer(deviceId){
-    this.master = window.game.global.airConsole.getMasterControllerDeviceId();
+	addPlayer(deviceId){
+		this.master = window.game.global.airConsole.getMasterControllerDeviceId();
 
-    let player = {
-      deviceId,
-      nickname: window.game.global.airConsole.getNickname(deviceId),
-      skin: undefined,
-      score: 0,
-      character: undefined
-    }
+		let player = {
+			deviceId,
+			nickname: window.game.global.airConsole.getNickname(deviceId),
+			skin: undefined,
+			score: 0,
+			character: undefined
+		}
 
-    this.players.set(deviceId, player);
-  }
+		this.players.set(deviceId, player);
+	}
 
-  removePlayer(deviceId){
-    if (this.players.has(deviceId)) {
-      this.players.delete(deviceId)
-    }
-  }
+	removePlayer(deviceId){
+		if (this.players.has(deviceId)) {
+			this.players.delete(deviceId)
+		}
+	}
 
-  getNickname(deviceId) {
-    return this.players.get(deviceId).nickname;
-  }
+	getNickname(deviceId) {
+		return this.players.get(deviceId).nickname;
+	}
 
-  getAllNicknames(){
-    let names = new Array();
-    for (let [deviceId, player] of this.players){
-      names.push(player.nickname);
-    }
-    return names;
-  }
+	getAllNicknames(){
+		let names = new Array();
+		for (let [deviceId, player] of this.players){
+			names.push(player.nickname);
+		}
+		return names;
+	}
 
-  getCharacter(){
+	getCharacter(deviceId){
+		return this.players.get(deviceId).skin;
+	}
 
-  }
+	getConnectedPlayerNum(){
+		return this.players.size;
+	}
 
-  getConnectedPlayerNum(){
-    return this.players.size;
-  }
+	sendMessageToPlayer(deviceId, data) {
+		window.game.global.airConsole.message(deviceId, data);
+	}
 
-  sendMessageToPlayer(deviceId, data) {
-    window.game.global.airConsole.message(deviceId, data);
-  }
-
-  broadcast(data) {
-    window.game.global.airConsole.broadcast(data);
-  }
+	broadcast(data) {
+		window.game.global.airConsole.broadcast(data);
+	}
 }

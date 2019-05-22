@@ -92,12 +92,24 @@ export default class extends Phaser.State {
 				switch(data.action) {
 				case 'character_selected':
 					window.game.global.playerManager.setSkin(deviceId, data.selectedCharacter);
-					getPlayers();
+					getPlayers("select");
 					window.game.global.airConsole.broadcast({
 						screen: 'characterSelection',
 						action: 'selected_character',
 						selectedCharacter: data.selectedCharacter,
 						selectedCharacterIndex: data.selectedCharacterIndex
+					});
+					break;
+				case 'character_deselected':
+					let selectedCharacter = data.selectedCharacter;
+					let selectedCharacterIndex = data.selectedCharacterIndex;
+					window.game.global.playerManager.setSkin(deviceId, undefined);
+					getPlayers("deselect");
+					window.game.global.airConsole.broadcast({
+						screen: 'characterSelection',
+						action: 'deselected_character',
+						selectedCharacter: selectedCharacter,
+						selectedCharacterIndex: selectedCharacterIndex
 					});
 					break;
 				case '':
@@ -107,11 +119,13 @@ export default class extends Phaser.State {
 			}
 		};
 
-		function getPlayers() {
+		function getPlayers(mode) {
 			let index = 0;
-			const players = window.game.global.playerManager.getPlayers();
-
-			characterSelectedCounter += 1;
+			const players = window.game.global.playerManager.getPlayers()
+			if(mode === 'select')
+				characterSelectedCounter += 1;
+			else if('deselect')
+				characterSelectedCounter -= 1;
 
 			for (const [key, value] of players) {
 				if(!namesSet) {
@@ -119,39 +133,63 @@ export default class extends Phaser.State {
 
 					text.anchor.setTo(0.5, 0.5);
 				}
-				if(value.skin !== undefined) {
+				if((value.skin !== undefined && mode ==='select') || (value.skin === undefined && mode === 'deselect')) {
 					switch(index) {
 					case 0:
-						player1.kill();
-						player1 = window.game.add.sprite(playerSettings[index].x, playerSettings[index].y, value.skin);
-						player1.scale.setTo(3, 3);
-						player1.anchor.set(0.5, 0.5);
-						player1.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
-						player1.animations.play('idle');
+						player1.destroy();
+						if(mode === 'select') {
+							player1 = window.game.add.sprite(playerSettings[index].x, playerSettings[index].y, value.skin);
+							player1.scale.setTo(3, 3);
+							player1.anchor.set(0.5, 0.5);
+							player1.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
+							player1.animations.play('idle');
+						}
+						else {
+							let width = getWidth(index);
+							player1 = addImage(that, that.world.width * width, that.world.height / 2.4, 'characterSilhouette', 300, 300);
+						}
 						break;
 					case 1:
-						player2.kill();
-						player2 = window.game.add.sprite(playerSettings[index].x, playerSettings[index].y, value.skin);
-						player2.scale.setTo(3, 3);
-						player2.anchor.set(0.5, 0.5);
-						player2.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
-						player2.animations.play('idle');
+						player2.destroy();
+						if(mode === 'select') {
+							player2 = window.game.add.sprite(playerSettings[index].x, playerSettings[index].y, value.skin);
+							player2.scale.setTo(3, 3);
+							player2.anchor.set(0.5, 0.5);
+							player2.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
+							player2.animations.play('idle');
+						}
+						else {
+							let width = getWidth(index);
+							player2 = addImage(that, that.world.width * width, that.world.height / 2.4, 'characterSilhouette', 300, 300);
+						}
 						break;
 					case 2:
-						player3.kill();
-						player3 = window.game.add.sprite(playerSettings[index].x, playerSettings[index].y, value.skin);
-						player3.scale.setTo(-3, 3);
-						player3.anchor.set(0.5, 0.5);
-						player3.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
-						player3.animations.play('idle');
+						player3.destroy();
+						if(mode === 'select') {
+							player3 = window.game.add.sprite(playerSettings[index].x, playerSettings[index].y, value.skin);
+							player3.scale.setTo(3, 3);
+							player3.anchor.set(0.5, 0.5);
+							player3.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
+							player3.animations.play('idle');
+						}
+						else {
+							let width = getWidth(index);
+							player3 = addImage(that, that.world.width * width, that.world.height / 2.4, 'characterSilhouette', 300, 300);
+						}
 						break;
 					case 3:
-						player4.kill();
-						player4 = window.game.add.sprite(playerSettings[index].x, playerSettings[index].y, value.skin);
-						player4.scale.setTo(-3, 3);
-						player4.anchor.set(0.5, 0.5);
-						player4.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
-						player4.animations.play('idle');
+						player4.destroy();
+						if(mode === 'select') {
+							player4 = window.game.add.sprite(playerSettings[index].x, playerSettings[index].y, value.skin);
+							player4.scale.setTo(3, 3);
+							player4.anchor.set(0.5, 0.5);
+							player4.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
+							player4.animations.play('idle');
+						}
+						else {
+							let width = getWidth(index);
+							player4 = addImage(that, that.world.width * width, that.world.height / 2.4, 'characterSilhouette', 300, 300);
+						}
 						break;
 					default:
 						break;
@@ -159,10 +197,21 @@ export default class extends Phaser.State {
 				}
 				index += 1;
 			}
-			namesSet = true;
 			if(characterSelectedCounter > 3) {
 				countToFight();
 			}
+			namesSet = true;
+		}
+
+		function getWidth(index) {
+			if(index === 0)
+				return 0.11;
+			else if(index === 1)
+				return 0.31;
+			else if(index === 2)
+				return 0.51;
+			else
+				return 0.71;
 		}
 
 		function countToFight() {

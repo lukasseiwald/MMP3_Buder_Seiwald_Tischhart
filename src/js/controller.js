@@ -17,7 +17,6 @@ let selectedCharacter = '';
 
 airConsole.onReady = function() {
 	const name = document.getElementsByClassName('waiting__name')[0];
-
 	name.innerText = 'You are ' + airConsole.getNickname();
 };
 
@@ -75,6 +74,11 @@ function handleCharacterSelection(data) {
 			document.getElementsByClassName(data.selectedCharacter)[0].classList.add('selection__character_inactive');
 			document.getElementById('button__select').classList.add('selection__character_inactive');
 		}
+		break;
+	case 'deselected_character':
+		takenSkins.delete(data.selectedCharacterIndex);
+			document.getElementsByClassName(data.selectedCharacter)[0].classList.remove('selection__character_inactive');
+			document.getElementById('button__select').classList.remove('selection__character_inactive');
 		break;
 	default:
 	}
@@ -227,16 +231,30 @@ function setUpCharacterSelection() {
 	});
 
 	document.querySelector('#button__select').addEventListener('touchstart', (e) => {
-		airConsole.message(AirConsole.SCREEN, {
-			screen: 'character_selection',
-			action: 'character_selected',
-			selectedCharacter: document.getElementById('character--selected').dataset.character,
-			selectedCharacterIndex: index
-		});
-		selectedCharacter = document.getElementById('character--selected').dataset.character;
-		e.currentTarget.remove();
-		document.getElementById('button__select_left').style.opacity = 0;
-		document.getElementById('button__select_right').style.opacity = 0;
+		if(selectedCharacter === '') {
+			airConsole.message(AirConsole.SCREEN, {
+				screen: 'character_selection',
+				action: 'character_selected',
+				selectedCharacter: document.getElementById('character--selected').dataset.character,
+				selectedCharacterIndex: index
+			});
+			selectedCharacter = document.getElementById('character--selected').dataset.character;
+			e.currentTarget.innerHTML = "DESELECT";
+			document.getElementById('button__select_left').style.opacity = 0;
+			document.getElementById('button__select_right').style.opacity = 0;
+		}
+		else {
+			airConsole.message(AirConsole.SCREEN, {
+				screen: 'character_selection',
+				action: 'character_deselected',
+				selectedCharacter: document.getElementById('character--selected').dataset.character,
+				selectedCharacterIndex: index
+			});
+			selectedCharacter = '';
+			e.currentTarget.innerHTML = "SELECT";
+			document.getElementById('button__select_left').style.opacity = 1;
+			document.getElementById('button__select_right').style.opacity = 1;
+		}
 	});
 }
 

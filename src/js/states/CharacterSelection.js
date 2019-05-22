@@ -79,7 +79,7 @@ export default class extends Phaser.State {
 			}
 		];
 
-		// //Character Silhouettes
+		// Character Silhouettes
 		let player1 = addImage(this, this.world.width * 0.11, this.world.height / 2.4, 'characterSilhouette', 300, 300);
 		let player2 = addImage(this, this.world.width * 0.31, this.world.height / 2.4, 'characterSilhouette', 300, 300);
 		let player3 = addImage(this, this.world.width * 0.51, this.world.height / 2.4, 'characterSilhouette', 300, 300);

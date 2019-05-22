@@ -1,10 +1,8 @@
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
-![alt text](./Logo.png)
-
 # Soul Collector
 
-Todo: add a nice image here later
+![alt text](./Header.png)
 
 # Setup
 

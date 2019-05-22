@@ -65,7 +65,7 @@ export default class extends Phaser.State {
 
 		const characterSettings = [
 			{
-				skin: 'mage',
+				skin: 'lucifer',
 				x: unit * 5,
 				y: unit * 26,
 				baseX: 3 * unit,

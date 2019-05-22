@@ -249,7 +249,7 @@ export default class Player {
 		this.bullets.setAll('checkWorldBounds', true);
 
 		this.bullets.forEach((bullet) => {
-			bullet.scale.set(this.scale * 1.1, this.scale * 1.5);
+			bullet.scale.set(this.scale * 1.1, this.scale * 1.6);
 			bullet.body.setCollisionGroup(bulletCollisionGroup);
 			bullet.body.collides([playerCollisionGroup, tilesCollisionGroup, bulletCollisionGroup]);
 			bullet.body.onBeginContact.add(this.hit, bullet);
@@ -445,12 +445,12 @@ export default class Player {
 			this.player.obtainedSoul.x = this.player.x;
 			this.player.obtainedSoul.y = this.player.y - 50;
 		}
-		if(this.player.stuckBullets.length > 0) {
-			let index = this.player.stuckBullets.length;
+		let index = this.player.stuckBullets.length;
 
+		if(index > 0) {
 			this.player.stuckBullets.forEach((bullet) => {
-				bullet.x = this.player.x - 30;
-				bullet.y = this.player.top + 15 * index;
+				bullet.x = this.player.x - 20;
+				bullet.y = this.player.y - 20 + (index * 12);
 				index = index - 1;
 			});
 		}

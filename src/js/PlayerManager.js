@@ -1,101 +1,98 @@
 export default class PlayerManager {
-  constructor(){
+	constructor() {
+		this.players = new Map();
+		this.master = undefined;
+		this.setConnectedPlayers();
+	}
 
-    this.players = new Map();
-    this.master = undefined;
-    this.setConnectedPlayers();
-  }
+	getMaster() {
+		return this.master;
+	}
 
-  getMaster() {
-    return this.master;
-  }
+	getPlayers() {
+		return this.players;
+	}
 
-  getPlayers() {
-    return this.players;
-  }
+	setConnectedPlayers() {
+		for (const deviceId of window.game.global.airConsole.getControllerDeviceIds()) {
+			this.addPlayer(deviceId);
+		}
+	}
 
-  setConnectedPlayers() {
-    for (let deviceId of window.game.global.airConsole.getControllerDeviceIds()) {
-      this.addPlayer(deviceId);
-    }
-  }
+	setCharacter(deviceId, character) {
+		const player = this.getPlayer(deviceId);
 
-  setCharacter(deviceId, character) {
-    let player = this.getPlayer(deviceId);
-    player.character = character;
-    this.players.set(deviceId, player);
-  }
+		player.character = character;
+		this.players.set(deviceId, player);
+	}
 
-  setSkin(deviceId, skin) {
-    let player = this.getPlayer(deviceId);
-    player.skin = skin;
-    this.players.set(deviceId, player);
-  }
+	setSkin(deviceId, skin) {
+		const player = this.getPlayer(deviceId);
 
-  incrementScore(deviceId) {
-    let player = this.getPlayer(deviceId);
-    player.score++;
-    this.players.set(deviceId, player);
-  }
+		player.skin = skin;
+		this.players.set(deviceId, player);
+	}
 
-  getScore(deviceId) {
-    return this.players.get(deviceId).score;
-  }
-  
-  getPlayer(deviceId) {
-    return this.players.get(deviceId);
-  }
+	incrementScore(deviceId) {
+		const player = this.getPlayer(deviceId);
 
-  getPlayerCharacter(deviceId) {
-    let character = this.getPlayer(deviceId).character;
-    return this.getPlayer(deviceId).character;
-  }
+		player.score += 1;
+		this.players.set(deviceId, player);
+	}
 
-  addPlayer(deviceId){
-    this.master = window.game.global.airConsole.getMasterControllerDeviceId();
+	getScore(deviceId) {
+		return this.players.get(deviceId).score;
+	}
 
-    let player = {
-      deviceId,
-      nickname: window.game.global.airConsole.getNickname(deviceId),
-      skin: undefined,
-      score: 0,
-      character: undefined
-    }
+	getPlayer(deviceId) {
+		return this.players.get(deviceId);
+	}
 
-    this.players.set(deviceId, player);
-  }
+	getPlayerCharacter(deviceId) {
+		return this.getPlayer(deviceId).character;
+	}
 
-  removePlayer(deviceId){
-    if (this.players.has(deviceId)) {
-      this.players.delete(deviceId)
-    }
-  }
+	addPlayer(deviceId) {
+		this.master = window.game.global.airConsole.getMasterControllerDeviceId();
+		const player = {
+			deviceId,
+			nickname: window.game.global.airConsole.getNickname(deviceId),
+			skin: undefined,
+			score: 0,
+			character: undefined
+		};
 
-  getNickname(deviceId) {
-    return this.players.get(deviceId).nickname;
-  }
+		this.players.set(deviceId, player);
+	}
 
-  getAllNicknames(){
-    let names = new Array();
-    for (let [deviceId, player] of this.players){
-      names.push(player.nickname);
-    }
-    return names;
-  }
+	removePlayer(deviceId) {
+		if(this.players.has(deviceId)) {
+			this.players.delete(deviceId);
+		}
+	}
 
-  getCharacter(){
+	getNickname(deviceId) {
+		return this.players.get(deviceId).nickname;
+	}
 
-  }
+	getAllNicknames() {
+		const names = new Array();
 
-  getConnectedPlayerNum(){
-    return this.players.size;
-  }
+		for (const [deviceId, player] of this.players) {
+			names.push(player.nickname);
+		}
+		return names;
+	}
 
-  sendMessageToPlayer(deviceId, data) {
-    window.game.global.airConsole.message(deviceId, data);
-  }
+	getConnectedPlayerNum() {
+		return this.players.size;
+	}
 
-  broadcast(data) {
-    window.game.global.airConsole.broadcast(data);
-  }
+	sendMessageToPlayer(deviceId, data) {
+		window.game.global.airConsole.message(deviceId, data);
+	}
+
+	broadcast(data) {
+		window.game.global.airConsole.broadcast(data);
+	}
 }

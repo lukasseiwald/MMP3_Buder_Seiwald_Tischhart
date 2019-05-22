@@ -55,13 +55,13 @@ export default class extends Phaser.State {
 		// FUNCTIONS & LISTENERS
 
 		window.game.global.airConsole.onConnect = function(deviceId) {
-			window.game.global.playerManager.sendMessageToPlayer(deviceId, {screen: 'waiting', action: 'get_id'});
+			const playerNum = window.game.global.playerManager.getConnectedPlayerNum();
 
-			if(window.game.global.playerManager.getConnectedPlayerNum() < 4) {
+			if(playerNum < 4) {
 				window.game.global.playerManager.addPlayer(deviceId);
 				updateScreen();
 			}
-			if (window.game.global.playerManager.getConnectedPlayerNum() >= 4) {
+			else if (playerNum === 4) {
 				const masterId = window.game.global.playerManager.getMaster();
 
 				touchToContinue.text = 'Master Player (' + window.game.global.playerManager.getNickname(masterId) + ') please tap on Touchscreen to continue';
@@ -74,6 +74,17 @@ export default class extends Phaser.State {
 		};
 
 		window.game.global.airConsole.onDisconnect = function(deviceId) {
+			// if max player num was already reached & text appeared on screen
+			if (window.game.global.playerManager.getConnectedPlayerNum() === 4) {
+				const masterId = window.game.global.playerManager.getMaster();
+
+				touchToContinue.text = '';
+				window.game.global.playerManager.sendMessageToPlayer(masterId,
+					{
+						screen: 'waiting',
+						action: 'touch_to_continue_abort'
+					});
+			}
 			window.game.global.playerManager.removePlayer(deviceId);
 			updateScreen();
 

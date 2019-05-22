@@ -21,18 +21,23 @@ airConsole.onReady = function() {
 	name.innerText = 'You are ' + airConsole.getNickname();
 };
 
+function changeScreenToCharacterSelection() {
+	airConsole.message(AirConsole.SCREEN,
+		{
+			screen: 'waiting',
+			action: 'start_character_selection'
+		});
+}
+
 function handleWaiting(data) {
+	const waiting = document.getElementById('state--waiting');
+	
 	switch (data.action) {
 	case 'touch_to_continue':
-		const waiting = document.getElementById('state--waiting');
-
-		waiting.addEventListener('touchstart', function() {
-			airConsole.message(AirConsole.SCREEN,
-				{
-					screen: 'waiting',
-					action: 'start_character_selection'
-				});
-		});
+		waiting.addEventListener('touchstart', changeScreenToCharacterSelection);
+		break;
+	case 'touch_to_continue_abort':
+		waiting.removeEventListener('touchstart', changeScreenToCharacterSelection);
 		break;
 	case 'characterSelection':
 		csm.startState('characterSelection');

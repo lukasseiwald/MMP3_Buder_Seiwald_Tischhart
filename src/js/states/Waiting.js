@@ -12,6 +12,9 @@ export default class extends Phaser.State {
 	}
 
 	create () {
+
+		console.log('test');
+
 		window.game.global.playerManager = new PlayerManager();
 		window.game.global.playerManager.setConnectedPlayers();
 
@@ -55,13 +58,22 @@ export default class extends Phaser.State {
 		// FUNCTIONS & LISTENERS
 
 		window.game.global.airConsole.onConnect = function(deviceId) {
-			window.game.global.playerManager.sendMessageToPlayer(deviceId, {screen: 'waiting', action: 'get_id'});
-
-			if(window.game.global.playerManager.getConnectedPlayerNum() < 4) {
+			let playerNum = window.game.global.playerManager.getConnectedPlayerNum();
+			console.log(playerNum);
+			if(playerNum === 4) {
+				console.log('geht')
+				// too many players -> connected device cannot join game
+				window.game.global.playerManager.sendMessageToPlayer(deviceId, {
+					screen: 'defaults',
+					action: 'too_many_players'
+				});
+			}
+			if(playerNum < 4) {
 				window.game.global.playerManager.addPlayer(deviceId);
 				updateScreen();
+				playerNum += 1;
 			}
-			if (window.game.global.playerManager.getConnectedPlayerNum() >= 4) {
+			if (playerNum === 4) {
 				const masterId = window.game.global.playerManager.getMaster();
 
 				touchToContinue.text = 'Master Player (' + window.game.global.playerManager.getNickname(masterId) + ') please tap on Touchscreen to continue';
@@ -74,6 +86,17 @@ export default class extends Phaser.State {
 		};
 
 		window.game.global.airConsole.onDisconnect = function(deviceId) {
+			// if max player num was already reached & text appeared on screen
+			if (window.game.global.playerManager.getConnectedPlayerNum() === 4) {
+				const masterId = window.game.global.playerManager.getMaster();
+
+				touchToContinue.text = '';
+				window.game.global.playerManager.sendMessageToPlayer(masterId,
+					{
+						screen: 'waiting',
+						action: 'touch_to_continue_abort'
+					});
+			}
 			window.game.global.playerManager.removePlayer(deviceId);
 			updateScreen();
 

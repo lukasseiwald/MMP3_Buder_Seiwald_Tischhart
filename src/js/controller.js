@@ -112,24 +112,26 @@ airConsole.onMessage = function(from, data) {
 	}
 };
 
-function sendToScreen(action) {
-	airConsole.message(AirConsole.SCREEN, {action: action});
+function sendToScreen(data) {
+	airConsole.message(AirConsole.SCREEN, data);
 }
 
 function setUpController() {
 	const buttons = document.getElementsByClassName('button');
 
 	for (const button of buttons) {
-		button.addEventListener('touchstart', function(e) {
-			sendToScreen(e.currentTarget.dataset.direction);
-			button.classList.add('button--active');
-		}, {passive: true});
-		button.addEventListener('touchend', function(e) {
-			if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
-				sendToScreen('idle');
-			}
-			button.classList.remove('button--active');
-		});
+		if(button.dataset.direction !== 'shoot') {
+			button.addEventListener('touchstart', function(e) {
+				sendToScreen({action: e.currentTarget.dataset.direction});
+				button.classList.add('button--active');
+			}, {passive: true});
+			button.addEventListener('touchend', function(e) {
+				if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
+					sendToScreen({action: 'idle'});
+				}
+				button.classList.remove('button--active');
+			});
+		}
 	}
 
 	const directionButtons = document.getElementsByClassName('controller__buttons__direction')[0];
@@ -137,6 +139,7 @@ function setUpController() {
 	const controller = document.getElementsByClassName('controller')[0];
 	const buttonLeft = document.getElementsByClassName('button--left')[0];
 	const buttonRight = document.getElementsByClassName('button--right')[0];
+	const buttonShoot = document.getElementsByClassName('button--shoot')[0];
 	let previousTarget;
 
 	directionButtons.addEventListener('touchmove', function(event) {
@@ -149,7 +152,7 @@ function setUpController() {
 			previousTarget && previousTarget.classList.remove('button--active');
 			currentTarget.classList.add('button--active');
 			previousTarget = currentTarget;
-			sendToScreen(currentTarget.dataset.direction);
+			sendToScreen({action: currentTarget.dataset.direction});
 		}
 	});
 	controller.addEventListener('touchend', function(event) {
@@ -170,19 +173,37 @@ function setUpController() {
 				}
 			}, 200);
 			if(cnt === 2) {
-				sendToScreen(direction);
+				sendToScreen({action: direction});
 				cnt = 0;
 			}
 		};
 	}();
 
-	buttonRight.addEventListener('touchstart', function() {
+	buttonRight.addEventListener('touchstart', function(e) {
 		doubleTap('dashRight');
 	});
 
-	buttonLeft.addEventListener('touchstart', function() {
+	buttonLeft.addEventListener('touchstart', function(e) {
 		doubleTap('dashLeft');
 	});
+	
+	let startTime;
+	let endTime;
+
+	function prepareShoot() {
+		startTime = new Date();
+		buttonShoot.classList.add('button--active');
+	}
+
+	function launchShoot() {
+		endTime = new Date();
+	  let shootTime = endTime - startTime;
+	  sendToScreen({action: buttonShoot.dataset.direction, shootTime: shootTime});
+	  buttonShoot.classList.remove('button--active');
+	}
+
+	buttonShoot.addEventListener('touchstart', prepareShoot);
+	buttonShoot.addEventListener('touchend', launchShoot);
 }
 
 function setUpCharacterSelection() {

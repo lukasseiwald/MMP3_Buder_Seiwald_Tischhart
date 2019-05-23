@@ -296,6 +296,7 @@ export default class Player {
 				if(hitTarget.sprite.alive) {
 					if(hitTarget.sprite.shield != null) {
 						hitTarget.sprite.shield.damage(0.50);
+						this.destroy();
 						if(hitTarget.sprite.shield.health <= 0) {
 							hitTarget.sprite.shield = null;
 						}

@@ -33,6 +33,10 @@ export default class PlayerManager {
 		this.players.set(deviceId, player);
 	}
 
+	getSkin(deviceId) {
+		return this.getPlayer(deviceId).skin;
+	}
+
 	setScore(deviceId, score) {
 		const player = this.getPlayer(deviceId);
 

@@ -388,9 +388,16 @@ export default class Player {
 		this.player.animations.play('slash');
 	}
 
-	shoot() {
+	shoot(shootTime) {
 		if(window.game.time.now > this.player.nextFire && this.player.alive) {
 			const bullet = this.bullets.getFirstExists(false);
+			shootTime = shootTime*2;
+			if(shootTime < 500) {
+				shootTime = 500;
+			}
+			else if(shootTime > 1500) {
+				shootTime = 2500;
+			}
 
 			bullet.body.rotateRight(225);
 
@@ -400,11 +407,11 @@ export default class Player {
 				if(this.player.scale.x < 0) {
 					bullet.scale.x = -bullet.scale.x;
 					bullet.reset(this.player.x - 20, this.player.y);
-					bullet.body.moveLeft(1150 * this.scale);
+					bullet.body.moveLeft(shootTime * this.scale);
 				}
 				else if(this.player.scale.x > 0) {
 					bullet.reset(this.player.x + 20, this.player.y);
-					bullet.body.moveRight(1150 * this.scale);
+					bullet.body.moveRight(shootTime * 2 * this.scale);
 				}
 				bullet.body.velocity.y = -650;
 				bullet.lifespan = 1000;

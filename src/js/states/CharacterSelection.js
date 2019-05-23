@@ -58,32 +58,39 @@ export default class extends Phaser.State {
 			character: ''
 		};
 
-		const playerSettings = [ 
-			window.game.world.centerX - this.unit * 14, 
-			window.game.world.centerX - this.unit * 7, 
-			window.game.world.centerX + this.unit * 7, 
+		const playerSettings = [
+			window.game.world.centerX - this.unit * 14,
+			window.game.world.centerX - this.unit * 7,
+			window.game.world.centerX + this.unit * 7,
 			window.game.world.centerX + this.unit * 14
 		];
 
 		const positionMapping = [];
 
+		const silhouetteSkins = ['egyptian', 'kickapoo', 'knight', 'kickapoo'];
+
 		function createSilhouettes() {
 			let index = 0;
 
 			for (const [deviceId, value] of window.game.global.playerManager.getPlayers()) {
-				const plateau = addImage(that, playerSettings[index] + 20, window.game.world.height * 0.64, 'characterPlateau', 192, 64);
-				const silhouette = that.add.sprite(playerSettings[index] + 15, window.game.world.height * 0.46, 'characterSilhouette');
+				const plateau = addImage(that, playerSettings[index], window.game.world.height * 0.42, 'characterPlateau', 192, 64);
+				const silhouette = that.add.sprite(playerSettings[index], window.game.world.height * 0.42, silhouetteSkins[index]);
+				
+				silhouette.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
+				silhouette.animations.play('idle');
+
+				silhouette.tint = 0x000000;
 
 				if (index < 2) {
-					silhouette.scale.x = that.scale * 1.3;
+					silhouette.scale.x = that.scale * 2;
 				}
 				else {
-					silhouette.scale.x = -that.scale * 1.3;
+					silhouette.scale.x = -that.scale * 2;
 				}
-				silhouette.scale.y = that.scale * 1.3;
+				silhouette.scale.y = that.scale * 2;
 
-				plateau.x = silhouette.x + silhouette.width / 2.3;
-				plateau.y = window.game.world.height * 0.45 + silhouette.height;
+				plateau.x = silhouette.x + silhouette.width * 0.5 - 10;
+				plateau.y = silhouette.bottom - 40;
 				plateau.anchor.setTo(0.5, 0.5);
 
 				const nickname = that.add.text(plateau.x, plateau.bottom + that.unit * 2, value.nickname, subheadlineStyling);
@@ -113,8 +120,9 @@ export default class extends Phaser.State {
 					});
 					break;
 				case 'character_deselected':
-					let selectedCharacter = data.selectedCharacter;
-					let selectedCharacterIndex = data.selectedCharacterIndex;
+					const selectedCharacter = data.selectedCharacter;
+					const selectedCharacterIndex = data.selectedCharacterIndex;
+
 					window.game.global.playerManager.setSkin(deviceId, undefined);
 					getPlayers('deselect', deviceId, data.selectedCharacter);
 					window.game.global.airConsole.broadcast({
@@ -132,47 +140,47 @@ export default class extends Phaser.State {
 		};
 
 		function getPlayers(mode, deviceId, skin) {
-			const index = that.characterSelectedCounter;
-
 			window.game.global.playerManager.getPlayerCharacter(deviceId).destroy();
-			console.log(window.game.global.playerManager.getPlayerCharacter(deviceId));
+
+			const character = window.game.add.sprite(positionMapping[deviceId] - 15, window.game.world.height * 0.42, skin);
+
+			character.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
+			character.animations.add('slash', ['Slashing_000', 'Slashing_001', 'Slashing_002', 'Slashing_003', 'Slashing_004', 'Slashing_005', 'Slashing_006', 'Slashing_007', 'Slashing_008', 'Slashing_009', 'Slashing_010', 'Slashing_011'], 15, false);
+			character.animations.add('dying', ['Dying_000', 'Dying_001', 'Dying_002', 'Dying_003', 'Dying_004', 'Dying_005', 'Dying_006', 'Dying_007', 'Dying_008', 'Dying_009', 'Dying_010', 'Dying_011', 'Dying_012', 'Dying_013', 'Dying_014'], 17, false);
+
+			if (positionMapping[deviceId] < window.game.world.width * 0.5) {
+				character.scale.setTo(that.scale * 2, that.scale * 2);
+			}
+			else {
+				character.scale.setTo(-(that.scale * 2), that.scale * 2);
+			}
 
 			if(mode === 'select') {
-				const character = window.game.add.sprite(positionMapping[deviceId] - that.unit, window.game.world.height * 0.42, skin);
-				character.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
-				character.animations.add('throw', ['Throwing_000', 'Throwing_001', 'Throwing_002', 'Throwing_003', 'Throwing_004', 'Throwing_005', 'Throwing_006', 'Throwing_007', 'Throwing_008', 'Throwing_009', 'Throwing_010', 'Throwing_011'], 20, false);
-				character.animations.add('slash', ['Slashing_000', 'Slashing_001', 'Slashing_002', 'Slashing_003', 'Slashing_004', 'Slashing_005', 'Slashing_006', 'Slashing_007', 'Slashing_008', 'Slashing_009', 'Slashing_010', 'Slashing_011'], 15, false);
-				character.animations.add('dying', ['Dying_000', 'Dying_001', 'Dying_002', 'Dying_003', 'Dying_004', 'Dying_005', 'Dying_006', 'Dying_007', 'Dying_008', 'Dying_009', 'Dying_010', 'Dying_011', 'Dying_012', 'Dying_013', 'Dying_014'], 17, false);
-				character.animations.add('kicking', ['Kicking_000', 'Kicking_001', 'Kicking_002', 'Kicking_003', 'Kicking_004', 'Kicking_005', 'Kicking_006', 'Kicking_007', 'Kicking_008', 'Kicking_009', 'Kicking_010', 'Kicking_011'], 17, false);
-				character.animations.play('idle');
+				character.animations.play('slash');
+				character.animations.currentAnim.onComplete.add(function() {
+					character.animations.play('idle');
+				}, this);
 
-				if (positionMapping[deviceId] < window.game.world.width * 0.5) {
-					character.scale.setTo(that.scale * 2, that.scale * 2);
-				}
-				else {
-					character.scale.setTo(-(that.scale * 2), that.scale * 2);
-					character.x = character.x + that.unit * 3;
-				}
-
-				window.game.global.playerManager.setCharacter(deviceId, character);
 				that.characterSelectedCounter += 1;
 			}
 			else if('deselect') {
-				const silhouette = window.game.add.sprite(positionMapping[deviceId] + 15, window.game.world.height * 0.46, 'characterSilhouette');
-				
-				if (positionMapping[deviceId] < window.game.world.width * 0.5) {
-					silhouette.scale.x = that.scale * 1.3;
-				}
-				else {
-					silhouette.scale.x = -that.scale * 1.3;
-				}
-				silhouette.scale.y = that.scale * 1.3;
-
-				window.game.global.playerManager.setCharacter(deviceId, silhouette);
+				character.tint = 0x000000;
+				character.animations.play('dying');
+				character.animations.currentAnim.onComplete.add(function() {
+					setTimeout(() => {
+						character.animations.play('idle');
+					}, 3000);
+				}, this);
 				that.characterSelectedCounter -= 1;
 			}
 
+			window.game.global.playerManager.setCharacter(deviceId, character);
+
 			if(that.characterSelectedCounter > 3) {
+				window.game.global.airConsole.broadcast({
+					screen: 'characterSelection',
+					action: 'all_characters_selected'
+				});
 				countToFight();
 			}
 		}

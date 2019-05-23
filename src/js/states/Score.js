@@ -65,7 +65,7 @@ export default class extends Phaser.State {
 
 			for (const [key, value] of players) {
 				// Add Plateau before so player wont get cover by it;
-				const plateau = addImage(that, playerSettings[index].x, window.game.world.height * 0.35, 'characterPlateau', 128 * 1.5, 64);
+				const plateau = addImage(that, playerSettings[index].x, window.game.world.height * 0.35, 'characterPlateau', 192, 64);
 
 				// Sprite
 				const character = window.game.add.sprite(playerSettings[index].x, window.game.world.height * 0.45, value.skin);

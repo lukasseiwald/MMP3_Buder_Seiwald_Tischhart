@@ -77,6 +77,9 @@ function handleCharacterSelection(data) {
 		takenSkins.delete(data.selectedCharacterIndex);
 		checkIfSkinTaken(false, data.selectedCharacterIndex, data.selectedCharacter);
 		break;
+	case 'all_characters_selected': 
+		removeDeselectButton();
+		break;
 	default:
 	}
 }
@@ -266,8 +269,11 @@ function checkIfSkinTaken(arrowKey, index, skinDeselect) {
 	if(skinDeselect) {
 		document.getElementsByClassName(skinDeselect)[0].classList.remove('selection__character_inactive');
 		document.getElementById('button__select').classList.remove('selection__character_inactive');
-
 	}
+}
+
+function removeDeselectButton() {
+	document.getElementById('button__select').remove();
 }
 
 function setUpEmotes() {

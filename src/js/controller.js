@@ -14,6 +14,7 @@ csm.startState('waiting');
 
 const takenSkins = new Map();
 let selectedCharacter = '';
+let currentlyViewedCharakter = 'egyptian';
 
 airConsole.onReady = function() {
 	const name = document.getElementsByClassName('waiting__name')[0];
@@ -70,15 +71,11 @@ function handleCharacterSelection(data) {
 		break;
 	case 'selected_character':
 		takenSkins.set(data.selectedCharacterIndex, data.selectedCharacter);
-		if(selectedCharacter !== data.selectedCharacter) {
-			document.getElementsByClassName(data.selectedCharacter)[0].classList.add('selection__character_inactive');
-			document.getElementById('button__select').classList.add('selection__character_inactive');
-		}
+		checkIfSkinTaken(false, data.selectedCharacterIndex)
 		break;
 	case 'deselected_character':
 		takenSkins.delete(data.selectedCharacterIndex);
-			document.getElementsByClassName(data.selectedCharacter)[0].classList.remove('selection__character_inactive');
-			document.getElementById('button__select').classList.remove('selection__character_inactive');
+		checkIfSkinTaken(false, data.selectedCharacterIndex, data.selectedCharacter);
 		break;
 	default:
 	}
@@ -197,37 +194,28 @@ function setUpCharacterSelection() {
 	characters[0].id = 'character--selected';
 	name.innerText = characters[0].dataset.name;
 
-	function checkIfSkinTaken(index) {
-		const skin = takenSkins.get(index);
-
-		if(skin) {
-			document.getElementsByClassName(skin)[0].classList.add('selection__character_inactive');
-			document.getElementById('button__select').classList.add('selection__character_inactive');
-		}
-		else {
-			document.getElementById('button__select').classList.remove('selection__character_inactive');
-		}
-	}
-
 	document.querySelector('#button__select_left').addEventListener('touchstart', (e) => {
 		// prev
 		characters[index].id = '';
 		characters[index].classList.add('character--invisible');
 		index = (((index - 1) % (characters.length)) + (characters.length)) % (characters.length);
-		checkIfSkinTaken(index);
+		checkIfSkinTaken(true, index);
 		characters[index].classList.remove('character--invisible');
 		characters[index].id = 'character--selected';
 		name.innerText = characters[index].dataset.name;
+		currentlyViewedCharakter = characters[index].dataset.character;
 	});
 	document.querySelector('#button__select_right').addEventListener('touchstart', () => {
 		// next
 		characters[index].classList.add('character--invisible');
 		characters[index].id = '';
 		index = (((index + 1) % (characters.length)) + (characters.length)) % (characters.length);
-		checkIfSkinTaken(index);
+		checkIfSkinTaken(true, index);
 		characters[index].classList.remove('character--invisible');
 		characters[index].id = 'character--selected';
 		name.innerText = characters[index].dataset.name;
+		currentlyViewedCharakter = characters[index].dataset.character;
+		console.log(currentlyViewedCharakter)
 	});
 
 	document.querySelector('#button__select').addEventListener('touchstart', (e) => {
@@ -256,6 +244,30 @@ function setUpCharacterSelection() {
 			document.getElementById('button__select_right').style.opacity = 1;
 		}
 	});
+}
+
+function checkIfSkinTaken(arrowKey, index, skinDeselect) {
+	const skin = takenSkins.get(index);
+	if(skin) {
+		if(selectedCharacter !== '') {
+			document.getElementById('button__select').classList.remove('selection__character_inactive');
+			document.getElementsByClassName(skin)[0].classList.remove('selection__character_inactive');
+		}
+		if(selectedCharacter === '') {
+			if(skin === currentlyViewedCharakter || arrowKey) {
+				document.getElementById('button__select').classList.add('selection__character_inactive');
+			}
+			document.getElementsByClassName(skin)[0].classList.add('selection__character_inactive');
+		}
+	}
+	else {
+		document.getElementById('button__select').classList.remove('selection__character_inactive');
+	}
+	if(skinDeselect) {
+		document.getElementsByClassName(skinDeselect)[0].classList.remove('selection__character_inactive');
+		document.getElementById('button__select').classList.remove('selection__character_inactive');
+
+	}
 }
 
 function setUpEmotes() {

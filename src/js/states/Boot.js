@@ -24,8 +24,6 @@ export default class extends Phaser.State {
 		// LOAD CHARACTER SELECTION IMAGES
 		this.load.image('backgroundCharacterSelection', '../../assets/images/characterSelection/characterSelectionFrame.png');
 		this.load.image('characterPlateau', '../../assets/images/characterSelection/characterPlateau.png');
-		this.load.image('characterSilhouette', '../../assets/images/characterSelection/characterSilhouette.png');
-		// this.load.spritesheet('characterSilhouette', '../../assets/images/characterSelection/characterSilhouette2.png', 43, 75, 13);
 
 		// LOAD TILES
 		this.load.spritesheet('tiles', '../../assets/tileMap/tileSet2.png', 33, 33, 12, 0, 4);

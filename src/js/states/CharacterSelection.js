@@ -4,11 +4,31 @@ import Particle from '../Particle';
 import Phaser from 'phaser';
 
 export default class extends Phaser.State {
+	init() {
+		this.width = window.innerWidth;
+		this.height = window.innerHeight;
+		const gameWidth = this.world.width;
+		const gameHeight = this.world.height;
+		const ratio = this.width / this.height;
+
+		// 1.8064 is the ratio with that the map was created
+		if(ratio > 1.8064) {
+			this.scale.setGameSize(this.height * 1.8064, this.height);
+			window.game.global.scale = this.world.height / gameHeight;
+		}
+		else {
+			this.scale.setGameSize(this.width, this.width / 1.8064);
+			window.game.global.scale = this.world.width / gameWidth;
+		}
+		this.scale = window.game.global.scale;
+		this.unit = 33;
+		window.game.global.unit = this.unit;
+	}
 	create () {
 		this.timer = 0;
+		this.characterSelectedCounter = 0;
+		this.characters = new Map();
 		const that = this;
-		let namesSet = false;
-		let characterSelectedCounter = 0;
 
 		// IMAGES
 		this.bg1 = addImage(this, 0, 0, 'background1', this.world.width, this.world.height);
@@ -38,52 +58,44 @@ export default class extends Phaser.State {
 			character: ''
 		};
 
-		// Character Plateau's
-		this.plateau1 = addImage(this, this.world.width * (1.5 / 10), this.world.height * 0.67, 'characterPlateau', 128 * 1.5, 64);
-		this.plateau2 = addImage(this, this.world.width * (3.5 / 10), this.world.height * 0.67, 'characterPlateau', 128 * 1.5, 64);
-		this.plateau3 = addImage(this, this.world.width * (5.5 / 10), this.world.height * 0.67, 'characterPlateau', 128 * 1.5, 64);
-		this.plateau4 = addImage(this, this.world.width * (7.5 / 10), this.world.height * 0.67, 'characterPlateau', 128 * 1.5, 64);
-
 		const playerSettings = [
-			{
-				skin: 'characterSilhouette',
-				x: this.world.width * 0.21,
-				y: this.world.height * 0.58,
-				nickname: 'player 1',
-				xText: this.world.width * 0.22,
-				yText: this.world.height * 0.79
-			},
-			{
-				skin: 'characterSilhouette',
-				x: this.world.width * 0.41,
-				y: this.world.height * 0.58,
-				nickname: 'player 2',
-				xText: this.world.width * 0.42,
-				yText: this.world.height * 0.79
-			},
-			{
-				skin: 'characterSilhouette',
-				x: this.world.width * 0.62,
-				y: this.world.height * 0.58,
-				nickname: 'player 3',
-				xText: this.world.width * 0.62,
-				yText: this.world.height * 0.79
-			},
-			{
-				skin: 'characterSilhouette',
-				x: this.world.width * 0.82,
-				y: this.world.height * 0.58,
-				nickname: 'player 4',
-				xText: this.world.width * 0.82,
-				yText: this.world.height * 0.79
-			}
+			window.game.world.centerX - this.unit * 14,
+			window.game.world.centerX - this.unit * 7,
+			window.game.world.centerX + this.unit * 7,
+			window.game.world.centerX + this.unit * 14
 		];
 
-		// Character Silhouettes
-		let player1 = addImage(this, this.world.width * 0.11, this.world.height / 2.4, 'characterSilhouette', 300, 300);
-		let player2 = addImage(this, this.world.width * 0.31, this.world.height / 2.4, 'characterSilhouette', 300, 300);
-		let player3 = addImage(this, this.world.width * 0.51, this.world.height / 2.4, 'characterSilhouette', 300, 300);
-		let player4 = addImage(this, this.world.width * 0.71, this.world.height / 2.4, 'characterSilhouette', 300, 300);
+		const positionMapping = [];
+
+		function createSilhouettes() {
+			let index = 0;
+
+			for (const [deviceId, value] of window.game.global.playerManager.getPlayers()) {
+				const plateau = addImage(that, playerSettings[index] + 20, window.game.world.height * 0.64, 'characterPlateau', 192, 64);
+				const silhouette = that.add.sprite(playerSettings[index] + 15, window.game.world.height * 0.46, 'characterSilhouette');
+
+				if (index < 2) {
+					silhouette.scale.x = that.scale * 1.3;
+				}
+				else {
+					silhouette.scale.x = -that.scale * 1.3;
+				}
+				silhouette.scale.y = that.scale * 1.3;
+
+				plateau.x = silhouette.x + silhouette.width / 2.3;
+				plateau.y = window.game.world.height * 0.45 + silhouette.height;
+				plateau.anchor.setTo(0.5, 0.5);
+
+				const nickname = that.add.text(plateau.x, plateau.bottom + that.unit * 2, value.nickname, subheadlineStyling);
+
+				nickname.anchor.setTo(0.5, 0.5);
+
+				positionMapping[deviceId] = playerSettings[index];
+
+				window.game.global.playerManager.setCharacter(deviceId, silhouette);
+				index += 1;
+			}
+		}
 
 		window.game.global.airConsole.onMessage = function(deviceId, data) {
 			const character = window.game.global.playerManager.getPlayerCharacter(deviceId);
@@ -92,12 +104,24 @@ export default class extends Phaser.State {
 				switch(data.action) {
 				case 'character_selected':
 					window.game.global.playerManager.setSkin(deviceId, data.selectedCharacter);
-					getPlayers();
+					getPlayers('select', deviceId, data.selectedCharacter);
 					window.game.global.airConsole.broadcast({
 						screen: 'characterSelection',
 						action: 'selected_character',
 						selectedCharacter: data.selectedCharacter,
 						selectedCharacterIndex: data.selectedCharacterIndex
+					});
+					break;
+				case 'character_deselected':
+					let selectedCharacter = data.selectedCharacter;
+					let selectedCharacterIndex = data.selectedCharacterIndex;
+					window.game.global.playerManager.setSkin(deviceId, undefined);
+					getPlayers('deselect', deviceId, data.selectedCharacter);
+					window.game.global.airConsole.broadcast({
+						screen: 'characterSelection',
+						action: 'deselected_character',
+						selectedCharacter: selectedCharacter,
+						selectedCharacterIndex: selectedCharacterIndex
 					});
 					break;
 				case '':
@@ -107,60 +131,48 @@ export default class extends Phaser.State {
 			}
 		};
 
-		function getPlayers() {
-			let index = 0;
-			const players = window.game.global.playerManager.getPlayers();
+		function getPlayers(mode, deviceId, skin) {
+			const index = that.characterSelectedCounter;
 
-			characterSelectedCounter += 1;
+			window.game.global.playerManager.getPlayerCharacter(deviceId).destroy();
+			console.log(window.game.global.playerManager.getPlayerCharacter(deviceId));
 
-			for (const [key, value] of players) {
-				if(!namesSet) {
-					const text = that.add.text(playerSettings[index].xText, playerSettings[index].yText, value.nickname, subheadlineStyling);
+			if(mode === 'select') {
+				const character = window.game.add.sprite(positionMapping[deviceId] - that.unit, window.game.world.height * 0.42, skin);
+				character.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
+				character.animations.add('throw', ['Throwing_000', 'Throwing_001', 'Throwing_002', 'Throwing_003', 'Throwing_004', 'Throwing_005', 'Throwing_006', 'Throwing_007', 'Throwing_008', 'Throwing_009', 'Throwing_010', 'Throwing_011'], 20, false);
+				character.animations.add('slash', ['Slashing_000', 'Slashing_001', 'Slashing_002', 'Slashing_003', 'Slashing_004', 'Slashing_005', 'Slashing_006', 'Slashing_007', 'Slashing_008', 'Slashing_009', 'Slashing_010', 'Slashing_011'], 15, false);
+				character.animations.add('dying', ['Dying_000', 'Dying_001', 'Dying_002', 'Dying_003', 'Dying_004', 'Dying_005', 'Dying_006', 'Dying_007', 'Dying_008', 'Dying_009', 'Dying_010', 'Dying_011', 'Dying_012', 'Dying_013', 'Dying_014'], 17, false);
+				character.animations.add('kicking', ['Kicking_000', 'Kicking_001', 'Kicking_002', 'Kicking_003', 'Kicking_004', 'Kicking_005', 'Kicking_006', 'Kicking_007', 'Kicking_008', 'Kicking_009', 'Kicking_010', 'Kicking_011'], 17, false);
+				character.animations.play('idle');
 
-					text.anchor.setTo(0.5, 0.5);
+				if (positionMapping[deviceId] < window.game.world.width * 0.5) {
+					character.scale.setTo(that.scale * 2, that.scale * 2);
 				}
-				if(value.skin !== undefined) {
-					switch(index) {
-					case 0:
-						player1.kill();
-						player1 = window.game.add.sprite(playerSettings[index].x, playerSettings[index].y, value.skin);
-						player1.scale.setTo(3, 3);
-						player1.anchor.set(0.5, 0.5);
-						player1.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
-						player1.animations.play('idle');
-						break;
-					case 1:
-						player2.kill();
-						player2 = window.game.add.sprite(playerSettings[index].x, playerSettings[index].y, value.skin);
-						player2.scale.setTo(3, 3);
-						player2.anchor.set(0.5, 0.5);
-						player2.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
-						player2.animations.play('idle');
-						break;
-					case 2:
-						player3.kill();
-						player3 = window.game.add.sprite(playerSettings[index].x, playerSettings[index].y, value.skin);
-						player3.scale.setTo(-3, 3);
-						player3.anchor.set(0.5, 0.5);
-						player3.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
-						player3.animations.play('idle');
-						break;
-					case 3:
-						player4.kill();
-						player4 = window.game.add.sprite(playerSettings[index].x, playerSettings[index].y, value.skin);
-						player4.scale.setTo(-3, 3);
-						player4.anchor.set(0.5, 0.5);
-						player4.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
-						player4.animations.play('idle');
-						break;
-					default:
-						break;
-					}
+				else {
+					character.scale.setTo(-(that.scale * 2), that.scale * 2);
+					character.x = character.x + that.unit * 3;
 				}
-				index += 1;
+
+				window.game.global.playerManager.setCharacter(deviceId, character);
+				that.characterSelectedCounter += 1;
 			}
-			namesSet = true;
-			if(characterSelectedCounter > 3) {
+			else if('deselect') {
+				const silhouette = window.game.add.sprite(positionMapping[deviceId] + 15, window.game.world.height * 0.46, 'characterSilhouette');
+
+				if (positionMapping[deviceId] < window.game.world.width * 0.5) {
+					silhouette.scale.x = that.scale * 1.3;
+				}
+				else {
+					silhouette.scale.x = -that.scale * 1.3;
+				}
+				silhouette.scale.y = that.scale * 1.3;
+
+				window.game.global.playerManager.setCharacter(deviceId, silhouette);
+				that.characterSelectedCounter -= 1;
+			}
+
+			if(that.characterSelectedCounter > 3) {
 				countToFight();
 			}
 		}
@@ -209,5 +221,6 @@ export default class extends Phaser.State {
 				disconnectedPlayers.pop()
 			}
 		}
+		createSilhouettes();
 	}
 }

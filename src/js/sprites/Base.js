@@ -61,6 +61,8 @@ export default class Base {
 				}
 			}
 			// if(base.sprite.collectedSouls.includes("kickapoo_soul") && base.sprite.collectedSouls.includes("lucifer_soul") && base.sprite.collectedSouls.includes("egyptian_soul") && base.sprite.collectedSouls.includes("knight_soul")) {
+			// if(base.sprite.collectedSouls.length() > 3) {
+
 			// For dev only
 			if(base.sprite.collectedSouls.includes('egyptian_soul')) {
 				this.winning();

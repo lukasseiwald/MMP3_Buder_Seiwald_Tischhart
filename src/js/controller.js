@@ -1,5 +1,5 @@
 import '../scss/style.scss';
-import CSM from './controllerStateManager';
+import CSM from './ControllerStateManager';
 
 const airConsole = new AirConsole({'orientation': 'landscape'});
 const csm = new CSM('stage');

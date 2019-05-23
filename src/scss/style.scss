@@ -1,3 +1,5 @@
+/* exportieren von hier in states gliedern?? */ 
+
 html,
 body {
     height: 100vh;
@@ -45,10 +47,13 @@ body {
   align-items: center;
 }
 
-.button--left, .button--right {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.button {
+
+  &--left, &--right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .controller__buttons_direction span {

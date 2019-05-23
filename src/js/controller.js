@@ -10,6 +10,7 @@ csm.setState('emotes', 'state--emotes');
 csm.setState('game', 'state--game');
 csm.setState('winning', 'state--winning');
 csm.setState('loosing', 'state--loosing');
+csm.setState('tooManyPlayers', 'state--too-many-players');
 csm.startState('waiting');
 
 const takenSkins = new Map();
@@ -27,6 +28,15 @@ function changeScreenToCharacterSelection() {
 			screen: 'waiting',
 			action: 'start_character_selection'
 		});
+}
+
+function handleDefaults(data) {
+	switch (data.action){
+	case 'too_many_players':
+		csm.startState('tooManyPlayers');
+		break;
+	default:
+	}
 }
 
 function handleWaiting(data) {
@@ -110,6 +120,8 @@ airConsole.onMessage = function(from, data) {
 	case 'emotes':
 		handleEmotes(data);
 		break;
+	case 'defaults':
+		handleDefaults(data);
 	default:
 	}
 };

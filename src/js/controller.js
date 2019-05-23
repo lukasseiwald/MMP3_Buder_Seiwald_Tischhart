@@ -31,7 +31,7 @@ function changeScreenToCharacterSelection() {
 
 function handleWaiting(data) {
 	const waiting = document.getElementById('state--waiting');
-	
+
 	switch (data.action) {
 	case 'touch_to_continue':
 		waiting.addEventListener('touchstart', changeScreenToCharacterSelection);
@@ -42,8 +42,6 @@ function handleWaiting(data) {
 	case 'characterSelection':
 		csm.startState('characterSelection');
 		setUpCharacterSelection();
-		break;
-	case 'get_id':
 		break;
 	default:
 	}
@@ -81,6 +79,9 @@ function handleCharacterSelection(data) {
 			document.getElementById('button__select').classList.add('selection__character_inactive');
 		}
 		break;
+	case 'reconnected':
+		csm.startState('characterSelection');
+		setUpCharacterSelection();
 	default:
 	}
 }

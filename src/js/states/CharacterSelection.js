@@ -185,5 +185,29 @@ export default class extends Phaser.State {
 				counter = counter - 1;
 			}, 1000);
 		}
+		// wenn mehrere disconnecten noch ansehen -> array machen und dann wenn device id gleich is zuweisen??
+		let disconnectedPlayers = [];
+
+		window.game.global.airConsole.onDisconnect = function(deviceId) {
+			console.log(deviceId + 'disconnected');
+			disconnectedPlayers.push(deviceId);
+		}
+
+		window.game.global.airConsole.onConnect = function(deviceId) {
+			console.log(deviceId + 'connected');
+			// TODO: update nickname on screen
+			// on controller muss selected characters ausgegraut werden -> oder wenn schon character gepickt war
+			// keinen mehr auswählen können
+			window.game.global.playerManager.sendMessageToPlayer(deviceId, {
+				screen: 'characterSelection',
+				action: 'reconnected'
+			});
+			const length = disconnectedPlayers.length;
+
+			if(length > 0) {
+				window.game.global.playerManager.setNewDeviceID(disconnectedPlayers[length - 1], deviceId);
+				disconnectedPlayers.pop()
+			}
+		}
 	}
 }

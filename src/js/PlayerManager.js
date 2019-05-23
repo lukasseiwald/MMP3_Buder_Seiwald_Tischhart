@@ -33,6 +33,13 @@ export default class PlayerManager {
 		this.players.set(deviceId, player);
 	}
 
+	setScore(deviceId, score) {
+		const player = this.getPlayer(deviceId);
+
+		player.score = score;
+		this.players.set(deviceId, player);
+	}
+
 	incrementScore(deviceId) {
 		const player = this.getPlayer(deviceId);
 
@@ -73,6 +80,16 @@ export default class PlayerManager {
 
 	getNickname(deviceId) {
 		return this.players.get(deviceId).nickname;
+	}
+
+	setNewDeviceID(oldDeviceId, newDeviceId) {
+		let player = this.getPlayer(oldDeviceId);
+
+		this.removePlayer(oldDeviceId);
+		this.addPlayer(newDeviceId);
+		this.setSkin(newDeviceId, player.skin);
+		this.setCharacter(newDeviceId, player.character);
+		this.setScore(newDeviceId, player.score);
 	}
 
 	getAllNicknames() {

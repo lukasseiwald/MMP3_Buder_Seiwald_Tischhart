@@ -1,9 +1,13 @@
-/* exportieren von hier in states gliedern?? */ 
+/* exportieren von hier in states gliedern?? */
 
 html,
 body {
 		height: 100vh;
 		width: 100vw;
+}
+body:after{
+ display:none;
+ content: url('../assets/images/controller/button-left.svg') url('../assets/images/controller/button-right.svg') url('../assets/images/controller/button-right-selected.svg') url('../assets/images/controller/button-left-selected.svg');
 }
 * {
 	font-family: 'Bungee', sans-serif !important;
@@ -173,7 +177,7 @@ body {
 	display:flex;
 	align-items: center;
 	justify-content: center;
-	background-image: url('../assets/images/controller/button.png');
+	background-image: url('../assets/images/controller/button2.png');
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 	font-family: 'Bungee', cursive;
@@ -199,7 +203,7 @@ body {
 	align-items: center;
 	justify-content: center;
 	overflow:hidden;
-	background-image: url('../assets/images/controller/button.png');
+	background-image: url('../assets/images/controller/button2.png');
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 	font-family: 'Bungee', cursive;

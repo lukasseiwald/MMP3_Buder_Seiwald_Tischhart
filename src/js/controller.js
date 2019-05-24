@@ -139,46 +139,62 @@ function sendToScreen(data) {
 }
 
 function setUpController() {
-	const buttons = document.getElementsByClassName('button');
-
-	for (const button of buttons) {
-		if(button.dataset.direction !== 'shoot') {
-			button.addEventListener('touchstart', function(e) {
-				sendToScreen({action: e.currentTarget.dataset.direction});
-				button.classList.add('button--active');
-			}, {passive: true});
-			button.addEventListener('touchend', function(e) {
-				if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
-					sendToScreen({action: 'idle'});
-				}
-				button.classList.remove('button--active');
-			});
-		}
-	}
-
 	const directionButtons = document.getElementsByClassName('controller__buttons__direction')[0];
 	const controller = document.getElementsByClassName('controller')[0];
 	const buttonLeft = document.getElementsByClassName('button--left')[0];
 	const buttonRight = document.getElementsByClassName('button--right')[0];
 	const buttonShoot = document.getElementsByClassName('button--shoot')[0];
+	const buttonJump = document.getElementsByClassName('button--jump')[0];
 	let previousTarget;
+
+	buttonRight.addEventListener('touchstart', function(event) {
+		sendToScreen({action: buttonRight.dataset.direction});
+		buttonRight.classList.add('button__right--active');
+	}, {passive: true});
+	buttonRight.addEventListener('touchend', function(event) {
+		sendToScreen({action: 'idle'});
+		buttonRight.classList.remove('button__right--active');
+	}, {passive: true});
+
+	buttonLeft.addEventListener('touchstart', function(event) {
+		sendToScreen({action: buttonLeft.dataset.direction});
+		buttonLeft.classList.add('button__left--active');
+	}, {passive: true});
+	buttonLeft.addEventListener('touchend', function(event) {
+		sendToScreen({action: 'idle'});
+		buttonLeft.classList.remove('button__left--active');
+	}, {passive: true});
 
 	directionButtons.addEventListener('touchmove', function(event) {
 		const touch = event.touches[0];
 		const coordX = touch.pageX;
 		const coordY = touch.pageY;
 		const currentTarget = document.elementFromPoint(coordX, coordY);
+		console.log("coords: " + coordX + " " + coordY)
+		console.log("element: ", currentTarget)
 
 		if(previousTarget !== currentTarget) {
-			previousTarget && previousTarget.classList.remove('button--active');
-			currentTarget.classList.add('button--active');
+			if(previousTarget === buttonRight) {
+				buttonRight.classList.remove('button__right--active')
+			}
+			else if(previousTarget === buttonLeft) {
+				buttonLeft.classList.remove('button__left--active')
+			}
+			else {
+				previousTarget && previousTarget.classList.remove('button--active');
+			}
+
+			if(currentTarget === buttonRight) {
+				buttonRight.classList.add('button__right--active')
+			}
+			else if(currentTarget === buttonLeft) {
+				buttonLeft.classList.add('button__left--active')
+			}
+			else {
+				currentTarget.classList.add('button--active');
+			}
 			previousTarget = currentTarget;
 			sendToScreen({action: currentTarget.dataset.direction});
-		}
-	});
-	controller.addEventListener('touchend', function(event) {
-		for(const button of buttons) {
-			button.classList.remove('button--active');
 		}
 	});
 
@@ -202,11 +218,11 @@ function setUpController() {
 
 	buttonRight.addEventListener('touchstart', function(e) {
 		doubleTap('dashRight');
-	});
+	}, {passive: true});
 
 	buttonLeft.addEventListener('touchstart', function(e) {
 		doubleTap('dashLeft');
-	});
+	}, {passive: true});
 
 	let startTime;
 	let endTime;
@@ -225,6 +241,14 @@ function setUpController() {
 
 	buttonShoot.addEventListener('touchstart', prepareShoot);
 	buttonShoot.addEventListener('touchend', launchShoot);
+
+	buttonJump.addEventListener('touchstart', function(event) {
+		sendToScreen({action: buttonJump.dataset.direction});
+		buttonJump.classList.add('button--active');
+	}, {passive: true});
+	buttonJump.addEventListener('touchend', function(event) {
+		buttonJump.classList.remove('button--active');
+	}, {passive: true});
 }
 
 function setUpCharacterSelection() {

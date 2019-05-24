@@ -179,6 +179,14 @@ body {
 	font-family: 'Bungee', cursive;
 }
 
+.button__right--active {
+	background-image:url('../assets/images/controller/button-right-selected.svg') !important;
+}
+
+.button__left--active {
+	background-image:url('../assets/images/controller/button-left-selected.svg') !important;
+}
+
 .button--active {
 	color: #d3bc9a;
 }
@@ -202,13 +210,9 @@ body {
 	width: 25vw;
 	border-radius: 0;
 	overflow:hidden;
-	background-image: url('../assets/images/controller/button.svg');
+	background-image: url('../assets/images/controller/button-left.svg');
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-}
-
-.button--active .button__triangle {
-	border-right: 40px solid #d3bc9a;
 }
 
 .button__background {
@@ -223,22 +227,9 @@ body {
 	width: 25vw;
 	border-radius: 0;
 	overflow:hidden;
-	background-image: url('../assets/images/controller/button.svg');
+	background-image: url('../assets/images/controller/button-right.svg');
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-}
-
-.button__triangle {
-	width: 0;
-	height: 0;
-	border-top: 30px solid transparent;
-	border-bottom: 30px solid transparent;
-	border-right: 40px solid #97602b;
-	z-index: 3;
-}
-
-.button__triangle--right {
-	transform: rotate(180deg);
 }
 
 .movement {

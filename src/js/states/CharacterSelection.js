@@ -73,9 +73,12 @@ export default class extends Phaser.State {
 			let index = 0;
 
 			for (const [deviceId, value] of window.game.global.playerManager.getPlayers()) {
+				window.game.global.playerManager.setSkin(deviceId, undefined);
+				window.game.global.playerManager.setScore(deviceId, 0);
+
 				const plateau = addImage(that, playerSettings[index], window.game.world.height * 0.42, 'characterPlateau', 192, 64);
 				const silhouette = that.add.sprite(playerSettings[index], window.game.world.height * 0.42, silhouetteSkins[index]);
-				
+
 				silhouette.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
 				silhouette.animations.play('idle');
 
@@ -120,8 +123,8 @@ export default class extends Phaser.State {
 					});
 					break;
 				case 'character_deselected':
-					const selectedCharacter = data.selectedCharacter;
-					const selectedCharacterIndex = data.selectedCharacterIndex;
+					let selectedCharacter = data.selectedCharacter;
+					let selectedCharacterIndex = data.selectedCharacterIndex;
 
 					window.game.global.playerManager.setSkin(deviceId, undefined);
 					getPlayers('deselect', deviceId, data.selectedCharacter);
@@ -163,7 +166,7 @@ export default class extends Phaser.State {
 
 				that.characterSelectedCounter += 1;
 			}
-			else if('deselect') {
+			else if(mode === 'deselect') {
 				character.tint = 0x000000;
 				character.animations.play('dying');
 				character.animations.currentAnim.onComplete.add(function() {

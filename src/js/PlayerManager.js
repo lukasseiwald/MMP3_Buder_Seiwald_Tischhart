@@ -33,6 +33,13 @@ export default class PlayerManager {
 		this.players.set(deviceId, player);
 	}
 
+	setScore(deviceId, score) {
+		const player = this.getPlayer(deviceId);
+
+		player.score = score;
+		this.players.set(deviceId, player);
+	}
+
 	incrementScore(deviceId) {
 		const player = this.getPlayer(deviceId);
 

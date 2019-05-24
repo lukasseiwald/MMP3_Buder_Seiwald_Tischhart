@@ -104,7 +104,7 @@ export default class extends Phaser.State {
 		];
 
 		this.game.physics.startSystem(Phaser.Physics.P2JS);
-		this.game.physics.p2.setBoundsToWorld(true, true, false, false);
+		this.game.physics.p2.setBoundsToWorld(false, false, false, false);
 		this.game.physics.p2.gravity.y = 4000;
 
 		//  little bouncey
@@ -128,7 +128,7 @@ export default class extends Phaser.State {
 		this.itemCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
 		this.game.physics.p2.updateBoundsCollisionGroup();
-		this.game.physics.setBoundsToWorld();
+		//this.game.physics.setBoundsToWorld();
 
 		// IMAGES
 		this.bg3 = addImage(this, 0, 0, 'background3', this.world.width, this.world.height);
@@ -287,7 +287,7 @@ export default class extends Phaser.State {
 			this.player1.jump();
 		}
 		else if (this.game.input.keyboard.isDown(Phaser.Keyboard.S)) {
-			this.player1.shoot();
+			this.player1.shoot(500);
 		}
 		else {
 			this.player1.idle();
@@ -309,7 +309,7 @@ export default class extends Phaser.State {
 			this.player2.jump();
 		}
 		else if (this.cursors.down.isDown) {
-			this.player2.shoot();
+			this.player2.shoot(400);
 		}
 		else {
 			this.player2.idle();

@@ -57,43 +57,29 @@ export default class Player {
 			this.moveToLeft(true);
 			break;
 		default:
-			this.moveSoulWithPlayer();
-			this.moveShieldWithPlayer();
 			this.player.body.moveRight(0);
 			this.player.body.moveLeft(0);
 		}
 
 		if(this.player.body.y > window.game.height) {
 			this.player.body.y = 60;
-			this.moveSoulWithPlayer();
-			if(this.player.obtainedSoul != null) {
-				this.player.obtainedSoul.reset(this.player.body.x, this.player.body.y - 50);
-			}
 		}
 		else if(this.player.body.y < 0) {
-			this.player.body.y = window.game.height - 50;
-			this.moveSoulWithPlayer();
-			if(this.player.obtainedSoul != null) {
-				this.player.obtainedSoul.reset(this.player.body.x, this.player.body.y - 50);
-			}
+			this.player.body.y = window.game.height - 30;
 		}
-		if(this.player.body.x > window.game.width) {
-			this.player.body.x = 40;
-			this.moveSoulWithPlayer();
-			if(this.player.obtainedSoul != null) {
-				this.player.obtainedSoul.reset(this.player.body.x, this.player.body.y - 50);
-			}
+		if(this.player.right > window.game.width + 10) {
+			this.player.body.x = 10;
 		}
-		else if(this.player.body.x < 0) {
-			this.player.body.x = window.game.width - 50;
-			this.moveSoulWithPlayer();
-			if(this.player.obtainedSoul != null) {
-				this.player.obtainedSoul.reset(this.player.body.x, this.player.body.y - 50);
-			}
+		else if(this.player.right < -10) {
+			this.player.body.x = window.game.width - 10;
 		}
 		if(this.jumpCount > 0 && this.isGrounded()) {
 			this.jumpCount = 0;
 		}
+
+		this.moveSoulWithPlayer();
+		this.moveStuckBulletsWithPlayer();
+		this.moveShieldWithPlayer();
 	}
 
 	idle() {
@@ -125,6 +111,7 @@ export default class Player {
 			this.player.body.moveRight(400 * this.scale);
 		}
 		this.moveSoulWithPlayer();
+		this.moveStuckBulletsWithPlayer();
 		this.moveShieldWithPlayer();
 		if(dash) {
 			this.dash();
@@ -143,6 +130,7 @@ export default class Player {
 			this.player.body.moveLeft(400 * this.scale);
 		}
 		this.moveSoulWithPlayer();
+		this.moveStuckBulletsWithPlayer();
 		this.moveShieldWithPlayer();
 		if(dash) {
 			this.dash();
@@ -177,6 +165,7 @@ export default class Player {
 	jump() {
 		this.jumpCount += 1;
 		this.moveSoulWithPlayer();
+		this.moveStuckBulletsWithPlayer();
 		this.moveShieldWithPlayer();
 		if (this.jumpCount < 2) {
 			this.player.animations.play('jump');
@@ -245,14 +234,16 @@ export default class Player {
 		this.bullets.createMultiple(50, this.player.bulletAsset);
 		this.bullets.setAll('anchor.x', 0.5);
 		this.bullets.setAll('anchor.y', 0.5);
-		this.bullets.setAll('outOfBoundsKill', true);
-		this.bullets.setAll('checkWorldBounds', true);
 
 		this.bullets.forEach((bullet) => {
+			bullet.bulletAngleOffset = 10;
+			bullet.bulletAngleVariance = 10;
 			bullet.scale.set(this.scale * 1.1, this.scale * 1.6);
 			bullet.body.setCollisionGroup(bulletCollisionGroup);
 			bullet.body.collides([playerCollisionGroup, tilesCollisionGroup, bulletCollisionGroup]);
 			bullet.body.onBeginContact.add(this.hit, bullet);
+			bullet.checkWorldBounds = true;
+			bullet.events.onOutOfBounds.add(this.bulletOutOfBounds, this);
 		});
 
 		// collisions for Player
@@ -391,7 +382,8 @@ export default class Player {
 	shoot(shootTime) {
 		if(window.game.time.now > this.player.nextFire && this.player.alive) {
 			const bullet = this.bullets.getFirstExists(false);
-			shootTime = shootTime*2;
+
+			shootTime = shootTime * 2;
 			if(shootTime < 500) {
 				shootTime = 500;
 			}
@@ -399,24 +391,43 @@ export default class Player {
 				shootTime = 2500;
 			}
 
-			bullet.body.rotateRight(225);
-
 			if(bullet) {
 				this.player.animations.play('shoot');
-
+				bullet.body.velocity.y = -550;
+				bullet.speed = shootTime * 2 * this.scale;
 				if(this.player.scale.x < 0) {
-					bullet.scale.x = -bullet.scale.x;
 					bullet.reset(this.player.x - 20, this.player.y);
-					bullet.body.moveLeft(shootTime * this.scale);
+					bullet.scale.x = Math.abs(bullet.scale.x) * -1;
+					bullet.rotation = 0;
+					bullet.body.angle = 0;
+					bullet.body.moveLeft(bullet.speed);
 				}
 				else if(this.player.scale.x > 0) {
 					bullet.reset(this.player.x + 20, this.player.y);
-					bullet.body.moveRight(shootTime * 2 * this.scale);
+					bullet.scale.x = Math.abs(bullet.scale.x);
+					bullet.rotation = 0;
+					bullet.body.angle = 0;
+					bullet.body.moveRight(bullet.speed);
 				}
-				bullet.body.velocity.y = -650;
 				bullet.lifespan = 1000;
 				this.player.nextFire = window.game.time.now + 900;
 			}
+		}
+	}
+
+	bulletOutOfBounds(bullet) {
+		if(bullet.x > window.game.width) {
+			bullet.reset(0, bullet.y);
+			bullet.body.moveRight(bullet.speed / 2);
+		}
+		else if(bullet.x < 0) {
+			bullet.reset(window.game.width, bullet.y);
+			bullet.body.moveLeft(bullet.speed / 2);
+		}
+		else if(bullet.y > window.game.height) {
+			bullet.reset(bullet.x, 0);
+			bullet.body.angle = 270;
+			bullet.body.moveRight(bullet.speed / 2);
 		}
 	}
 
@@ -449,10 +460,15 @@ export default class Player {
 
 	moveSoulWithPlayer() {
 		if(this.player.obtainedSoul) {
-			// this.player.obtainedSoul.reset(this.player.x, this.player.y - 50)
 			this.player.obtainedSoul.x = this.player.x;
 			this.player.obtainedSoul.y = this.player.y - 50;
+			// if(this.player.obtainedSoul.sprite.visible === false) {
+			// 	console.log('sprite invisible');
+			// }
 		}
+	}
+
+	moveStuckBulletsWithPlayer() {
 		let index = this.player.stuckBullets.length;
 
 		if(index > 0) {
@@ -461,13 +477,6 @@ export default class Player {
 				bullet.y = this.player.y - 20 + (index * 12);
 				index = index - 1;
 			});
-		}
-	}
-
-	jumpSoulWithPlayer() {
-		if(this.player.obtainedSoul) {
-			this.player.obtainedSoul.x = this.player.x;
-			this.player.obtainedSoul.y = this.player.y - 50;
 		}
 	}
 

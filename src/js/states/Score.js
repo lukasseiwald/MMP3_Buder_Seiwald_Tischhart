@@ -10,6 +10,7 @@ export default class extends Phaser.State {
 	}
 	create() {
 		this.timer = 0;
+		this.gameWon = false;
 		const that = this;
 
 		// IMAGES
@@ -63,14 +64,14 @@ export default class extends Phaser.State {
 			const players = window.game.global.playerManager.getPlayers();
 			let index = 0;
 
-			for (const [key, value] of players) {
+			for(const [key, value] of players) {
 				// Add Plateau before so player wont get cover by it;
 				const plateau = addImage(that, playerSettings[index].x, window.game.world.height * 0.35, 'characterPlateau', 192, 64);
 
 				// Sprite
 				const character = window.game.add.sprite(playerSettings[index].x, window.game.world.height * 0.45, value.skin);
 
-				if (index < 2) {
+				if(index < 2) {
 					character.scale.setTo(that.scale * 2, that.scale * 2);
 				}
 				else {
@@ -93,16 +94,18 @@ export default class extends Phaser.State {
 				score.anchor.setTo(0.5, 0.5);
 				that.characters.set(value.deviceId, character);
 
-				if (value.score > 1) {
+				if(value.score > 1) {
+					that.gameWon = true;
 					addImage(that, character.x + character.width / 3 + that.unit, character.top, 'crown', 40, 23);
 					that.headline.setText(value.nickname + ' WON THE GAME');
+					setNewGameButton();
 				}
 				index += 1;
 			}
 		}
 
 		window.game.global.airConsole.onMessage = function (deviceId, data) {
-			if (data.screen === 'emotes') {
+			if(data.screen === 'emotes') {
 				if (data.emote) {
 					playEmote(data.emote, deviceId);
 				}
@@ -115,7 +118,7 @@ export default class extends Phaser.State {
 		function playEmote(emoteType, deviceId) {
 			const player = that.characters.get(deviceId);
 
-			switch (emoteType) {
+			switch(emoteType) {
 			case 'emote1':
 				player.animations.play('slash');
 				player.animations.currentAnim.onComplete.add(function() {
@@ -149,7 +152,7 @@ export default class extends Phaser.State {
 		function playSpeechEmote(player, emoteType) {
 			const curseEmote = window.game.add.sprite(player.x + player.width * 0.75, player.y - 40, emoteType);
 
-			if (player.scale.x < 0) {
+			if(player.scale.x < 0) {
 				curseEmote.x = player.x + player.width * 0.25;
 			}
 			curseEmote.scale.setTo(that.scale * 2, that.scale * 2);
@@ -161,26 +164,44 @@ export default class extends Phaser.State {
 		}
 
 		function countToFight() {
-			that.headline.setText('GET READY TO FIGHT!');
-
-			// Style of Fight Counter
-			const style = { font: '45px Bungee', fill: '#111111', align: 'center' };
-			// 5 Sekunden Timer
 			let counter = 5;
-			const text = window.game.add.text(that.world.width / 2 - 20, that.world.height / 14, '', style);
-			const startGameTimer = setInterval(() => {
-				text.setText(counter);
-				if (counter < 1) {
-					clearInterval(startGameTimer);
-					window.game.global.airConsole.broadcast({
-						screen: 'emotes',
-						action: 'change_to_controller'
-					});
-					that.state.start('Level1');
-				}
-				counter = counter - 1;
-			}, 1000);
+
+			if(that.gameWon) {
+				window.game.global.airConsole.broadcast({
+					screen: 'emotes',
+					action: 'characterSelection'
+				});
+				that.state.start('CharacterSelection');
+			}
+			if(!that.gameWon) {
+				that.headline.setText('GET READY TO FIGHT!');
+				const style = { font: '45px Bungee', fill: '#111111', align: 'center' };
+				const text = window.game.add.text(that.world.width / 2 - 20, that.world.height / 14, '', style);
+				const startGameTimer = setInterval(() => {
+
+					text.setText(counter);
+					if (counter < 1) {
+						clearInterval(startGameTimer);
+						if(!that.gameWon) {
+							window.game.global.airConsole.broadcast({
+								screen: 'emotes',
+								action: 'change_to_controller'
+							});
+							that.state.start('Level1');
+						}
+					}
+					counter = counter - 1;
+				}, 1000);
+			}
 		}
+
+		function setNewGameButton() {
+			window.game.global.airConsole.broadcast({
+				screen: 'emotes',
+				action: 'new_game_button'
+			});
+		}
+
 		getPlayers();
 	}
 }

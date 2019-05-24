@@ -86,9 +86,16 @@ function handleCharacterSelection(data) {
 
 function handleEmotes(data) {
 	switch (data.action) {
+	case 'new_game_button': 
+		changeToRestartButton();
+		break;
 	case 'change_to_controller':
 		csm.startState('game');
 		setUpController();
+		break;
+	case 'characterSelection':
+		csm.startState('characterSelection');
+		setUpCharacterSelection();
 		break;
 	default:
 	}
@@ -239,7 +246,6 @@ function setUpCharacterSelection() {
 		characters[index].id = 'character--selected';
 		name.innerText = characters[index].dataset.name;
 		currentlyViewedCharakter = characters[index].dataset.character;
-		console.log(currentlyViewedCharakter)
 	});
 
 	document.querySelector('#button__select').addEventListener('touchstart', (e) => {
@@ -294,7 +300,7 @@ function checkIfSkinTaken(arrowKey, index, skinDeselect) {
 }
 
 function removeDeselectButton() {
-	document.getElementById('button__select').remove();
+	document.getElementById('button__select').style.display = 'none';
 }
 
 function setUpEmotes() {
@@ -332,4 +338,8 @@ function setUpEmotes() {
 			readyButton.classList.add('button--active');
 		});
 	}
+}
+
+function changeToRestartButton() {
+	document.getElementById('button__score__ready').innerHTML = 'New Game';
 }

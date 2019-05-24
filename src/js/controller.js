@@ -170,25 +170,23 @@ function setUpController() {
 		const coordX = touch.pageX;
 		const coordY = touch.pageY;
 		const currentTarget = document.elementFromPoint(coordX, coordY);
-		console.log("coords: " + coordX + " " + coordY)
-		console.log("element: ", currentTarget)
 
 		if(previousTarget !== currentTarget) {
 			if(previousTarget === buttonRight) {
-				buttonRight.classList.remove('button__right--active')
+				buttonRight.classList.remove('button__right--active');
 			}
 			else if(previousTarget === buttonLeft) {
-				buttonLeft.classList.remove('button__left--active')
+				buttonLeft.classList.remove('button__left--active');
 			}
 			else {
 				previousTarget && previousTarget.classList.remove('button--active');
 			}
 
 			if(currentTarget === buttonRight) {
-				buttonRight.classList.add('button__right--active')
+				buttonRight.classList.add('button__right--active');
 			}
 			else if(currentTarget === buttonLeft) {
-				buttonLeft.classList.add('button__left--active')
+				buttonLeft.classList.add('button__left--active');
 			}
 			else {
 				currentTarget.classList.add('button--active');
@@ -234,9 +232,10 @@ function setUpController() {
 
 	function launchShoot() {
 		endTime = new Date();
-	  let shootTime = endTime - startTime;
-	  sendToScreen({action: buttonShoot.dataset.direction, shootTime: shootTime});
-	  buttonShoot.classList.remove('button--active');
+		const shootTime = endTime - startTime;
+
+		sendToScreen({action: buttonShoot.dataset.direction, shootTime: shootTime});
+		buttonShoot.classList.remove('button--active');
 	}
 
 	buttonShoot.addEventListener('touchstart', prepareShoot);

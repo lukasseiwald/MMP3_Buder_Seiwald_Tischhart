@@ -462,9 +462,12 @@ export default class Player {
 		if(this.player.obtainedSoul) {
 			this.player.obtainedSoul.x = this.player.x;
 			this.player.obtainedSoul.y = this.player.y - 50;
-			// if(this.player.obtainedSoul.sprite.visible === false) {
-			// 	console.log('sprite invisible');
-			// }
+			if(this.player.obtainedSoul.sprite.visible === false) {
+				this.player.obtainedSoul.sprite.visible = true;
+				this.player.obtainedSoul.sprite.alive = true;
+				this.player.obtainedSoul.sprite.beingCarried = true;
+				this.player.obtainedSoul.sprite.exists = true;
+			}
 		}
 	}
 

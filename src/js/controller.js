@@ -5,12 +5,12 @@ const airConsole = new AirConsole({'orientation': 'landscape'});
 const csm = new CSM('stage');
 
 csm.setState('waiting', 'state--waiting');
-csm.setState('characterSelection', 'state--character_selection');
+csm.setState('character_selection', 'state--character_selection');
 csm.setState('emotes', 'state--emotes');
 csm.setState('game', 'state--game');
 csm.setState('winning', 'state--winning');
 csm.setState('loosing', 'state--loosing');
-csm.setState('tooManyPlayers', 'state--too-many-players');
+csm.setState('too-many-players', 'state--too-many-players');
 csm.startState('waiting');
 
 let takenSkins = [];
@@ -34,7 +34,7 @@ function changeScreenToCharacterSelection() {
 function handleDefaults(data) {
 	switch (data.action) {
 	case 'too_many_players':
-		csm.startState('tooManyPlayers');
+		csm.startState('too-many-players');
 		break;
 	default:
 	}
@@ -51,7 +51,7 @@ function handleWaiting(data) {
 		waiting.removeEventListener('touchstart', changeScreenToCharacterSelection);
 		break;
 	case 'characterSelection':
-		csm.startState('characterSelection');
+		csm.startState('character_selection');
 		setUpCharacterSelection();
 		break;
 	default:
@@ -97,7 +97,8 @@ function handleCharacterSelection(data) {
 		break;
 	case 'reconnected':
 		takenSkins = data.skins;
-		csm.startState('characterSelection');
+		selectedCharacter = '';
+		csm.startState('character_selection');
 		setUpCharacterSelection();
 		break;
 	case 'all_characters_selected':
@@ -109,7 +110,7 @@ function handleCharacterSelection(data) {
 
 function handleEmotes(data) {
 	switch (data.action) {
-	case 'new_game_button': 
+	case 'new_game_button':
 		changeToRestartButton();
 		break;
 	case 'change_to_controller':
@@ -117,7 +118,9 @@ function handleEmotes(data) {
 		setUpController();
 		break;
 	case 'characterSelection':
-		csm.startState('characterSelection');
+		takenSkins = [];
+		selectedCharacter = '';
+		csm.startState('character_selection');
 		setUpCharacterSelection();
 		break;
 	default:
@@ -150,29 +153,31 @@ function sendToScreen(data) {
 }
 
 function setUpController() {
-	const buttons = document.getElementsByClassName('button');
-
-	for (const button of buttons) {
-		if(button.dataset.direction !== 'shoot') {
-			button.addEventListener('touchstart', function(e) {
-				sendToScreen({action: e.currentTarget.dataset.direction});
-				button.classList.add('button--active');
-			}, {passive: true});
-			button.addEventListener('touchend', function(e) {
-				if (button.dataset.direction === 'right' || button.dataset.direction === 'left') {
-					sendToScreen({action: 'idle'});
-				}
-				button.classList.remove('button--active');
-			});
-		}
-	}
-
 	const directionButtons = document.getElementsByClassName('controller__buttons__direction')[0];
 	const controller = document.getElementsByClassName('controller')[0];
 	const buttonLeft = document.getElementsByClassName('button--left')[0];
 	const buttonRight = document.getElementsByClassName('button--right')[0];
 	const buttonShoot = document.getElementsByClassName('button--shoot')[0];
+	const buttonJump = document.getElementsByClassName('button--jump')[0];
 	let previousTarget;
+
+	buttonRight.addEventListener('touchstart', function(event) {
+		sendToScreen({action: buttonRight.dataset.direction});
+		buttonRight.classList.add('button__right--active');
+	}, {passive: true});
+	buttonRight.addEventListener('touchend', function(event) {
+		sendToScreen({action: 'idle'});
+		buttonRight.classList.remove('button__right--active');
+	}, {passive: true});
+
+	buttonLeft.addEventListener('touchstart', function(event) {
+		sendToScreen({action: buttonLeft.dataset.direction});
+		buttonLeft.classList.add('button__left--active');
+	}, {passive: true});
+	buttonLeft.addEventListener('touchend', function(event) {
+		sendToScreen({action: 'idle'});
+		buttonLeft.classList.remove('button__left--active');
+	}, {passive: true});
 
 	directionButtons.addEventListener('touchmove', function(event) {
 		const touch = event.touches[0];
@@ -181,15 +186,27 @@ function setUpController() {
 		const currentTarget = document.elementFromPoint(coordX, coordY);
 
 		if(previousTarget !== currentTarget) {
-			previousTarget && previousTarget.classList.remove('button--active');
-			currentTarget.classList.add('button--active');
+			if(previousTarget === buttonRight) {
+				buttonRight.classList.remove('button__right--active');
+			}
+			else if(previousTarget === buttonLeft) {
+				buttonLeft.classList.remove('button__left--active');
+			}
+			else {
+				previousTarget && previousTarget.classList.remove('button--active');
+			}
+
+			if(currentTarget === buttonRight) {
+				buttonRight.classList.add('button__right--active');
+			}
+			else if(currentTarget === buttonLeft) {
+				buttonLeft.classList.add('button__left--active');
+			}
+			else {
+				currentTarget.classList.add('button--active');
+			}
 			previousTarget = currentTarget;
 			sendToScreen({action: currentTarget.dataset.direction});
-		}
-	});
-	controller.addEventListener('touchend', function(event) {
-		for(const button of buttons) {
-			button.classList.remove('button--active');
 		}
 	});
 
@@ -213,11 +230,11 @@ function setUpController() {
 
 	buttonRight.addEventListener('touchstart', function(e) {
 		doubleTap('dashRight');
-	});
+	}, {passive: true});
 
 	buttonLeft.addEventListener('touchstart', function(e) {
 		doubleTap('dashLeft');
-	});
+	}, {passive: true});
 
 	let startTime;
 	let endTime;
@@ -237,6 +254,14 @@ function setUpController() {
 
 	buttonShoot.addEventListener('touchstart', prepareShoot);
 	buttonShoot.addEventListener('touchend', launchShoot);
+
+	buttonJump.addEventListener('touchstart', function(event) {
+		sendToScreen({action: buttonJump.dataset.direction});
+		buttonJump.classList.add('button--active');
+	}, {passive: true});
+	buttonJump.addEventListener('touchend', function(event) {
+		buttonJump.classList.remove('button--active');
+	}, {passive: true});
 }
 
 function setUpCharacterSelection() {
@@ -279,6 +304,7 @@ function setUpCharacterSelection() {
 	});
 
 	document.querySelector('#button__select').addEventListener('touchstart', (e) => {
+		console.log(selectedCharacter);
 		if(selectedCharacter === '') {
 			airConsole.message(AirConsole.SCREEN, {
 				screen: 'character_selection',
@@ -287,8 +313,8 @@ function setUpCharacterSelection() {
 			});
 			selectedCharacter = document.getElementById('character--selected').dataset.character;
 			e.currentTarget.innerHTML = 'DESELECT';
-			document.getElementById('button__select_left').style.opacity = 0;
-			document.getElementById('button__select_right').style.opacity = 0;
+			document.getElementById('button__select_left').classList.add('button__select--invisible');
+			document.getElementById('button__select_right').classList.add('button__select--invisible');
 		}
 		else {
 			airConsole.message(AirConsole.SCREEN, {
@@ -298,8 +324,8 @@ function setUpCharacterSelection() {
 			});
 			selectedCharacter = '';
 			e.currentTarget.innerHTML = 'SELECT';
-			document.getElementById('button__select_left').style.opacity = 1;
-			document.getElementById('button__select_right').style.opacity = 1;
+			document.getElementById('button__select_left').classList.remove('button__select--invisible');
+			document.getElementById('button__select_right').classList.remove('button__select--invisible');
 		}
 	});
 }
@@ -333,7 +359,7 @@ function removeDeselectButton() {
 
 function setUpEmotes() {
 	const buttons = document.getElementsByClassName('emote__button');
-
+	
 	for(const button of buttons) {
 		button.addEventListener('touchstart', function(e) {
 			const emoteType = button.dataset.emote;

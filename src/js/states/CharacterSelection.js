@@ -119,12 +119,7 @@ export default class extends Phaser.State {
 					takenSkins.push(data.selectedCharacter);
 					break;
 				case 'character_deselected':
-<<<<<<< HEAD
-					let selectedCharacter = data.selectedCharacter;
-					let selectedCharacterIndex = data.selectedCharacterIndex;
-=======
 					const selectedCharacter = data.selectedCharacter;
->>>>>>> 36f374ed2f6d28e08c5e161db22d13878b785285
 
 					window.game.global.playerManager.setSkin(deviceId, undefined);
 					getPlayers('deselect', deviceId, data.selectedCharacter);

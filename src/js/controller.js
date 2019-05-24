@@ -73,6 +73,11 @@ function handleGame(data) {
 		csm.startState('emotes');
 		setUpEmotes();
 		break;
+	case 'reconnected':
+		console.log('heeey')
+		csm.startState('game');
+		setUpController();
+		break;
 	default:
 	}
 }

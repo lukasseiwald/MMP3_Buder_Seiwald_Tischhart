@@ -221,6 +221,30 @@ export default class extends Phaser.State {
 				index += 1;
 			}
 		}
+		const disconnectedPlayers = [];
+
+		window.game.global.airConsole.onDisconnect = function(deviceId) {
+			disconnectedPlayers.push(deviceId);
+
+		};
+
+		window.game.global.airConsole.onConnect = function(deviceId) {
+			const length = disconnectedPlayers.length;
+			
+			if(length > 0) {
+				const oldDeviceId = disconnectedPlayers[length - 1];
+
+				if (oldDeviceId !== deviceId) {
+					window.game.global.playerManager.setNewDeviceID(oldDeviceId, deviceId);
+				}
+				disconnectedPlayers.pop();
+				console.log('sending ' + deviceId)
+				window.game.global.playerManager.sendMessageToPlayer(deviceId, {
+					screen: 'game',
+					action: 'reconnected'
+				});
+			}
+		}
 	}
 
 	update() {

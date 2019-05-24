@@ -60,11 +60,8 @@ export default class Base {
 					soul.sprite.kill();
 				}
 			}
-			// if(base.sprite.collectedSouls.includes("kickapoo_soul") && base.sprite.collectedSouls.includes("lucifer_soul") && base.sprite.collectedSouls.includes("egyptian_soul") && base.sprite.collectedSouls.includes("knight_soul")) {
-			// if(base.sprite.collectedSouls.length() > 3) {
-
-			// For dev only
-			if(base.sprite.collectedSouls.includes('egyptian_soul')) {
+			
+			if(base.sprite.collectedSouls.includes("kickapoo_soul") && base.sprite.collectedSouls.includes("lucifer_soul") && base.sprite.collectedSouls.includes("egyptian_soul") && base.sprite.collectedSouls.includes("knight_soul")) {
 				this.winning();
 			}
 		}

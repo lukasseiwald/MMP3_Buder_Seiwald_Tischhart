@@ -93,7 +93,7 @@ export default class extends Phaser.State {
 				healthbarY: 6.6 * unit
 			},
 			{
-				skin: 'lucifer',
+				skin: 'egyptian',
 				x: this.world.width - 90,
 				y: unit * 10,
 				baseX: this.world.width - 3 * unit,

@@ -10,7 +10,7 @@ export default class extends Phaser.State {
 	}
 	create() {
 		this.timer = 0;
-		this.gameWon = false;
+		this.winner = null;
 		const that = this;
 
 		// IMAGES
@@ -63,6 +63,7 @@ export default class extends Phaser.State {
 		function getPlayers() {
 			const players = window.game.global.playerManager.getPlayers();
 			let index = 0;
+			that.winner = window.game.global.winner;
 
 			for(const [key, value] of players) {
 				// Add Plateau before so player wont get cover by it;
@@ -94,10 +95,15 @@ export default class extends Phaser.State {
 				score.anchor.setTo(0.5, 0.5);
 				that.characters.set(value.deviceId, character);
 
-				if(value.score > 1) {
-					that.gameWon = true;
-					addImage(that, character.x + character.width / 3 + that.unit, character.top, 'crown', 40, 23);
-					that.headline.setText(value.nickname + ' WON THE GAME');
+				if(that.winner != null) {
+					if(that.winner === value.deviceId) {
+						character.animations.play('slash');
+						addImage(that, character.x + character.width / 3 + that.unit, character.top, 'crown', 40, 23);
+						that.headline.setText(value.nickname + ' WON THE GAME');
+					}
+					else {
+						character.animations.play('dying');
+					}
 					setNewGameButton();
 				}
 				index += 1;
@@ -166,14 +172,14 @@ export default class extends Phaser.State {
 		function countToFight() {
 			let counter = 5;
 
-			if(that.gameWon) {
+			if(that.winner) {
 				window.game.global.airConsole.broadcast({
 					screen: 'emotes',
 					action: 'characterSelection'
 				});
 				that.state.start('CharacterSelection');
 			}
-			if(!that.gameWon) {
+			if(that.winner === null) {
 				that.headline.setText('GET READY TO FIGHT!');
 				const style = { font: '45px Bungee', fill: '#111111', align: 'center' };
 				const text = window.game.add.text(that.world.width / 2 - 20, that.world.height / 14, '', style);
@@ -182,13 +188,11 @@ export default class extends Phaser.State {
 					text.setText(counter);
 					if (counter < 1) {
 						clearInterval(startGameTimer);
-						if(!that.gameWon) {
-							window.game.global.airConsole.broadcast({
-								screen: 'emotes',
-								action: 'change_to_controller'
-							});
-							that.state.start('Level1');
-						}
+						window.game.global.airConsole.broadcast({
+							screen: 'emotes',
+							action: 'change_to_controller'
+						});
+						that.state.start('Level1');
 					}
 					counter = counter - 1;
 				}, 1000);

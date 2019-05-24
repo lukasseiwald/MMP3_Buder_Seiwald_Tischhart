@@ -89,47 +89,47 @@ export default class Base {
 	}
 
 	winning() {
-		const winningText = 'Player Won';
+		let winningText = 'Player Won';
 
 		if(!window.game.global.dev) {
-			// let style = { font: 2 * this.unit + "px Bungee", fill: "#000000", align: "center" };
-			// winningText = window.game.global.playerManager.getNickname(this.character.deviceId) + " WON";
+			const style = { font: 2 * this.unit + 'px Bungee', fill: '#000000', align: 'center' };
+			
+			winningText = window.game.global.playerManager.getNickname(this.character.deviceId) + ' WON THE ROUND';
 
-			// let winnerId = this.character.deviceId;
-			// window.game.global.playerManager.sendMessageToPlayer(winnerId,
-			// {
-			//   screen: 'game',
-			//   action: 'winning'
-			// });
+			const winnerId = this.character.deviceId;
 
-			// this.image = addImage(window.game, 0, 0, 'background1', window.game.world.width, window.game.world.height);
+			window.game.global.playerManager.sendMessageToPlayer(winnerId,
+			{
+				screen: 'game',
+				action: 'winning'
+			});
 
-			// let test = window.game.add.text(window.game.world.centerX, window.game.world.centerY, winningText, headlineStyling);
-			// test.anchor.setTo(0.5, 0.5);
-
-			// for (let [deviceId, player] of window.game.global.playerManager.getPlayers()) {
-			//   if (deviceId !== winnerId) {
-			//     window.game.global.playerManager.sendMessageToPlayer(deviceId,
-			//     {
-			//       screen: 'game',
-			//       action: 'loosing'
-			//     });
-			//   }
-			// }
+			for (let [deviceId, player] of window.game.global.playerManager.getPlayers()) {
+				if (deviceId !== winnerId) {
+					window.game.global.playerManager.sendMessageToPlayer(deviceId,
+					{
+						screen: 'game',
+						action: 'loosing'
+					});
+				}
+			}
 			// For Testing
 			window.game.global.playerManager.incrementScore(this.character.deviceId);
-			const test = window.game.add.text(window.game.world.centerX, window.game.world.centerY - 30, winningText, headlineStyling);
-
+			if(window.game.global.playerManager.getScore(this.character.deviceId) > 1) {
+				window.game.global.winner = this.character.deviceId;
+			}
+			const test = window.game.add.text(window.game.world.centerX, window.game.world.centerY - 30, winningText, style);
+			
 			test.anchor.setTo(0.5, 0.5);
+
 			this.pauseGame();
 		}
 		else {
-			const test = window.game.add.text(window.game.world.centerX, window.game.world.centerY - 30, winningText, headlineStyling);
+			const test = window.game.add.text(window.game.world.centerX, window.game.world.centerY - 30, winningText, style);
 
 			test.anchor.setTo(0.5, 0.5);
 			this.pauseGame();
 		}
-		// window.game.time.events.add(Phaser.Timer.SECOND * 5, this.resumeGame, this);
 	}
 
 	async pauseGame() {
@@ -145,7 +145,7 @@ export default class Base {
 		return new Promise((resolve) => {
 			setTimeout(() => {
 				resolve();
-			}, 100);
+			}, 4000);
 		});
 	}
 

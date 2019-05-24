@@ -13,8 +13,6 @@ export default class extends Phaser.State {
 
 	create () {
 
-		console.log('test');
-
 		window.game.global.playerManager = new PlayerManager();
 		window.game.global.playerManager.setConnectedPlayers();
 

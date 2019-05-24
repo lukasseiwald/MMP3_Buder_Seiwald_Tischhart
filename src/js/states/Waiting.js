@@ -57,9 +57,8 @@ export default class extends Phaser.State {
 
 		window.game.global.airConsole.onConnect = function(deviceId) {
 			let playerNum = window.game.global.playerManager.getConnectedPlayerNum();
-			console.log(playerNum);
+
 			if(playerNum === 4) {
-				console.log('geht')
 				// too many players -> connected device cannot join game
 				window.game.global.playerManager.sendMessageToPlayer(deviceId, {
 					screen: 'defaults',

@@ -225,12 +225,10 @@ export default class extends Phaser.State {
 
 		window.game.global.airConsole.onDisconnect = function(deviceId) {
 			disconnectedPlayers.push(deviceId);
-
 		};
-
 		window.game.global.airConsole.onConnect = function(deviceId) {
 			const length = disconnectedPlayers.length;
-			
+
 			if(length > 0) {
 				const oldDeviceId = disconnectedPlayers[length - 1];
 
@@ -238,13 +236,12 @@ export default class extends Phaser.State {
 					window.game.global.playerManager.setNewDeviceID(oldDeviceId, deviceId);
 				}
 				disconnectedPlayers.pop();
-				console.log('sending ' + deviceId)
 				window.game.global.playerManager.sendMessageToPlayer(deviceId, {
 					screen: 'game',
 					action: 'reconnected'
 				});
 			}
-		}
+		};
 	}
 
 	update() {

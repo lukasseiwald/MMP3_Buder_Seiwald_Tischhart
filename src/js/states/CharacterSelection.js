@@ -67,6 +67,9 @@ export default class extends Phaser.State {
 			let index = 0;
 
 			for (const [deviceId, value] of window.game.global.playerManager.getPlayers()) {
+				window.game.global.playerManager.setSkin(deviceId, undefined);
+				window.game.global.playerManager.setScore(deviceId, 0);
+
 				const plateau = addImage(that, playerSettings[index], window.game.world.height * 0.42, 'characterPlateau', 192, 64);
 				const silhouette = that.add.sprite(playerSettings[index], window.game.world.height * 0.42, silhouetteSkins[index]);
 

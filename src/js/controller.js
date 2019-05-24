@@ -109,9 +109,16 @@ function handleCharacterSelection(data) {
 
 function handleEmotes(data) {
 	switch (data.action) {
+	case 'new_game_button': 
+		changeToRestartButton();
+		break;
 	case 'change_to_controller':
 		csm.startState('game');
 		setUpController();
+		break;
+	case 'characterSelection':
+		csm.startState('characterSelection');
+		setUpCharacterSelection();
 		break;
 	default:
 	}
@@ -321,7 +328,7 @@ function checkIfSkinTaken(arrowKey, skinName, skinDeselect) {
 }
 
 function removeDeselectButton() {
-	document.getElementById('button__select').remove();
+	document.getElementById('button__select').style.display = 'none';
 }
 
 function setUpEmotes() {
@@ -359,4 +366,8 @@ function setUpEmotes() {
 			readyButton.classList.add('button--active');
 		});
 	}
+}
+
+function changeToRestartButton() {
+	document.getElementById('button__score__ready').innerHTML = 'New Game';
 }

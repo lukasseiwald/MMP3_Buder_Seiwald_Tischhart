@@ -5,6 +5,10 @@ body {
 		height: 100vh;
 		width: 100vw;
 }
+body:after{
+ display:none;
+ content: url('../assets/images/controller/button-left.svg') url('../assets/images/controller/button-right.svg') url('../assets/images/controller/button-right-selected.svg') url('../assets/images/controller/button-left-selected.svg');
+}
 * {
 	font-family: 'Bungee', sans-serif !important;
 	margin: 0;

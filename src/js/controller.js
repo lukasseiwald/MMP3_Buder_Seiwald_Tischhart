@@ -299,8 +299,8 @@ function setUpCharacterSelection() {
 			});
 			selectedCharacter = document.getElementById('character--selected').dataset.character;
 			e.currentTarget.innerHTML = 'DESELECT';
-			document.getElementById('button__select_left').style.opacity = 0;
-			document.getElementById('button__select_right').style.opacity = 0;
+			document.getElementById('button__select_left').classList.add('button__select--invisible');
+			document.getElementById('button__select_right').classList.add('button__select--invisible');
 		}
 		else {
 			airConsole.message(AirConsole.SCREEN, {
@@ -310,8 +310,8 @@ function setUpCharacterSelection() {
 			});
 			selectedCharacter = '';
 			e.currentTarget.innerHTML = 'SELECT';
-			document.getElementById('button__select_left').style.opacity = 1;
-			document.getElementById('button__select_right').style.opacity = 1;
+			document.getElementById('button__select_left').classList.remove('button__select--invisible');
+			document.getElementById('button__select_right').classList.remove('button__select--invisible');
 		}
 	});
 }

@@ -257,6 +257,12 @@ body {
 	transform: scaleX(-1);
 }
 
+.button__select--invisible {
+	opacity: 0;
+	pointer-events: none;
+
+}
+
 .button__select {
 	display: flex;
 	justify-content: center;

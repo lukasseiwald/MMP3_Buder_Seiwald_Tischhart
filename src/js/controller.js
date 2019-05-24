@@ -74,7 +74,6 @@ function handleGame(data) {
 		setUpEmotes();
 		break;
 	case 'reconnected':
-		console.log('heeey')
 		csm.startState('game');
 		setUpController();
 		break;
@@ -223,9 +222,10 @@ function setUpController() {
 
 	function launchShoot() {
 		endTime = new Date();
-	  let shootTime = endTime - startTime;
-	  sendToScreen({action: buttonShoot.dataset.direction, shootTime: shootTime});
-	  buttonShoot.classList.remove('button--active');
+		const shootTime = endTime - startTime;
+
+		sendToScreen({action: buttonShoot.dataset.direction, shootTime: shootTime});
+		buttonShoot.classList.remove('button--active');
 	}
 
 	buttonShoot.addEventListener('touchstart', prepareShoot);

@@ -7,18 +7,21 @@ export default class ControllerStateManager {
 
 	setState(name, stateId) {
 		const node = document.getElementById(stateId);
+		const clone = node.cloneNode(true);
 
-		this.states.set(name, node);
+		this.states.set(name, clone);
 		node.parentNode.removeChild(node);
 	}
 
 	startState(name) {
 		if (this.currentState) {
-			const prev = this.states.get(this.currentState);
-
+			const prev = document.getElementById('state--' + this.currentState);
+			console.log(prev);
 			prev.parentNode.removeChild(prev);
 		}
 		this.currentState = name;
-		this.container.appendChild(this.states.get(name));
+		const currNode = this.states.get(name);
+
+		this.container.appendChild(currNode.cloneNode(currNode));
 	}
 }

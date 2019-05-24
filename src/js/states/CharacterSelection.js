@@ -23,6 +23,8 @@ export default class extends Phaser.State {
 		this.scale = window.game.global.scale;
 		this.unit = 33;
 		window.game.global.unit = this.unit;
+
+		window.game.global.winner = null;
 	}
 	create () {
 		this.timer = 0;

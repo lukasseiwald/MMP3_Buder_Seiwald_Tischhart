@@ -5,12 +5,12 @@ const airConsole = new AirConsole({'orientation': 'landscape'});
 const csm = new CSM('stage');
 
 csm.setState('waiting', 'state--waiting');
-csm.setState('characterSelection', 'state--character_selection');
+csm.setState('character_selection', 'state--character_selection');
 csm.setState('emotes', 'state--emotes');
 csm.setState('game', 'state--game');
 csm.setState('winning', 'state--winning');
 csm.setState('loosing', 'state--loosing');
-csm.setState('tooManyPlayers', 'state--too-many-players');
+csm.setState('too-many-players', 'state--too-many-players');
 csm.startState('waiting');
 
 let takenSkins = [];
@@ -34,7 +34,7 @@ function changeScreenToCharacterSelection() {
 function handleDefaults(data) {
 	switch (data.action) {
 	case 'too_many_players':
-		csm.startState('tooManyPlayers');
+		csm.startState('too-many-players');
 		break;
 	default:
 	}
@@ -51,7 +51,7 @@ function handleWaiting(data) {
 		waiting.removeEventListener('touchstart', changeScreenToCharacterSelection);
 		break;
 	case 'characterSelection':
-		csm.startState('characterSelection');
+		csm.startState('character_selection');
 		setUpCharacterSelection();
 		break;
 	default:
@@ -97,7 +97,8 @@ function handleCharacterSelection(data) {
 		break;
 	case 'reconnected':
 		takenSkins = data.skins;
-		csm.startState('characterSelection');
+		selectedCharacter = '';
+		csm.startState('character_selection');
 		setUpCharacterSelection();
 		break;
 	case 'all_characters_selected':
@@ -109,7 +110,7 @@ function handleCharacterSelection(data) {
 
 function handleEmotes(data) {
 	switch (data.action) {
-	case 'new_game_button': 
+	case 'new_game_button':
 		changeToRestartButton();
 		break;
 	case 'change_to_controller':
@@ -117,7 +118,9 @@ function handleEmotes(data) {
 		setUpController();
 		break;
 	case 'characterSelection':
-		csm.startState('characterSelection');
+		takenSkins = [];
+		selectedCharacter = '';
+		csm.startState('character_selection');
 		setUpCharacterSelection();
 		break;
 	default:
@@ -301,6 +304,7 @@ function setUpCharacterSelection() {
 	});
 
 	document.querySelector('#button__select').addEventListener('touchstart', (e) => {
+		console.log(selectedCharacter);
 		if(selectedCharacter === '') {
 			airConsole.message(AirConsole.SCREEN, {
 				screen: 'character_selection',
@@ -355,7 +359,7 @@ function removeDeselectButton() {
 
 function setUpEmotes() {
 	const buttons = document.getElementsByClassName('emote__button');
-
+	
 	for(const button of buttons) {
 		button.addEventListener('touchstart', function(e) {
 			const emoteType = button.dataset.emote;

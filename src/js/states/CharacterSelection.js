@@ -29,6 +29,8 @@ export default class extends Phaser.State {
 		this.characterSelectedCounter = 0;
 		this.characters = new Map();
 		const that = this;
+		const takenSkins = [];
+		const positionMapping = [];
 
 		// IMAGES
 		this.bg1 = addImage(this, 0, 0, 'background1', this.world.width, this.world.height);
@@ -52,20 +54,12 @@ export default class extends Phaser.State {
 		this.headline = this.add.text(this.world.centerX, this.world.height * 0.3, 'Select Your Fighter', headlineStyling);
 		this.headline.anchor.setTo(0.5, 0.5);
 
-		this.player = {
-			id: null,
-			name: '',
-			character: ''
-		};
-
 		const playerSettings = [
 			window.game.world.centerX - this.unit * 14,
 			window.game.world.centerX - this.unit * 7,
 			window.game.world.centerX + this.unit * 7,
 			window.game.world.centerX + this.unit * 14
 		];
-
-		const positionMapping = [];
 
 		const silhouetteSkins = ['egyptian', 'kickapoo', 'knight', 'kickapoo'];
 
@@ -95,12 +89,14 @@ export default class extends Phaser.State {
 				plateau.x = silhouette.x + silhouette.width * 0.5 - 10;
 				plateau.y = silhouette.bottom - 40;
 				plateau.anchor.setTo(0.5, 0.5);
-
 				const nickname = that.add.text(plateau.x, plateau.bottom + that.unit * 2, value.nickname, subheadlineStyling);
 
 				nickname.anchor.setTo(0.5, 0.5);
 
-				positionMapping[deviceId] = playerSettings[index];
+				positionMapping[deviceId] = {
+					posX: playerSettings[index],
+					name: nickname
+				};
 
 				window.game.global.playerManager.setCharacter(deviceId, silhouette);
 				index += 1;
@@ -115,25 +111,29 @@ export default class extends Phaser.State {
 				case 'character_selected':
 					window.game.global.playerManager.setSkin(deviceId, data.selectedCharacter);
 					getPlayers('select', deviceId, data.selectedCharacter);
-					window.game.global.airConsole.broadcast({
+					window.game.global.playerManager.broadcast({
 						screen: 'characterSelection',
 						action: 'selected_character',
-						selectedCharacter: data.selectedCharacter,
-						selectedCharacterIndex: data.selectedCharacterIndex
+						selectedCharacter: data.selectedCharacter
 					});
+					takenSkins.push(data.selectedCharacter);
 					break;
 				case 'character_deselected':
+<<<<<<< HEAD
 					let selectedCharacter = data.selectedCharacter;
 					let selectedCharacterIndex = data.selectedCharacterIndex;
+=======
+					const selectedCharacter = data.selectedCharacter;
+>>>>>>> 36f374ed2f6d28e08c5e161db22d13878b785285
 
 					window.game.global.playerManager.setSkin(deviceId, undefined);
 					getPlayers('deselect', deviceId, data.selectedCharacter);
-					window.game.global.airConsole.broadcast({
+					window.game.global.playerManager.broadcast({
 						screen: 'characterSelection',
 						action: 'deselected_character',
-						selectedCharacter: selectedCharacter,
-						selectedCharacterIndex: selectedCharacterIndex
+						selectedCharacter: selectedCharacter
 					});
+					takenSkins.splice(takenSkins.indexOf(selectedCharacter, 1));
 					break;
 				case '':
 					break;
@@ -145,13 +145,13 @@ export default class extends Phaser.State {
 		function getPlayers(mode, deviceId, skin) {
 			window.game.global.playerManager.getPlayerCharacter(deviceId).destroy();
 
-			const character = window.game.add.sprite(positionMapping[deviceId] - 15, window.game.world.height * 0.42, skin);
+			const character = window.game.add.sprite(positionMapping[deviceId].posX - 15, window.game.world.height * 0.42, skin);
 
 			character.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
 			character.animations.add('slash', ['Slashing_000', 'Slashing_001', 'Slashing_002', 'Slashing_003', 'Slashing_004', 'Slashing_005', 'Slashing_006', 'Slashing_007', 'Slashing_008', 'Slashing_009', 'Slashing_010', 'Slashing_011'], 15, false);
 			character.animations.add('dying', ['Dying_000', 'Dying_001', 'Dying_002', 'Dying_003', 'Dying_004', 'Dying_005', 'Dying_006', 'Dying_007', 'Dying_008', 'Dying_009', 'Dying_010', 'Dying_011', 'Dying_012', 'Dying_013', 'Dying_014'], 17, false);
 
-			if (positionMapping[deviceId] < window.game.world.width * 0.5) {
+			if (positionMapping[deviceId].posX < window.game.world.width * 0.5) {
 				character.scale.setTo(that.scale * 2, that.scale * 2);
 			}
 			else {
@@ -208,7 +208,50 @@ export default class extends Phaser.State {
 				counter = counter - 1;
 			}, 1000);
 		}
+		// wenn mehrere disconnecten noch ansehen -> array machen und dann wenn device id gleich is zuweisen??
+		const disconnectedPlayers = [];
 
+		window.game.global.airConsole.onDisconnect = function(deviceId) {
+			disconnectedPlayers.push(deviceId);
+			positionMapping[deviceId].name.text = 'disconnected';
+			positionMapping[deviceId].name.addColor('#d51c1c', 0);
+			const skin = window.game.global.playerManager.getSkin(deviceId);
+
+			if(skin) {
+				getPlayers('deselect', deviceId, skin);
+				window.game.global.playerManager.setSkin(deviceId, undefined);
+				window.game.global.playerManager.broadcast({
+					screen: 'characterSelection',
+					action: 'deselected_character',
+					selectedCharacter: skin
+				});
+			}
+		};
+
+		window.game.global.airConsole.onConnect = function(deviceId) {
+			window.game.global.playerManager.sendMessageToPlayer(deviceId, {
+				screen: 'characterSelection',
+				action: 'reconnected',
+				skins: takenSkins
+			});
+			const length = disconnectedPlayers.length;
+
+			if(length > 0) {
+				const oldDeviceId = disconnectedPlayers[length - 1];
+
+				if (oldDeviceId !== deviceId) {
+					window.game.global.playerManager.setNewDeviceID(oldDeviceId, deviceId);
+					const mappingDevice = positionMapping[oldDeviceId];
+
+					positionMapping[oldDeviceId] = null;
+					positionMapping[deviceId] = mappingDevice;
+				}
+				positionMapping[deviceId].name.text = window.game.global.playerManager.getNickname(deviceId);
+				positionMapping[deviceId].name.addColor('#000000', 0);
+
+				disconnectedPlayers.pop();
+			}
+		};
 		createSilhouettes();
 	}
 }

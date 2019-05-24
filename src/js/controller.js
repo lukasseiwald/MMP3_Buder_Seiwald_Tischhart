@@ -10,35 +10,49 @@ csm.setState('emotes', 'state--emotes');
 csm.setState('game', 'state--game');
 csm.setState('winning', 'state--winning');
 csm.setState('loosing', 'state--loosing');
+csm.setState('tooManyPlayers', 'state--too-many-players');
 csm.startState('waiting');
 
-const takenSkins = new Map();
+let takenSkins = [];
 let selectedCharacter = '';
 let currentlyViewedCharakter = 'egyptian';
 
 airConsole.onReady = function() {
 	const name = document.getElementsByClassName('waiting__name')[0];
+
 	name.innerText = 'You are ' + airConsole.getNickname();
 };
 
+function changeScreenToCharacterSelection() {
+	airConsole.message(AirConsole.SCREEN,
+		{
+			screen: 'waiting',
+			action: 'start_character_selection'
+		});
+}
+
+function handleDefaults(data) {
+	switch (data.action) {
+	case 'too_many_players':
+		csm.startState('tooManyPlayers');
+		break;
+	default:
+	}
+}
+
 function handleWaiting(data) {
+	const waiting = document.getElementById('state--waiting');
+
 	switch (data.action) {
 	case 'touch_to_continue':
-		const waiting = document.getElementById('state--waiting');
-
-		waiting.addEventListener('touchstart', function() {
-			airConsole.message(AirConsole.SCREEN,
-				{
-					screen: 'waiting',
-					action: 'start_character_selection'
-				});
-		});
+		waiting.addEventListener('touchstart', changeScreenToCharacterSelection);
+		break;
+	case 'touch_to_continue_abort':
+		waiting.removeEventListener('touchstart', changeScreenToCharacterSelection);
 		break;
 	case 'characterSelection':
 		csm.startState('characterSelection');
 		setUpCharacterSelection();
-		break;
-	case 'get_id':
 		break;
 	default:
 	}
@@ -59,6 +73,11 @@ function handleGame(data) {
 		csm.startState('emotes');
 		setUpEmotes();
 		break;
+	case 'reconnected':
+		console.log('heeey')
+		csm.startState('game');
+		setUpController();
+		break;
 	default:
 	}
 }
@@ -70,14 +89,19 @@ function handleCharacterSelection(data) {
 		setUpController();
 		break;
 	case 'selected_character':
-		takenSkins.set(data.selectedCharacterIndex, data.selectedCharacter);
-		checkIfSkinTaken(false, data.selectedCharacterIndex)
+		takenSkins.push(data.selectedCharacter);
+		checkIfSkinTaken(false, data.selectedCharacter);
 		break;
 	case 'deselected_character':
-		takenSkins.delete(data.selectedCharacterIndex);
-		checkIfSkinTaken(false, data.selectedCharacterIndex, data.selectedCharacter);
+		takenSkins.splice(takenSkins.indexOf(data.selectedCharacter, 1));
+		checkIfSkinTaken(false, data.selectedCharacter, true);
 		break;
-	case 'all_characters_selected': 
+	case 'reconnected':
+		takenSkins = data.skins;
+		csm.startState('characterSelection');
+		setUpCharacterSelection();
+		break;
+	case 'all_characters_selected':
 		removeDeselectButton();
 		break;
 	default:
@@ -115,6 +139,9 @@ airConsole.onMessage = function(from, data) {
 	case 'emotes':
 		handleEmotes(data);
 		break;
+	case 'defaults':
+		handleDefaults(data);
+		break;
 	default:
 	}
 };
@@ -142,7 +169,6 @@ function setUpController() {
 	}
 
 	const directionButtons = document.getElementsByClassName('controller__buttons__direction')[0];
-	const actionButtons = document.getElementsByClassName('button__wrapper')[0];
 	const controller = document.getElementsByClassName('controller')[0];
 	const buttonLeft = document.getElementsByClassName('button--left')[0];
 	const buttonRight = document.getElementsByClassName('button--right')[0];
@@ -193,7 +219,7 @@ function setUpController() {
 	buttonLeft.addEventListener('touchstart', function(e) {
 		doubleTap('dashLeft');
 	});
-	
+
 	let startTime;
 	let endTime;
 
@@ -215,7 +241,6 @@ function setUpController() {
 
 function setUpCharacterSelection() {
 	const deviceId = airConsole.getDeviceId();
-	const test = document.getElementsByClassName(airConsole.getDeviceId())[0];
 	const characters = document.getElementsByClassName('character');
 	const name = document.getElementById('name');
 	let index = 0;
@@ -230,9 +255,12 @@ function setUpCharacterSelection() {
 		characters[index].id = '';
 		characters[index].classList.add('character--invisible');
 		index = (((index - 1) % (characters.length)) + (characters.length)) % (characters.length);
-		checkIfSkinTaken(true, index);
+
+		checkIfSkinTaken(true, characters[index].dataset.character);
+
 		characters[index].classList.remove('character--invisible');
 		characters[index].id = 'character--selected';
+
 		name.innerText = characters[index].dataset.name;
 		currentlyViewedCharakter = characters[index].dataset.character;
 	});
@@ -241,7 +269,9 @@ function setUpCharacterSelection() {
 		characters[index].classList.add('character--invisible');
 		characters[index].id = '';
 		index = (((index + 1) % (characters.length)) + (characters.length)) % (characters.length);
-		checkIfSkinTaken(true, index);
+
+		checkIfSkinTaken(true, characters[index].dataset.character);
+
 		characters[index].classList.remove('character--invisible');
 		characters[index].id = 'character--selected';
 		name.innerText = characters[index].dataset.name;
@@ -253,11 +283,10 @@ function setUpCharacterSelection() {
 			airConsole.message(AirConsole.SCREEN, {
 				screen: 'character_selection',
 				action: 'character_selected',
-				selectedCharacter: document.getElementById('character--selected').dataset.character,
-				selectedCharacterIndex: index
+				selectedCharacter: document.getElementById('character--selected').dataset.character
 			});
 			selectedCharacter = document.getElementById('character--selected').dataset.character;
-			e.currentTarget.innerHTML = "DESELECT";
+			e.currentTarget.innerHTML = 'DESELECT';
 			document.getElementById('button__select_left').style.opacity = 0;
 			document.getElementById('button__select_right').style.opacity = 0;
 		}
@@ -265,36 +294,35 @@ function setUpCharacterSelection() {
 			airConsole.message(AirConsole.SCREEN, {
 				screen: 'character_selection',
 				action: 'character_deselected',
-				selectedCharacter: document.getElementById('character--selected').dataset.character,
-				selectedCharacterIndex: index
+				selectedCharacter: document.getElementById('character--selected').dataset.character
 			});
 			selectedCharacter = '';
-			e.currentTarget.innerHTML = "SELECT";
+			e.currentTarget.innerHTML = 'SELECT';
 			document.getElementById('button__select_left').style.opacity = 1;
 			document.getElementById('button__select_right').style.opacity = 1;
 		}
 	});
 }
 
-function checkIfSkinTaken(arrowKey, index, skinDeselect) {
-	const skin = takenSkins.get(index);
-	if(skin) {
+function checkIfSkinTaken(arrowKey, skinName, skinDeselect) {
+	if (takenSkins.includes(skinName)) {
 		if(selectedCharacter !== '') {
 			document.getElementById('button__select').classList.remove('selection__character_inactive');
-			document.getElementsByClassName(skin)[0].classList.remove('selection__character_inactive');
+			document.getElementsByClassName(skinName)[0].classList.remove('selection__character_inactive');
 		}
-		if(selectedCharacter === '') {
-			if(skin === currentlyViewedCharakter || arrowKey) {
+		else {
+			if(skinName === currentlyViewedCharakter || arrowKey) {
 				document.getElementById('button__select').classList.add('selection__character_inactive');
 			}
-			document.getElementsByClassName(skin)[0].classList.add('selection__character_inactive');
+			document.getElementsByClassName(skinName)[0].classList.add('selection__character_inactive');
 		}
 	}
 	else {
 		document.getElementById('button__select').classList.remove('selection__character_inactive');
 	}
+
 	if(skinDeselect) {
-		document.getElementsByClassName(skinDeselect)[0].classList.remove('selection__character_inactive');
+		document.getElementsByClassName(skinName)[0].classList.remove('selection__character_inactive');
 		document.getElementById('button__select').classList.remove('selection__character_inactive');
 	}
 }

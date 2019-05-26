@@ -383,6 +383,13 @@ export default class Player {
 		if(window.game.time.now > this.player.nextFire && this.player.alive) {
 			const bullet = this.bullets.getFirstExists(false);
 
+			if(shootTime != undefined) {
+				shootTime = shootTime * 2;
+			}
+			else {
+				shootTime = 1000;
+			}
+
 			shootTime = shootTime * 2;
 			if(shootTime < 500) {
 				shootTime = 500;

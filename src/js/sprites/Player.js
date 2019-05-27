@@ -18,6 +18,10 @@ export default class Player {
 
 		this.scale = window.game.global.scale;
 		this.unit = window.game.global.unit;
+		
+		//Audio
+		this.hitAudio = game.add.audio('hit');
+		this.hitAudio.volume = 0.8;
 	}
 
 	isGrounded() {
@@ -168,6 +172,7 @@ export default class Player {
 		this.moveStuckBulletsWithPlayer();
 		this.moveShieldWithPlayer();
 		if (this.jumpCount < 2) {
+			window.game.global.jumpAudio.play();
 			this.player.animations.play('jump');
 			if(this.player.activeItem === 'jump_item') {
 				this.player.body.moveUp(1900 * this.scale);
@@ -244,6 +249,8 @@ export default class Player {
 			bullet.body.onBeginContact.add(this.hit, bullet);
 			bullet.checkWorldBounds = true;
 			bullet.events.onOutOfBounds.add(this.bulletOutOfBounds, this);
+			bullet.data.impactTile = false;
+			bullet.events.onKilled.add(this.resetImpactTile, this);
 		});
 
 		// collisions for Player
@@ -286,6 +293,7 @@ export default class Player {
 			if (hitTarget.sprite.bulletAsset) {
 				if(hitTarget.sprite.alive) {
 					if(hitTarget.sprite.shield != null) {
+						window.game.global.shieldAudio.play();
 						hitTarget.sprite.shield.damage(0.50);
 						this.destroy();
 						if(hitTarget.sprite.shield.health <= 0) {
@@ -306,6 +314,9 @@ export default class Player {
 						this.kill();
 						hitTarget.sprite.animations.play('hurt', 10, false);
 						hitTarget.sprite.damage(1 / 3 + 0.01);
+						window.game.global.hurtAudio.play();
+						window.game.global.hitAudio.play();
+
 						const healthBar = window.game.global.healthBars[hitTarget.sprite.deviceId];
 
 						if(hitTarget.sprite.health <= 0) {
@@ -317,10 +328,16 @@ export default class Player {
 					}
 				}
 			}
+			else if(!this.data.impactTile){
+				window.game.global.impactAudio.play();
+				this.data.impactTile = true;
+			}
 		}
 	}
 
 	died() {
+		window.game.global.dyingAudio.play();
+
 		// remove obtained soul of dead player
 		if(this.player.obtainedSoul) {
 			this.player.obtainedSoul.sprite.kill();
@@ -383,7 +400,7 @@ export default class Player {
 		if(window.game.time.now > this.player.nextFire && this.player.alive) {
 			const bullet = this.bullets.getFirstExists(false);
 
-			if(shootTime != undefined) {
+			if(shootTime !== undefined) {
 				shootTime = shootTime * 2;
 			}
 			else {
@@ -399,6 +416,9 @@ export default class Player {
 			}
 
 			if(bullet) {
+				const randomThrowAudio = window.game.global.throwAudio[Math.floor(Math.random() * window.game.global.throwAudio.length)];
+
+				randomThrowAudio.play();
 				this.player.animations.play('shoot');
 				bullet.body.velocity.y = -550;
 				bullet.speed = shootTime * 2 * this.scale;
@@ -440,9 +460,17 @@ export default class Player {
 
 	obtainedSoul(player, soul) {
 		// check if player already carries a soul and if player already previous obtained the soul
-		if(this.player.collectedSouls.includes(soul.sprite.key)) {
+		if(this.player.collectedSouls.includes(soul.sprite.key) || this.player.obtainedSoul != null) {
 			if(!soul.beingCarried) {
 				soul.sprite.kill();
+				const soulOut = window.game.add.sprite(soul.x - 20, soul.y - 23, 'soul_out');
+
+				soulOut.scale.setTo(2, 2);
+				soulOut.animations.add('soul_out');
+				soulOut.animations.play('soul_out', 5, false);
+				soulOut.animations.currentAnim.onComplete.add(function() {
+					soulOut.kill();
+				}, this);
 			}
 		}
 		else if(this.player.obtainedSoul == null) {
@@ -458,10 +486,8 @@ export default class Player {
 				this.player.obtainedSoul.obtainedBy = this.player;
 				this.player.obtainedSoul.x = this.player.x;
 				this.player.obtainedSoul.y = this.player.y - 50;
+				window.game.global.collectedSoulAudio.play();
 			}
-		}
-		else if(this.player.obtainedSoul != null) {
-			soul.sprite.kill();
 		}
 	}
 
@@ -502,6 +528,7 @@ export default class Player {
 
 		switch (collectedItem) {
 		case 'health_item':
+			window.game.global.healthAudio.play();
 			player.sprite.health = 1;
 			const healthBar = window.game.global.healthBars[player.sprite.deviceId];
 
@@ -521,5 +548,9 @@ export default class Player {
 		default:
 			this.player.activeItem = collectedItem;
 		}
+	}
+
+	resetImpactTile(bullet) {
+		bullet.data.impactTile = false;
 	}
 }

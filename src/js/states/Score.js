@@ -7,6 +7,7 @@ export default class extends Phaser.State {
 	init() {
 		this.scale = window.game.global.scale;
 		this.unit = window.game.global.unit;
+		this.fireworksAudio = window.game.add.audio('fireworks', 1, false);
 	}
 	create() {
 		this.timer = 0;
@@ -62,6 +63,7 @@ export default class extends Phaser.State {
 
 		function getPlayers() {
 			const players = window.game.global.playerManager.getPlayers();
+
 			let index = 0;
 			that.winner = window.game.global.winner;
 
@@ -96,6 +98,7 @@ export default class extends Phaser.State {
 				that.characters.set(value.deviceId, character);
 
 				if(that.winner != null) {
+					that.fireworksAudio.play();
 					if(that.winner === value.deviceId) {
 						character.animations.play('slash');
 						addImage(that, character.x + character.width / 3 + that.unit, character.top, 'crown', 40, 23);
@@ -126,6 +129,7 @@ export default class extends Phaser.State {
 
 			switch(emoteType) {
 			case 'emote1':
+				window.game.global.throwAudio[0].play();
 				player.animations.play('slash');
 				player.animations.currentAnim.onComplete.add(function() {
 					player.animations.play('idle');
@@ -133,6 +137,7 @@ export default class extends Phaser.State {
 				playSpeechEmote(player, 'meatEmote');
 				break;
 			case 'emote2':
+				window.game.global.dyingAudio.play();
 				player.animations.play('dying');
 				playSpeechEmote(player, 'frogEmote');
 				break;
@@ -170,7 +175,7 @@ export default class extends Phaser.State {
 		}
 
 		function countToFight() {
-			let counter = 5;
+			let counter = 3;
 
 			if(that.winner) {
 				window.game.global.airConsole.broadcast({
@@ -184,7 +189,9 @@ export default class extends Phaser.State {
 				const style = { font: '45px Bungee', fill: '#111111', align: 'center' };
 				const text = window.game.add.text(that.world.width / 2 - 20, that.world.height / 14, '', style);
 				const startGameTimer = setInterval(() => {
-
+					if(counter === 3) {
+						window.game.global.countdownAudio.play();
+					}
 					text.setText(counter);
 					if (counter < 1) {
 						clearInterval(startGameTimer);

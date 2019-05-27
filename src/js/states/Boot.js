@@ -21,6 +21,22 @@ export default class extends Phaser.State {
 		this.load.image('background3', '../../assets/images/background/BG-3.png');
 		this.load.image('smoke', '../../assets/images/background/smoke.png');
 
+		// LOAD AUDIO
+		this.load.audio('bg_music', 'assets/audio/background_music/lava.wav');
+		this.load.audio('countdown', 'assets/audio/extras/countdown.wav');
+		this.load.audio('fireworks', 'assets/audio/extras/fireworks.wav');
+		this.load.audio('hit', 'assets/audio/player/hit.wav');
+		this.load.audio('impact', 'assets/audio/player/impact.wav');
+		this.load.audio('hurt', 'assets/audio/player/hurt.ogg');
+		this.load.audio('health', 'assets/audio/player/health.wav');
+		this.load.audio('jump', 'assets/audio/player/jump.wav');
+		this.load.audio('collected_soul', 'assets/audio/player/collected_soul.wav');
+		this.load.audio('throw1', 'assets/audio/player/throw1.wav');
+		this.load.audio('throw2', 'assets/audio/player/throw2.wav');
+		this.load.audio('throw3', 'assets/audio/player/throw3.wav');
+		this.load.audio('shield', 'assets/audio/player/shield.wav');
+		this.load.audio('dying', 'assets/audio/player/dying.wav');
+
 		// LOAD CHARACTER SELECTION IMAGES
 		this.load.image('backgroundCharacterSelection', '../../assets/images/characterSelection/characterSelectionFrame.png');
 		this.load.image('characterPlateau', '../../assets/images/characterSelection/characterPlateau.png');
@@ -76,6 +92,7 @@ export default class extends Phaser.State {
 		// LOAD EXTRAS
 		this.load.image('crown', '../../assets/extras/crown.png');
 		this.load.spritesheet('dash_smoke', '../../assets/extras/dash_smoke.png', 60, 60, 9);
+		this.load.spritesheet('soul_out', '../../assets/extras/soul_out.png', 16, 16, 8);
 
 		if(config.webfonts.length) {
 			WebFont.load({

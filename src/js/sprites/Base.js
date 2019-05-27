@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import headlineStyling from '../stylings';
 
 export default class Base {
 	constructor (tsize, x, y, asset, character) {
@@ -60,8 +59,8 @@ export default class Base {
 					soul.sprite.kill();
 				}
 			}
-			
-			if(base.sprite.collectedSouls.includes("kickapoo_soul") && base.sprite.collectedSouls.includes("lucifer_soul") && base.sprite.collectedSouls.includes("egyptian_soul") && base.sprite.collectedSouls.includes("knight_soul")) {
+
+			if(base.sprite.collectedSouls.includes('kickapoo_soul') && base.sprite.collectedSouls.includes('lucifer_soul') && base.sprite.collectedSouls.includes('egyptian_soul') && base.sprite.collectedSouls.includes('knight_soul')) {
 				this.winning();
 			}
 		}
@@ -87,10 +86,9 @@ export default class Base {
 
 	winning() {
 		let winningText = 'Player Won';
+		const style = { font: 2 * this.unit + 'px Bungee', fill: '#000000', align: 'center' };
 
 		if(!window.game.global.dev) {
-			const style = { font: 2 * this.unit + 'px Bungee', fill: '#000000', align: 'center' };
-			
 			winningText = window.game.global.playerManager.getNickname(this.character.deviceId) + ' WON THE ROUND';
 
 			const winnerId = this.character.deviceId;
@@ -116,7 +114,7 @@ export default class Base {
 				window.game.global.winner = this.character.deviceId;
 			}
 			const test = window.game.add.text(window.game.world.centerX, window.game.world.centerY - 30, winningText, style);
-			
+
 			test.anchor.setTo(0.5, 0.5);
 
 			this.pauseGame();

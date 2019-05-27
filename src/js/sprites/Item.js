@@ -4,7 +4,7 @@ export default class Item {
 	constructor () {
 		const unit = window.game.global.unit;
 		const scale = window.game.global.scale;
-		const itemTypes = ['shield_item', 'health_item', 'speed_item', 'jump_item'];
+		const itemTypes = ['shield_item', 'health_item', 'health_item', 'health_item', 'speed_item', 'jump_item'];
 		const randomItem = itemTypes[Math.floor(Math.random() * itemTypes.length)];
 
 		// wenn schon alle Positionen verwendet wurden

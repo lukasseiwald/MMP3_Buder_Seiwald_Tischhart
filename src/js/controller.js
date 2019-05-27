@@ -17,6 +17,10 @@ let takenSkins = [];
 let selectedCharacter = '';
 let currentlyViewedCharakter = 'egyptian';
 
+const clickSound = new Audio('assets/audio/extras/click.wav');
+const selectSound = new Audio('assets/audio/player/collected_soul.wav');
+const trumpetsSound = new Audio('assets/audio/extras/trumpets.wav');
+
 airConsole.onReady = function() {
 	const name = document.getElementsByClassName('waiting__name')[0];
 
@@ -61,6 +65,7 @@ function handleWaiting(data) {
 function handleGame(data) {
 	switch (data.action) {
 	case 'winning':
+		trumpetsSound.play();
 		csm.startState('winning');
 		break;
 	case 'loosing':
@@ -276,6 +281,7 @@ function setUpCharacterSelection() {
 	name.innerText = characters[0].dataset.name;
 
 	document.querySelector('#button__select_left').addEventListener('touchstart', (e) => {
+		clickSound.play();
 		// prev
 		characters[index].id = '';
 		characters[index].classList.add('character--invisible');
@@ -289,7 +295,8 @@ function setUpCharacterSelection() {
 		name.innerText = characters[index].dataset.name;
 		currentlyViewedCharakter = characters[index].dataset.character;
 	});
-	document.querySelector('#button__select_right').addEventListener('touchstart', () => {
+	document.querySelector('#button__select_right').addEventListener('touchstart', (e) => {
+		clickSound.play();
 		// next
 		characters[index].classList.add('character--invisible');
 		characters[index].id = '';
@@ -304,8 +311,8 @@ function setUpCharacterSelection() {
 	});
 
 	document.querySelector('#button__select').addEventListener('touchstart', (e) => {
-		console.log(selectedCharacter);
 		if(selectedCharacter === '') {
+			selectSound.play();
 			airConsole.message(AirConsole.SCREEN, {
 				screen: 'character_selection',
 				action: 'character_selected',

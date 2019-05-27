@@ -17,12 +17,12 @@ let takenSkins = [];
 let selectedCharacter = '';
 let currentlyViewedCharakter = 'egyptian';
 
-const clickSound = new Audio('assets/audio/extras/click.wav');
-const selectSound = new Audio('assets/audio/player/collected_soul.wav');
-const trumpetsSound = new Audio('assets/audio/extras/trumpets.wav');
+const clickSound = new Audio('./assets/audio/extras/click.wav');
+const selectSound = new Audio('./assets/audio/player/collected_soul.wav');
+const trumpetsSound = new Audio('./assets/audio/extras/trumpets.wav');
 
 airConsole.onReady = function() {
-	const name = document.getElementsByClassName('waiting__name')[0];
+	const name = document.getElementsByClassName('waiting__info')[0];
 
 	name.innerText = 'You are ' + airConsole.getNickname();
 };
@@ -280,7 +280,7 @@ function setUpCharacterSelection() {
 	characters[0].id = 'character--selected';
 	name.innerText = characters[0].dataset.name;
 
-	document.querySelector('#button__select_left').addEventListener('touchstart', (e) => {
+	document.querySelector('#selection__button--left').addEventListener('touchstart', (e) => {
 		clickSound.play();
 		// prev
 		characters[index].id = '';
@@ -295,7 +295,7 @@ function setUpCharacterSelection() {
 		name.innerText = characters[index].dataset.name;
 		currentlyViewedCharakter = characters[index].dataset.character;
 	});
-	document.querySelector('#button__select_right').addEventListener('touchstart', (e) => {
+	document.querySelector('#selection__button--right').addEventListener('touchstart', (e) => {
 		clickSound.play();
 		// next
 		characters[index].classList.add('character--invisible');
@@ -310,9 +310,9 @@ function setUpCharacterSelection() {
 		currentlyViewedCharakter = characters[index].dataset.character;
 	});
 
-	document.querySelector('#button__select').addEventListener('touchstart', (e) => {
+	document.querySelector('#button--select').addEventListener('touchstart', (e) => {
+		selectSound.play();
 		if(selectedCharacter === '') {
-			selectSound.play();
 			airConsole.message(AirConsole.SCREEN, {
 				screen: 'character_selection',
 				action: 'character_selected',
@@ -320,8 +320,8 @@ function setUpCharacterSelection() {
 			});
 			selectedCharacter = document.getElementById('character--selected').dataset.character;
 			e.currentTarget.innerHTML = 'DESELECT';
-			document.getElementById('button__select_left').classList.add('button__select--invisible');
-			document.getElementById('button__select_right').classList.add('button__select--invisible');
+			document.getElementById('selection__button--left').classList.add('button--invisible');
+			document.getElementById('selection__button--right').classList.add('button--invisible');
 		}
 		else {
 			airConsole.message(AirConsole.SCREEN, {
@@ -331,8 +331,8 @@ function setUpCharacterSelection() {
 			});
 			selectedCharacter = '';
 			e.currentTarget.innerHTML = 'SELECT';
-			document.getElementById('button__select_left').classList.remove('button__select--invisible');
-			document.getElementById('button__select_right').classList.remove('button__select--invisible');
+			document.getElementById('selection__button--left').classList.remove('button--invisible');
+			document.getElementById('selection__button--right').classList.remove('button--invisible');
 		}
 	});
 }
@@ -340,33 +340,33 @@ function setUpCharacterSelection() {
 function checkIfSkinTaken(arrowKey, skinName, skinDeselect) {
 	if (takenSkins.includes(skinName)) {
 		if(selectedCharacter !== '') {
-			document.getElementById('button__select').classList.remove('selection__character_inactive');
+			document.getElementById('button--select').classList.remove('selection__character_inactive');
 			document.getElementsByClassName(skinName)[0].classList.remove('selection__character_inactive');
 		}
 		else {
 			if(skinName === currentlyViewedCharakter || arrowKey) {
-				document.getElementById('button__select').classList.add('selection__character_inactive');
+				document.getElementById('button--select').classList.add('selection__character_inactive');
 			}
 			document.getElementsByClassName(skinName)[0].classList.add('selection__character_inactive');
 		}
 	}
 	else {
-		document.getElementById('button__select').classList.remove('selection__character_inactive');
+		document.getElementById('button--select').classList.remove('selection__character_inactive');
 	}
 
 	if(skinDeselect) {
 		document.getElementsByClassName(skinName)[0].classList.remove('selection__character_inactive');
-		document.getElementById('button__select').classList.remove('selection__character_inactive');
+		document.getElementById('button--select').classList.remove('selection__character_inactive');
 	}
 }
 
 function removeDeselectButton() {
-	document.getElementById('button__select').style.display = 'none';
+	document.getElementById('button--select').style.display = 'none';
 }
 
 function setUpEmotes() {
 	const buttons = document.getElementsByClassName('emote__button');
-	
+
 	for(const button of buttons) {
 		button.addEventListener('touchstart', function(e) {
 			const emoteType = button.dataset.emote;
@@ -387,10 +387,9 @@ function setUpEmotes() {
 	const masterId = airConsole.getMasterControllerDeviceId();
 
 	if(deviceId === masterId) {
-		document.getElementById('score__ready__wrapper').style.display = 'flex';
-
 		const readyButton = document.getElementById('button__score__ready');
 
+		readyButton.classList.add('button--visible');
 		readyButton.addEventListener('touchstart', function(e) {
 			airConsole.message(AirConsole.SCREEN, {
 				screen: 'emotes',

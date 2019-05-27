@@ -1,0 +1,68 @@
+/* Character Selection State*/
+.character_selection__selection {
+	width: 90%;
+	z-index: 2;
+	flex: 4;
+	display:flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.selection__headline {
+	text-align: center;
+}
+
+.selection__character_preview img {
+	height: 55vh;
+	margin: 5vw;
+}
+
+.selection__character_inactive {
+	filter: grayscale(100%);
+	pointer-events: none;
+}
+
+.character--invisible {
+	position: absolute;
+	opacity: 0;
+}
+
+
+
+.button--arrow {
+	width: 15vw;
+	height: auto;
+}
+
+#selection__button--left {
+	transform: scaleX(-1);
+}
+
+.button--invisible {
+	opacity: 0;
+	pointer-events: none;
+}
+
+.button--select {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 0;
+	font-family: 'Bungee', cursive;
+	width: 20vw;
+	height: 6vw;
+	flex: 1;
+	margin-bottom:2%;
+	bottom: 0;
+	position: absolute;
+	background-color: transparent;
+	background-image: url('../assets/images/controller/shield.png');
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}
+
+.character_selection__name {
+	position: absolute;
+	top: 5%;
+	font-size: 2em;
+}

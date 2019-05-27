@@ -16,7 +16,7 @@
 
     <!-- WAITING STATE -->
     <div id="state--waiting" class="state waiting">
-      <p class="waiting__name">
+      <p class="waiting__info">
       </p>
     </div>
 
@@ -30,83 +30,62 @@
     <!-- CHARACTER SELECTION STATE -->
     <div id="state--character_selection" class="state character_selection">
       <div class="character_selection__name" id="name">
-        Placeholder
       </div>
-      <div class="selection__wrapper">
-        <img src="./assets/images/controller/arrow.png" class="button--arrow" id="button__select_left"/>
+      <div class="character_selection__selection selection">
+        <img src="./assets/images/controller/arrow.png" class="selection__button button button--arrow" id="selection__button--left"/>
         <div class="selection__character_preview">
-          <img class="character character--invisible egyptian" src="./assets/images/controller/egyptian.png" data-name="Egypt" data-character="egyptian" data-name="Tutu">
-          <img class="character character--invisible kickapoo" src="./assets/images/controller/kickapoo.png" data-name="Kickapoo" data-character="kickapoo" data-name="Kickapoo">
-          <img class="character character--invisible knight" src="./assets/images/controller/knight.png" data-name="Knighty boi" data-character="knight" data-name="Ser Gregor">
-          <img class="character character--invisible lucifer" src="./assets/images/controller/lucifer.png" data-name="Lucifer" data-character="lucifer" data-name="Lucifer">
-          <!-- <img class="character character--invisible inca" src="./assets/images/controller/inca.png" data-name="Inca" data-character="inca" data-name="Inca">
-          <img class="character character--invisible mage" src="./assets/images/controller/mage.png" data-name="Mage" data-character="mage" data-name="Mage"> -->
+          <img class="character_preview__character character character--invisible egyptian" src="./assets/images/controller/egyptian.png" data-character="egyptian" data-name="Tutu">
+          <img class="character_preview__character character character--invisible kickapoo" src="./assets/images/controller/kickapoo.png" data-character="kickapoo" data-name="Kickapoo">
+          <img class="character_preview__character character character--invisible knight" src="./assets/images/controller/knight.png" data-character="knight" data-name="Ser Gregor">
+          <img class="character_preview__character character character--invisible lucifer" src="./assets/images/controller/lucifer.png" data-character="lucifer" data-name="Lucifer">
+          <img class="character_preview__character character character--invisible inca" src="./assets/images/controller/inca.png" data-character="inca" data-name="Inca">
+          <img class="character_preview__character character character--invisible mage" src="./assets/images/controller/mage.png" data-character="mage" data-name="Mage">
         </div>
-        <img src="./assets/images/controller/arrow.png"class="button--arrow" id="button__select_right"/>
+        <img src="./assets/images/controller/arrow.png"class="character_preview__button button button--arrow" id="selection__button--right"/>
       </div>
-      <div class="button__select button" id="button__select">SELECT</div>
+      <div class="selection__button button button--select" id="button--select">SELECT</div>
     </div>
 
     <!-- EMOTES STATE -->
     <div id="state--emotes" class="state emotes">
-      <div class="emotes__wrapper">
-        <div class="emotes__button__wrapper">
-          <button class="emote__button button" data-emote="emote1">Emote 1</button>
-          <button class="emote__button button" data-emote="emote2">Emote 2</button>
-          <button class="emote__button button" data-emote="emote3">Emote 3</button>
-          <button class="emote__button button" data-emote="emote4">Emote 4</button>
-        </div>
-        <div class="select__button__wrapper" id="score__ready__wrapper">
-          <button class="button__select button" id="button__score__ready">READY</button>
-        </div>
+      <div class="emotes__button__wrapper">
+        <button class="emote__button button" data-emote="emote1">Emote 1</button>
+        <button class="emote__button button" data-emote="emote2">Emote 2</button>
+        <button class="emote__button button" data-emote="emote3">Emote 3</button>
+        <button class="emote__button button" data-emote="emote4">Emote 4</button>
       </div>
+      <button class="button__select button" id="button__score__ready">READY</button>
     </div>
 
     <!-- CONTROLLER STATE -->
-
     <div id="state--game" class="state controller">
-<!--       <div class="controller__movement movement">
-        <div class="movement__stick">
-        </div>
-      </div> -->
-      <div class="controller__buttons__direction">
-        <div class="controller__button button button--left" data-direction="left"></div>
-        <div class="controller__button button button--right" data-direction="right"></div>
+      <div class="controller__direction direction">
+        <div class="direction__button button button--left" data-direction="left"></div>
+        <div class="direction__button button button--right" data-direction="right"></div>
       </div>
-      <div class="controller__buttons__interaction">
-      </div>
-      <div class="button__wrapper">
-<!--       <div class="controller__button button button--left" data-direction="left">
-        <span class="button__triangle"> </span>
-      </div>
-      <div class="controller__button button button--right" data-direction="right">
-        <span class="button__triangle button__triangle--right"> </span>
-      </div> -->
-        <div class="controller__button button button--jump" data-direction="jump">
+      <div class="controller__interaction interaction">
+        <div class="interaction__button button button--jump" data-direction="jump">
           JUMP
         </div>
-        <div class="controller__button button button--shoot" data-direction="shoot">
+        <div class="interaction__button button button--shoot" data-direction="shoot">
           SHOOT
         </div>
       </div>
     </div>
 
     <!-- WINNING STATE -->
-
     <div id="state--winning" class="state winning">
-      <p class="winning__text">
+      <p class="winning__info">
         YOU WIN!
       </p>
     </div>
 
     <!-- LOOSING STATE -->
-
     <div id="state--loosing" class="state loosing">
-      <p class="loosing__text">
+      <p class="loosing__info">
         YOU LOOSE!
       </p>
     </div>
-
 
   </div>
   <script type="text/javascript" src="https://www.airconsole.com/api/airconsole-1.7.0.js"></script>

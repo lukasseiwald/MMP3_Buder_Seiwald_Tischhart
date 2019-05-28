@@ -6,7 +6,7 @@
 
 ## Description
 
-Soul Collectors is a local Multiplayer game that runs in the browser with the help of AirConsole. The players have a shared screen in the browser window and use their smartphones as gamepads!
+Soul Collectors is a local multiplayer game that runs in the browser with the help of AirConsole and Phaser. The players have a shared screen in the browser window and use their smartphones as gamepads!
 
 In Soul Collectors the players play against each other! When a player gehts eliminated a soul appears over the dead body of the player. Now the other players' goal is to collect that soul and bring it back to their own base. But watch out, if the player gets eliminated while carrying a soul the soul disappears! If a player manages to collect a soul of every enemy player then he wins the round.
 

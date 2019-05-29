@@ -88,10 +88,10 @@ export default class extends Phaser.State {
 				}
 				silhouette.scale.y = that.scale * 2;
 
-				plateau.x = silhouette.x + silhouette.width * 0.5 - 10;
+				plateau.x = silhouette.x + silhouette.width * 0.5;
 				plateau.y = silhouette.bottom - 40;
 				plateau.anchor.setTo(0.5, 0.5);
-				const nickname = that.add.text(plateau.x, plateau.bottom + that.unit * 2, value.nickname, subheadlineStyling);
+				const nickname = that.add.text(plateau.x, plateau.bottom + that.unit, value.nickname, subheadlineStyling);
 
 				nickname.anchor.setTo(0.5, 0.5);
 
@@ -142,7 +142,7 @@ export default class extends Phaser.State {
 		function getPlayers(mode, deviceId, skin) {
 			window.game.global.playerManager.getPlayerCharacter(deviceId).destroy();
 
-			const character = window.game.add.sprite(positionMapping[deviceId].posX - 15, window.game.world.height * 0.42, skin);
+			const character = window.game.add.sprite(positionMapping[deviceId].posX, window.game.world.height * 0.42, skin);
 
 			character.animations.add('idle', ['Idle_000', 'Idle_001', 'Idle_002', 'Idle_003', 'Idle_004', 'Idle_005', 'Idle_006', 'Idle_007', 'Idle_008', 'Idle_009', 'Idle_010', 'Idle_011', 'Idle_012', 'Idle_013', 'Idle_014', 'Idle_015', 'Idle_016', 'Idle_017'], 18, true);
 			character.animations.add('slash', ['Slashing_000', 'Slashing_001', 'Slashing_002', 'Slashing_003', 'Slashing_004', 'Slashing_005', 'Slashing_006', 'Slashing_007', 'Slashing_008', 'Slashing_009', 'Slashing_010', 'Slashing_011'], 15, false);

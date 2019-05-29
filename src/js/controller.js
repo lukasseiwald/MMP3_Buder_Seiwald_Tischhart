@@ -20,6 +20,10 @@ let currentlyViewedCharakter = 'egyptian';
 const clickSound = new Audio('./assets/audio/extras/click.wav');
 const selectSound = new Audio('./assets/audio/player/collected_soul.wav');
 const trumpetsSound = new Audio('./assets/audio/extras/trumpets.wav');
+const hurtSound = new Audio('./assets/audio/player/hurt.ogg');
+const hitSound = new Audio('./assets/audio/player/hit.wav');
+const dyingSound = new Audio('./assets/audio/player/dying.wav');
+const shieldSound = new Audio('./assets/audio/player/shield.wav');
 
 airConsole.onReady = function() {
 	const name = document.getElementsByClassName('waiting__info')[0];
@@ -74,6 +78,13 @@ function handleGame(data) {
 	case 'restart':
 		csm.startState('game');
 		break;
+	case 'playHurtSound': 
+		hurtSound.play();
+		hitSound.play();
+		dyingSound.play();
+		break;
+	case 'playShieldSound': 
+		shieldSound.play();
 	case 'emotes':
 		csm.startState('emotes');
 		setUpEmotes();

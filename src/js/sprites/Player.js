@@ -293,6 +293,11 @@ export default class Player {
 			if (hitTarget.sprite.bulletAsset) {
 				if(hitTarget.sprite.alive) {
 					if(hitTarget.sprite.shield != null) {
+						window.game.global.playerManager.sendMessageToPlayer(hitTarget.deviceId,
+							{
+								screen: 'game',
+								action: 'playShieldSound'
+							});
 						window.game.global.shieldAudio.play();
 						hitTarget.sprite.shield.damage(0.50);
 						this.destroy();
@@ -301,6 +306,11 @@ export default class Player {
 						}
 					}
 					else {
+						window.game.global.playerManager.sendMessageToPlayer(hitTarget.deviceId,
+							{
+								screen: 'game',
+								action: 'playHurtSound'
+							});
 						const stuckBullet = window.game.add.sprite(this.x, this.y, this.key);
 
 						stuckBullet.anchor.set(0.3, 0.5);
@@ -376,7 +386,7 @@ export default class Player {
 
 	spawnDeadBodyWithSoul() {
 		// Spawning dead body just to play its dying animation
-		this.deadBody = window.game.add.sprite(this.player.x, this.player.y + 10, this.player.key);
+		this.deadBody = window.game.add.sprite(this.player.x, this.player.y, this.player.key);
 		this.deadBody.anchor.set(0.5, 0.5);
 		this.deadBody.scale.setTo(this.scale, this.scale);
 		this.deadBody.animations.add('dying', ['Dying_000', 'Dying_001', 'Dying_002', 'Dying_003', 'Dying_004', 'Dying_005', 'Dying_006', 'Dying_007', 'Dying_008', 'Dying_009', 'Dying_010', 'Dying_011', 'Dying_012', 'Dying_013', 'Dying_014'], 17, false);

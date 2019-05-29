@@ -101,7 +101,12 @@ export default class extends Phaser.State {
 					that.fireworksAudio.play();
 					if(that.winner === value.deviceId) {
 						character.animations.play('slash');
-						addImage(that, character.x + character.width / 3 + that.unit, character.top, 'crown', 40, 23);
+						character.animations.currentAnim.onComplete.add(function() {
+							character.animations.play('idle');
+						}, this);
+						const crown = addImage(that, character.x + character.width / 2, character.top, 'crown', 40, 23);
+
+						crown.anchor.setTo(0.5, 0.5);
 						that.headline.setText(value.nickname + ' WON THE GAME');
 					}
 					else {
@@ -185,10 +190,6 @@ export default class extends Phaser.State {
 				that.state.start('CharacterSelection');
 			}
 			if(that.winner === null) {
-				window.game.global.airConsole.broadcast({
-					screen: 'emotes',
-					action: 'remove_ready_button'
-				});
 				that.headline.setText('GET READY TO FIGHT!');
 				const style = { font: '45px Bungee', fill: '#111111', align: 'center' };
 				const text = window.game.add.text(that.world.width / 2 - 20, that.world.height / 14, '', style);

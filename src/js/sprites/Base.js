@@ -60,7 +60,7 @@ export default class Base {
 				}
 			}
 
-			if(base.sprite.collectedSouls.length > 3) {
+			if(base.sprite.collectedSouls.length > 1) {
 				this.winning();
 			}
 		}
@@ -71,7 +71,7 @@ export default class Base {
 		let soulTrophyX;
 
 		if(this.base.x < window.game.world.width / 2) {
-			soulTrophyX = this.unit;
+			soulTrophyX = this.unit - 10;
 		}
 		else {
 			soulTrophyX = window.game.world.width - 2 * this.unit;
@@ -110,20 +110,16 @@ export default class Base {
 			}
 			// For Testing
 			window.game.global.playerManager.incrementScore(this.character.deviceId);
-			if(window.game.global.playerManager.getScore(this.character.deviceId) > 1) {
+			if(window.game.global.playerManager.getScore(this.character.deviceId) > 0) {
 				window.game.global.winner = this.character.deviceId;
 			}
-			const test = window.game.add.text(window.game.world.centerX, window.game.world.centerY - 30, winningText, style);
+			const test = window.game.add.text(window.game.world.centerX, window.game.world.centerY - this.unit * 2, winningText, style);
 
 			test.anchor.setTo(0.5, 0.5);
-
 			this.pauseGame();
 		}
 		else {
-			const test = window.game.add.text(window.game.world.centerX, window.game.world.centerY - 30, winningText, style);
-
-			test.anchor.setTo(0.5, 0.5);
-			this.pauseGame();
+			window.game.state.start('Level1');
 		}
 	}
 

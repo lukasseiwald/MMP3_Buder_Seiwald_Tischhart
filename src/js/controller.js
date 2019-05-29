@@ -11,7 +11,7 @@ csm.setState('game', 'state--game');
 csm.setState('winning', 'state--winning');
 csm.setState('loosing', 'state--loosing');
 csm.setState('too-many-players', 'state--too-many-players');
-csm.startState('waiting');
+csm.startState('emotes');
 
 let takenSkins = [];
 let selectedCharacter = '';
@@ -78,12 +78,12 @@ function handleGame(data) {
 	case 'restart':
 		csm.startState('game');
 		break;
-	case 'playHurtSound': 
+	case 'playHurtSound':
 		hurtSound.play();
 		hitSound.play();
 		dyingSound.play();
 		break;
-	case 'playShieldSound': 
+	case 'playShieldSound':
 		shieldSound.play();
 	case 'emotes':
 		csm.startState('emotes');
@@ -133,7 +133,7 @@ function handleEmotes(data) {
 		csm.startState('game');
 		setUpController();
 		break;
-	case 'remove_ready_button': 
+	case 'remove_ready_button':
 		removeReadyButton();
 		break;
 	case 'characterSelection':
@@ -401,7 +401,7 @@ function setUpEmotes() {
 	const masterId = airConsole.getMasterControllerDeviceId();
 
 	if(deviceId === masterId) {
-		const readyButton = document.getElementById('button__score__ready');
+		const readyButton = document.getElementById('button--ready');
 
 		readyButton.classList.add('button--visible');
 		readyButton.addEventListener('touchstart', function(e) {
@@ -415,9 +415,9 @@ function setUpEmotes() {
 }
 
 function removeReadyButton() {
-	document.getElementById('button__score__ready').style.display = 'none';
+	document.getElementById('button--ready').style.display = 'none';
 }
 
 function changeToRestartButton() {
-	document.getElementById('button__score__ready').innerHTML = 'New Game';
+	document.getElementById('button--ready').innerHTML = 'New Game';
 }

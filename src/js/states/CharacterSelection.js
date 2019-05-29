@@ -35,21 +35,24 @@ export default class extends Phaser.State {
 		const positionMapping = [];
 
 		// IMAGES
+
 		this.bg1 = addImage(this, 0, 0, 'background1', this.world.width, this.world.height);
 
-		// Particles
+		// PARTICLES
+
 		this.glowingParticles = new Particle('spark', 30, 5000, 100);
 		this.glowingParticles.startEmitter();
 
-		this.steamParticles = new Particle('smoke', 150, 8000, 100);
+		this.steamParticles = new Particle('smoke', 150, 8000, 1);
 		this.steamParticles.startEmitter();
 
-		this.bg3 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
+		this.bg2 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
 		this.lavaParticles = new Particle('lava', 0, 4000, 1);
 		this.lavaParticles.startEmitter();
 
-		// Background Frame
+		// FRAME AROUND
+
 		this.bg4 = addImage(this, 0, 0, 'backgroundCharacterSelection', this.world.width, this.world.height);
 
 		// TEXT ELEMENTS
@@ -255,5 +258,8 @@ export default class extends Phaser.State {
 			}
 		};
 		createSilhouettes();
+	}
+	update() {
+		this.glowingParticles.updateVisibility();
 	}
 }

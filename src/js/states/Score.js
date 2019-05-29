@@ -17,17 +17,17 @@ export default class extends Phaser.State {
 		// IMAGES
 		this.bg1 = addImage(this, 0, 0, 'background1', this.world.width, this.world.height);
 
-		this.glowingParticles = new Particle('spark', 30, 5000, 100);
-		this.glowingParticles.startEmitter();
-
-		this.steamParticles = new Particle('smoke', 150, 8000, 100);
-		this.steamParticles.startEmitter();
-
 		// Lava Bg
 		// this.bg3 = addImage(this, 0, 0, 'background2', this.world.width, this.world.height);
 
 		this.lavaParticles = new Particle('lava', 0, 4000, 1);
 		this.lavaParticles.startEmitter();
+
+		this.glowingParticles = new Particle('spark', 30, 5000, 100);
+		this.glowingParticles.startEmitter();
+
+		this.steamParticles = new Particle('smoke', 150, 8000, 100);
+		this.steamParticles.startEmitter();
 
 		// Background Frame
 		this.bg4 = addImage(this, 0, 0, 'backgroundCharacterSelection', this.world.width, this.world.height);

@@ -399,7 +399,7 @@ function setUpEmotes() {
 	// Ready Button Only For Master
 	const deviceId = airConsole.getDeviceId();
 	const masterId = airConsole.getMasterControllerDeviceId();
-
+	console.log(deviceId, masterId);
 	if(deviceId === masterId) {
 		const readyButton = document.getElementById('button--ready');
 

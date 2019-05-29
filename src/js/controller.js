@@ -11,7 +11,7 @@ csm.setState('game', 'state--game');
 csm.setState('winning', 'state--winning');
 csm.setState('loosing', 'state--loosing');
 csm.setState('too-many-players', 'state--too-many-players');
-csm.startState('emotes');
+csm.startState('waiting');
 
 let takenSkins = [];
 let selectedCharacter = '';

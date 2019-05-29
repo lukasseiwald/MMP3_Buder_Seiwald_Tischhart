@@ -94,11 +94,11 @@ function handleCharacterSelection(data) {
 		break;
 	case 'selected_character':
 		takenSkins.push(data.selectedCharacter);
-		checkIfSkinTaken(false, data.selectedCharacter);
+		checkIfSkinTaken(data.selectedCharacter);
 		break;
 	case 'deselected_character':
-		takenSkins.splice(takenSkins.indexOf(data.selectedCharacter, 1));
-		checkIfSkinTaken(false, data.selectedCharacter, true);
+		takenSkins.splice(takenSkins.indexOf(data.selectedCharacter), 1);
+		checkIfSkinTaken(data.selectedCharacter);
 		break;
 	case 'reconnected':
 		takenSkins = data.skins;
@@ -287,13 +287,12 @@ function setUpCharacterSelection() {
 		characters[index].classList.add('character--invisible');
 		index = (((index - 1) % (characters.length)) + (characters.length)) % (characters.length);
 
-		checkIfSkinTaken(true, characters[index].dataset.character);
+		currentlyViewedCharakter = characters[index].dataset.character;
+		checkIfSkinTaken(characters[index].dataset.character);
 
 		characters[index].classList.remove('character--invisible');
 		characters[index].id = 'character--selected';
-
 		name.innerText = characters[index].dataset.name;
-		currentlyViewedCharakter = characters[index].dataset.character;
 	});
 	document.querySelector('#selection__button--right').addEventListener('touchstart', (e) => {
 		clickSound.play();
@@ -302,12 +301,12 @@ function setUpCharacterSelection() {
 		characters[index].id = '';
 		index = (((index + 1) % (characters.length)) + (characters.length)) % (characters.length);
 
-		checkIfSkinTaken(true, characters[index].dataset.character);
+		currentlyViewedCharakter = characters[index].dataset.character;
+		checkIfSkinTaken(characters[index].dataset.character);
 
 		characters[index].classList.remove('character--invisible');
 		characters[index].id = 'character--selected';
 		name.innerText = characters[index].dataset.name;
-		currentlyViewedCharakter = characters[index].dataset.character;
 	});
 
 	document.querySelector('#button--select').addEventListener('touchstart', (e) => {
@@ -337,26 +336,21 @@ function setUpCharacterSelection() {
 	});
 }
 
-function checkIfSkinTaken(arrowKey, skinName, skinDeselect) {
-	if (takenSkins.includes(skinName)) {
-		if(selectedCharacter !== '') {
+function checkIfSkinTaken(skinName) {
+	console.log(takenSkins)
+	if(selectedCharacter !== '') {
+		document.getElementById('button--select').classList.remove('selection__character_inactive');
+		document.getElementsByClassName(skinName)[0].classList.remove('selection__character_inactive');
+	}
+	else {
+		if(takenSkins.includes(currentlyViewedCharakter)) {
+			document.getElementById('button--select').classList.add('selection__character_inactive');
+			document.getElementsByClassName(skinName)[0].classList.add('selection__character_inactive');
+		}
+		else {
 			document.getElementById('button--select').classList.remove('selection__character_inactive');
 			document.getElementsByClassName(skinName)[0].classList.remove('selection__character_inactive');
 		}
-		else {
-			if(skinName === currentlyViewedCharakter || arrowKey) {
-				document.getElementById('button--select').classList.add('selection__character_inactive');
-			}
-			document.getElementsByClassName(skinName)[0].classList.add('selection__character_inactive');
-		}
-	}
-	else {
-		document.getElementById('button--select').classList.remove('selection__character_inactive');
-	}
-
-	if(skinDeselect) {
-		document.getElementsByClassName(skinName)[0].classList.remove('selection__character_inactive');
-		document.getElementById('button--select').classList.remove('selection__character_inactive');
 	}
 }
 

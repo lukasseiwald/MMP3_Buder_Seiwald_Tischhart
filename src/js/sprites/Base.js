@@ -55,12 +55,12 @@ export default class Base {
 					// adding Soul to the Base Soul Collection
 					this.addSoulSpriteToCollection(soulName);
 					this.player.obtainedSoul = null;
-					base.sprite.collectedSouls.push(soulName);
+					// base.sprite.collectedSouls.push(soulName);
 					soul.sprite.kill();
 				}
 			}
 
-			if(base.sprite.collectedSouls.includes('kickapoo_soul') && base.sprite.collectedSouls.includes('lucifer_soul') && base.sprite.collectedSouls.includes('egyptian_soul') && base.sprite.collectedSouls.includes('knight_soul')) {
+			if(base.sprite.collectedSouls.length > 3) {
 				this.winning();
 			}
 		}
@@ -76,7 +76,7 @@ export default class Base {
 		else {
 			soulTrophyX = window.game.world.width - 2 * this.unit;
 		}
-		const soulTrophY = this.base.y - 3 * this.unit + 0.8 * this.unit * spacingForCollectionStyle;
+		const soulTrophY = this.base.y - 3.7 * this.unit + 0.8 * this.unit * spacingForCollectionStyle * 2;
 		// anders bennen da es sonst als eingesammelte seele zählt
 		const test = window.game.add.sprite(soulTrophyX, soulTrophY, soulName);
 
@@ -94,18 +94,18 @@ export default class Base {
 			const winnerId = this.character.deviceId;
 
 			window.game.global.playerManager.sendMessageToPlayer(winnerId,
-			{
-				screen: 'game',
-				action: 'winning'
-			});
+				{
+					screen: 'game',
+					action: 'winning'
+				});
 
 			for (let [deviceId, player] of window.game.global.playerManager.getPlayers()) {
 				if (deviceId !== winnerId) {
 					window.game.global.playerManager.sendMessageToPlayer(deviceId,
-					{
-						screen: 'game',
-						action: 'loosing'
-					});
+						{
+							screen: 'game',
+							action: 'loosing'
+						});
 				}
 			}
 			// For Testing

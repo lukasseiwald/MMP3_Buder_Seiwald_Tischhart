@@ -18,8 +18,8 @@ export default class Player {
 
 		this.scale = window.game.global.scale;
 		this.unit = window.game.global.unit;
-		
-		//Audio
+
+		// Audio
 		this.hitAudio = game.add.audio('hit');
 		this.hitAudio.volume = 0.8;
 	}
@@ -328,7 +328,7 @@ export default class Player {
 					}
 				}
 			}
-			else if(!this.data.impactTile){
+			else if(!this.data.impactTile) {
 				window.game.global.impactAudio.play();
 				this.data.impactTile = true;
 			}

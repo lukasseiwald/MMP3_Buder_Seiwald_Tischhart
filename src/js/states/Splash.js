@@ -2,8 +2,7 @@ import Phaser from 'phaser';
 
 export default class extends Phaser.State {
 	create () {
-
-		//Audio
+		// Audio
 		window.game.global.bgMusic = window.game.add.audio('bg_music', 0.4, true);
 		window.game.global.bgMusic.play();
 		window.game.global.countdownAudio = window.game.add.audio('countdown', 1, false);

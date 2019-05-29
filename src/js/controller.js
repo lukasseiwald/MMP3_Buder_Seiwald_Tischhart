@@ -122,6 +122,9 @@ function handleEmotes(data) {
 		csm.startState('game');
 		setUpController();
 		break;
+	case 'remove_ready_button': 
+		removeReadyButton();
+		break;
 	case 'characterSelection':
 		takenSkins = [];
 		selectedCharacter = '';
@@ -158,7 +161,7 @@ function sendToScreen(data) {
 }
 
 function setUpController() {
-	const directionButtons = document.getElementsByClassName('controller__buttons__direction')[0];
+	const directionButtons = document.getElementsByClassName('controller__direction')[0];
 	const controller = document.getElementsByClassName('controller')[0];
 	const buttonLeft = document.getElementsByClassName('button--left')[0];
 	const buttonRight = document.getElementsByClassName('button--right')[0];
@@ -398,6 +401,10 @@ function setUpEmotes() {
 			readyButton.classList.add('button--active');
 		});
 	}
+}
+
+function removeReadyButton() {
+	document.getElementById('button__score__ready').style.display = 'none';
 }
 
 function changeToRestartButton() {

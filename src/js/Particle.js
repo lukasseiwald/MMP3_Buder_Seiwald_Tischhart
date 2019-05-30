@@ -76,7 +76,7 @@ export default class Particle {
 			this.fireParticle.prototype = Object.create(Phaser.Particle.prototype);
 			this.fireParticle.prototype.constructor = this.fireParticle;
 
-			const pSize = window.game.world.width / 30;
+			const pSize = window.game.world.width / 23;
 			const bmpd = window.game.add.bitmapData(pSize, pSize);
 			// Create a radial gradient, yellow-ish on the inside, orange
 			// on the outside. Use it to draw a circle that will be used

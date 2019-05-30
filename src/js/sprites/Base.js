@@ -49,7 +49,8 @@ export default class Base {
 					if(this.player.key !== base.sprite.key.split('_')[0]) {
 						return;
 					}
-					window.game.global.basedSoulAudio.play();
+					window.game.time.events.add(Phaser.Timer.SECOND, this.setMusicVolumeNormal, this);
+					window.game.global.bgMusic.volume = 0.6;
 					base.sprite.collectedSouls.push(soulName);
 					// Syncing player collectedSouls with base for avoiding errors
 					this.player.collectedSouls = base.sprite.collectedSouls;
@@ -65,6 +66,19 @@ export default class Base {
 				this.winning();
 			}
 		}
+	}
+
+	setMusicVolumeNormal() {
+		let counter = window.game.global.bgMusic.volume;
+
+		const volumeTransition = setInterval(() => {
+			window.game.global.bgMusic.volume = counter;
+			if(counter < 0.35) {
+				clearInterval(volumeTransition);
+				window.game.global.bgMusic.volume = 0.3;
+			}
+			counter = counter - 0.05;
+		}, 250);
 	}
 
 	addSoulSpriteToCollection(soulName) {
@@ -125,6 +139,7 @@ export default class Base {
 	}
 
 	async pauseGame() {
+		this.setMusicVolumeNormal();
 		window.game.global.bgMusic.stop();
 		window.game.paused = true;
 		while(window.game.paused) {

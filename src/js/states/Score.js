@@ -9,7 +9,6 @@ export default class extends Phaser.State {
 		this.unit = window.game.global.unit;
 		this.fireworksAudio = window.game.add.audio('fireworks', 1, false);
 
-		window.game.global.bgMusic.stop();
 		window.game.global.lavaAudio.play();
 	}
 	create() {
@@ -191,6 +190,10 @@ export default class extends Phaser.State {
 				that.state.start('CharacterSelection');
 			}
 			if(that.winner === null) {
+				window.game.global.airConsole.broadcast({
+					screen: 'emotes',
+					action: 'remove_ready_button'
+				});
 				that.headline.setText('GET READY TO FIGHT!');
 				const style = { font: '45px Bungee', fill: '#111111', align: 'center' };
 				const text = window.game.add.text(that.world.width / 2 - 20, that.world.height / 14, '', style);

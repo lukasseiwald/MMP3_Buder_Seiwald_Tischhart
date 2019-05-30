@@ -86,8 +86,6 @@ function handleGame(data) {
 	case 'playSound':
 		playSound(data.sound);
 		break;
-	case 'playPickUpSoulSound':
-		break;
 	case 'emotes':
 		csm.startState('emotes');
 		setUpEmotes();
@@ -136,7 +134,7 @@ function handleEmotes(data) {
 		csm.startState('game');
 		setUpController();
 		break;
-	case 'remove_ready_button': 
+	case 'remove_ready_button':
 		removeReadyButton();
 		break;
 	case 'characterSelection':
@@ -417,9 +415,9 @@ function setUpEmotes() {
 	// Ready Button Only For Master
 	const deviceId = airConsole.getDeviceId();
 	const masterId = airConsole.getMasterControllerDeviceId();
-
+	console.log(deviceId, masterId);
 	if(deviceId === masterId) {
-		const readyButton = document.getElementById('button__score__ready');
+		const readyButton = document.getElementById('button--ready');
 
 		readyButton.classList.add('button--visible');
 		readyButton.addEventListener('touchstart', function(e) {
@@ -433,11 +431,11 @@ function setUpEmotes() {
 }
 
 function removeReadyButton() {
-	document.getElementById('button__score__ready').style.display = 'none';
+	document.getElementById('button--ready').style.display = 'none';
 }
 
 function changeToRestartButton() {
-	document.getElementById('button__score__ready').innerHTML = 'New Game';
+	document.getElementById('button--ready').innerHTML = 'New Game';
 }
 
 function playSound(sound) {

@@ -22,6 +22,11 @@ export default class extends Phaser.State {
 			this.scale.setGameSize(this.width, this.width / 1.8064);
 			window.game.global.scale = this.world.width / gameWidth;
 		}
+
+		// Audio
+		window.game.global.lavaAudio.stop();
+		window.game.global.bgMusic.play();
+		// window.game.time.events.add(Phaser.Timer.SECOND * 3, this.playTutorial, this);
 	}
 
 	preload() {
@@ -402,6 +407,10 @@ export default class extends Phaser.State {
 
 	createItems() {
 		this.powerItem = new Item();
+	}
+
+	playTutorial() {
+		window.game.global.tutorialAudio.play();
 	}
 
 	render() {

@@ -17,13 +17,18 @@ let takenSkins = [];
 let selectedCharacter = '';
 let currentlyViewedCharakter = 'egyptian';
 
-const clickSound = new Audio('./assets/audio/extras/click.wav');
-const selectSound = new Audio('./assets/audio/player/collected_soul.wav');
-const trumpetsSound = new Audio('./assets/audio/extras/trumpets.wav');
-const hurtSound = new Audio('./assets/audio/player/hurt.ogg');
+const clickRightSound = new Audio('./assets/audio/extras/click_right.wav');
+const clickLeftSound = new Audio('./assets/audio/extras/click_left.wav');
+const selectSound = new Audio('./assets/audio/extras/select.wav');
+const winSound = new Audio('./assets/audio/extras/win.wav');
+const jumpSound = new Audio('./assets/audio/player/jump.wav');
+const hurtSound = new Audio('./assets/audio/player/hurt.wav');
 const hitSound = new Audio('./assets/audio/player/hit.wav');
 const dyingSound = new Audio('./assets/audio/player/dying.wav');
 const shieldSound = new Audio('./assets/audio/player/shield.wav');
+const basedSoulSound = new Audio('./assets/audio/extras/based_soul.wav');
+const slashingSound = new Audio('./assets/audio/player/throw1.wav')
+const burbSound = new Audio('./assets/audio/extras/burb.wav')
 
 airConsole.onReady = function() {
 	const name = document.getElementsByClassName('waiting__info')[0];
@@ -69,7 +74,7 @@ function handleWaiting(data) {
 function handleGame(data) {
 	switch (data.action) {
 	case 'winning':
-		trumpetsSound.play();
+		winSound.play();
 		csm.startState('winning');
 		break;
 	case 'loosing':
@@ -78,13 +83,11 @@ function handleGame(data) {
 	case 'restart':
 		csm.startState('game');
 		break;
-	case 'playHurtSound': 
-		hurtSound.play();
-		hitSound.play();
-		dyingSound.play();
+	case 'playSound':
+		playSound(data.sound);
 		break;
-	case 'playShieldSound': 
-		shieldSound.play();
+	case 'playPickUpSoulSound':
+		break;
 	case 'emotes':
 		csm.startState('emotes');
 		setUpEmotes();
@@ -295,7 +298,7 @@ function setUpCharacterSelection() {
 	name.innerText = characters[0].dataset.name;
 
 	document.querySelector('#selection__button--left').addEventListener('touchstart', (e) => {
-		clickSound.play();
+		clickLeftSound.play();
 		// prev
 		characters[index].id = '';
 		characters[index].classList.add('character--invisible');
@@ -310,7 +313,7 @@ function setUpCharacterSelection() {
 		currentlyViewedCharakter = characters[index].dataset.character;
 	});
 	document.querySelector('#selection__button--right').addEventListener('touchstart', (e) => {
-		clickSound.play();
+		clickRightSound.play();
 		// next
 		characters[index].classList.add('character--invisible');
 		characters[index].id = '';
@@ -385,6 +388,21 @@ function setUpEmotes() {
 		button.addEventListener('touchstart', function(e) {
 			const emoteType = button.dataset.emote;
 
+			switch(emoteType) {
+				case 'emote1':
+					slashingSound.play();
+					break;
+				case 'emote2':
+					dyingSound.play();
+					break;
+				case 'emote3':
+					burbSound.play();
+					break;
+				case 'emote4':
+					hurtSound.play();
+					break;
+			}
+
 			airConsole.message(AirConsole.SCREEN, {
 				screen: 'emotes',
 				emote: emoteType
@@ -420,4 +438,30 @@ function removeReadyButton() {
 
 function changeToRestartButton() {
 	document.getElementById('button__score__ready').innerHTML = 'New Game';
+}
+
+function playSound(sound) {
+	switch(sound) {
+		case 'jump':
+			jumpSound.play();
+			break;
+		case 'hit':
+			hurtSound.play();
+			hitSound.play();
+			break;
+		case 'collectedSoul':
+			selectSound.play();
+			break;
+		case 'shield':
+			shieldSound.play();
+			break;
+		case 'dying':
+			dyingSound.play();
+			break;
+		case 'basedSoul':
+			basedSoulSound.play();
+			break;
+		default:
+			break;
+	}
 }

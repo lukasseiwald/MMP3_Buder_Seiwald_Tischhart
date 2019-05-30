@@ -8,6 +8,9 @@ export default class extends Phaser.State {
 		this.scale = window.game.global.scale;
 		this.unit = window.game.global.unit;
 		this.fireworksAudio = window.game.add.audio('fireworks', 1, false);
+
+		window.game.global.bgMusic.stop();
+		window.game.global.lavaAudio.play();
 	}
 	create() {
 		this.timer = 0;
@@ -134,7 +137,6 @@ export default class extends Phaser.State {
 
 			switch(emoteType) {
 			case 'emote1':
-				window.game.global.throwAudio[0].play();
 				player.animations.play('slash');
 				player.animations.currentAnim.onComplete.add(function() {
 					player.animations.play('idle');
@@ -142,7 +144,6 @@ export default class extends Phaser.State {
 				playSpeechEmote(player, 'meatEmote');
 				break;
 			case 'emote2':
-				window.game.global.dyingAudio.play();
 				player.animations.play('dying');
 				playSpeechEmote(player, 'frogEmote');
 				break;

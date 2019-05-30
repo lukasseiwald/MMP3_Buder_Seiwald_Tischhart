@@ -49,6 +49,7 @@ export default class Base {
 					if(this.player.key !== base.sprite.key.split('_')[0]) {
 						return;
 					}
+					window.game.global.basedSoulAudio.play();
 					base.sprite.collectedSouls.push(soulName);
 					// Syncing player collectedSouls with base for avoiding errors
 					this.player.collectedSouls = base.sprite.collectedSouls;
@@ -60,7 +61,7 @@ export default class Base {
 				}
 			}
 
-			if(base.sprite.collectedSouls.length > 1) {
+			if(base.sprite.collectedSouls.length > 3) {
 				this.winning();
 			}
 		}
@@ -110,7 +111,7 @@ export default class Base {
 			}
 			// For Testing
 			window.game.global.playerManager.incrementScore(this.character.deviceId);
-			if(window.game.global.playerManager.getScore(this.character.deviceId) > 0) {
+			if(window.game.global.playerManager.getScore(this.character.deviceId) > 1) {
 				window.game.global.winner = this.character.deviceId;
 			}
 			const test = window.game.add.text(window.game.world.centerX, window.game.world.centerY - this.unit * 2, winningText, style);
@@ -124,6 +125,7 @@ export default class Base {
 	}
 
 	async pauseGame() {
+		window.game.global.bgMusic.stop();
 		window.game.paused = true;
 		while(window.game.paused) {
 			await this.pauseTimer();

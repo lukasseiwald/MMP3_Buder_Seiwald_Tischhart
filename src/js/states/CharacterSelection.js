@@ -255,5 +255,6 @@ export default class extends Phaser.State {
 			}
 		};
 		createSilhouettes();
+		window.game.global.hellAudio.play();
 	}
 }

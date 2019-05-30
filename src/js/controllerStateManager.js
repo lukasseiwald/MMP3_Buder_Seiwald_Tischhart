@@ -16,7 +16,6 @@ export default class ControllerStateManager {
 	startState(name) {
 		if (this.currentState) {
 			const prev = document.getElementById('state--' + this.currentState);
-			console.log(prev);
 			prev.parentNode.removeChild(prev);
 		}
 		this.currentState = name;

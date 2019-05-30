@@ -79,6 +79,7 @@ export default class Player {
 		}
 		if(this.jumpCount > 0 && this.isGrounded()) {
 			this.jumpCount = 0;
+			this.player.animations.play('idle');
 		}
 
 		this.moveSoulWithPlayer();
@@ -172,7 +173,12 @@ export default class Player {
 		this.moveStuckBulletsWithPlayer();
 		this.moveShieldWithPlayer();
 		if (this.jumpCount < 2) {
-			window.game.global.jumpAudio.play();
+			window.game.global.playerManager.sendMessageToPlayer(this.player.deviceId,
+				{
+					screen: 'game',
+					action: 'playSound',
+					sound: 'jump'
+				});
 			this.player.animations.play('jump');
 			if(this.player.activeItem === 'jump_item') {
 				this.player.body.moveUp(1900 * this.scale);
@@ -293,12 +299,12 @@ export default class Player {
 			if (hitTarget.sprite.bulletAsset) {
 				if(hitTarget.sprite.alive) {
 					if(hitTarget.sprite.shield != null) {
-						window.game.global.playerManager.sendMessageToPlayer(hitTarget.deviceId,
+						window.game.global.playerManager.sendMessageToPlayer(hitTarget.sprite.deviceId,
 							{
 								screen: 'game',
-								action: 'playShieldSound'
+								action: 'playSound',
+								sound: 'shield'
 							});
-						window.game.global.shieldAudio.play();
 						hitTarget.sprite.shield.damage(0.50);
 						this.destroy();
 						if(hitTarget.sprite.shield.health <= 0) {
@@ -306,10 +312,11 @@ export default class Player {
 						}
 					}
 					else {
-						window.game.global.playerManager.sendMessageToPlayer(hitTarget.deviceId,
+						window.game.global.playerManager.sendMessageToPlayer(hitTarget.sprite.deviceId,
 							{
 								screen: 'game',
-								action: 'playHurtSound'
+								action: 'playSound',
+								sound: 'hit'
 							});
 						const stuckBullet = window.game.add.sprite(this.x, this.y, this.key);
 
@@ -324,8 +331,6 @@ export default class Player {
 						this.kill();
 						hitTarget.sprite.animations.play('hurt', 10, false);
 						hitTarget.sprite.damage(1 / 3 + 0.01);
-						window.game.global.hurtAudio.play();
-						window.game.global.hitAudio.play();
 
 						const healthBar = window.game.global.healthBars[hitTarget.sprite.deviceId];
 
@@ -346,7 +351,12 @@ export default class Player {
 	}
 
 	died() {
-		window.game.global.dyingAudio.play();
+		window.game.global.playerManager.sendMessageToPlayer(this.player.deviceId,
+			{
+				screen: 'game',
+				action: 'playSound',
+				sound: 'dying'
+			});
 
 		// remove obtained soul of dead player
 		if(this.player.obtainedSoul) {
@@ -485,6 +495,12 @@ export default class Player {
 		}
 		else if(this.player.obtainedSoul == null) {
 			if(!soul.alreadyObtained) {
+				window.game.global.playerManager.sendMessageToPlayer(this.player.deviceId,
+					{
+						screen: 'game',
+						action: 'playSound',
+						sound: 'collectedSoul'
+					});
 				soul.static = false;
 				soul.immovable = false;
 				soul.moves = true;
@@ -496,7 +512,6 @@ export default class Player {
 				this.player.obtainedSoul.obtainedBy = this.player;
 				this.player.obtainedSoul.x = this.player.x;
 				this.player.obtainedSoul.y = this.player.y - 50;
-				window.game.global.collectedSoulAudio.play();
 			}
 		}
 	}

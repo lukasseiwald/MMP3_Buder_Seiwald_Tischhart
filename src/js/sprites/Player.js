@@ -320,11 +320,12 @@ export default class Player {
 							});
 						const stuckBullet = window.game.add.sprite(this.x, this.y, this.key);
 
-						stuckBullet.anchor.set(0.3, 0.5);
-						if(this.x > hitTarget.sprite.x) {
-							stuckBullet.anchor.set(1, 0.5);
-							stuckBullet.scale.x = -stuckBullet.scale.x;
-						}
+						stuckBullet.scale.setTo(this.scale.x * 1.3, this.scale.y);
+						stuckBullet.anchor.set(0.5, 0.5);
+						// if(this.x > hitTarget.sprite.x) {
+						// 	stuckBullet.anchor.set(1, 0.5);
+						// 	//stuckBullet.scale.x = -stuckBullet.scale.x;
+						// }
 						hitTarget.sprite.stuckBullets.push(stuckBullet);
 						// places player ontop of stuck bullet
 						window.game.world.bringToTop(hitTarget.sprite);
@@ -534,8 +535,8 @@ export default class Player {
 
 		if(index > 0) {
 			this.player.stuckBullets.forEach((bullet) => {
-				bullet.x = this.player.x - 20;
-				bullet.y = this.player.y - 20 + (index * 12);
+				bullet.x = this.player.x;
+				bullet.y = this.player.y - 20 + (index * 18);
 				index = index - 1;
 			});
 		}

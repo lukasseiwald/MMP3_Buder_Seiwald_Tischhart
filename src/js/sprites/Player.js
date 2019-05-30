@@ -229,7 +229,6 @@ export default class Player {
 		this.player.activeItem = '';
 		this.player.shield = null;
 		this.player.stuckBullets = [];
-		// Für Healthbar
 		this.player.deviceId = this.deviceId;
 		this.player.anchor.set(0.5, 0.5);
 
@@ -332,15 +331,6 @@ export default class Player {
 						this.kill();
 						hitTarget.sprite.animations.play('hurt', 10, false);
 						hitTarget.sprite.damage(1 / 3 + 0.01);
-
-						const healthBar = window.game.global.healthBars[hitTarget.sprite.deviceId];
-
-						if(hitTarget.sprite.health <= 0) {
-							window.game.add.tween(healthBar).to({width: 0}, 200, Phaser.Easing.Linear.None, true);
-						}
-						else {
-							window.game.add.tween(healthBar).to({width: (healthBar.width - 2 * unit)}, 200, Phaser.Easing.Linear.None, true);
-						}
 					}
 				}
 			}
@@ -387,9 +377,6 @@ export default class Player {
 	}
 
 	respawn() {
-		const healthBar = window.game.global.healthBars[this.deviceId];
-
-		window.game.add.tween(healthBar).to({width: 6 * this.unit}, 200, Phaser.Easing.Linear.None, true);
 		this.player.reset(this.spawnX, this.spawnY);
 		this.player.obtainedSoul = null;
 		this.player.stuckBullets = [];
@@ -556,12 +543,9 @@ export default class Player {
 		case 'health_item':
 			window.game.global.healthAudio.play();
 			player.sprite.health = 1;
-			const healthBar = window.game.global.healthBars[player.sprite.deviceId];
-
 			player.sprite.stuckBullets.forEach((bullet) => {
 				bullet.kill();
 			});
-			window.game.add.tween(healthBar).to({width: 6 * this.unit}, 200, Phaser.Easing.Linear.None, true);
 			break;
 		case 'shield_item':
 			if(player.sprite.shield != null) {

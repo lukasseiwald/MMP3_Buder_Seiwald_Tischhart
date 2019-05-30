@@ -74,37 +74,28 @@ export default class extends Phaser.State {
 				x: unit * 6,
 				y: unit * 26,
 				baseX: 3 * unit,
-				baseY: this.world.height - 3.5 * unit,
-				healthbarX: 0.5 * unit,
-				healthbarY: this.world.height - 6.5 * unit
+				baseY: this.world.height - 3.5 * unit
 			},
 			{
 				skin: 'inca',
 				x: this.world.width - 6 * unit,
 				y: unit * 26,
 				baseX: this.world.width - 3 * unit,
-				baseY: this.world.height - 3.5 * unit,
-				// -healthbar.width - .5 (half tile on edge)
-				healthbarX: this.world.width - unit * 6.5,
-				healthbarY: this.world.height - 6.5 * unit
+				baseY: this.world.height - 3.5 * unit
 			},
 			{
 				skin: 'knight',
 				x: 6 * unit,
 				y: 8 * unit,
 				baseX: 3 * unit,
-				baseY: 9.5 * unit,
-				healthbarX: 0.5 * unit,
-				healthbarY: 6.6 * unit
+				baseY: 9.5 * unit
 			},
 			{
 				skin: 'egyptian',
 				x: this.world.width - 6 * unit,
 				y: unit * 8,
 				baseX: this.world.width - 3 * unit,
-				baseY: unit * 9.5,
-				healthbarX: this.world.width - unit * 6.5,
-				healthbarY: 6.5 * unit
+				baseY: unit * 9.5
 			}
 		];
 
@@ -160,16 +151,6 @@ export default class extends Phaser.State {
 		this.game.global.itemPositions = this.shuffle(map.itemPositions);
 		this.game.time.events.repeat(Phaser.Timer.SECOND * 17, 100, this.createItems, this);
 
-		// HealthBar
-		const bmd = this.game.add.bitmapData(unit * 6, unit * 0.5);
-
-		bmd.ctx.beginPath();
-		bmd.ctx.rect(0, 0, unit * 6, unit * 0.5);
-		bmd.ctx.fillStyle = '#c92e08';
-		bmd.ctx.fill();
-
-		const widthLife = new Phaser.Rectangle(0, 0, bmd.width, bmd.height);
-
 		if(window.game.global.dev) {
 			const playersDev = new Array();
 
@@ -182,14 +163,6 @@ export default class extends Phaser.State {
 			}
 
 			this.createMap(map);
-
-			for (let index = 0; index < 4; index += 1) {
-				const healthBar = this.game.add.sprite(characterSettings[index].healthbarX, characterSettings[index].healthbarY, bmd);
-
-				healthBar.cropEnabled = true;
-				healthBar.crop(widthLife);
-				this.game.global.healthBars[index] = healthBar;
-			}
 
 			this.player1 = playersDev[0];
 			this.player2 = playersDev[1];
@@ -216,15 +189,6 @@ export default class extends Phaser.State {
 			}
 
 			this.createMap(map);
-			index = 0;
-			for (const [deviceId, value] of window.game.global.playerManager.getPlayers()) {
-				const healthBar = window.game.add.sprite(characterSettings[index].healthbarX, characterSettings[index].healthbarY, bmd);
-
-				healthBar.cropEnabled = true;
-				healthBar.crop(widthLife);
-				window.game.global.healthBars[deviceId] = healthBar;
-				index += 1;
-			}
 		}
 		const disconnectedPlayers = [];
 

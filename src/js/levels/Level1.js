@@ -133,7 +133,7 @@ export default class extends Phaser.State {
 		this.itemCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
 		this.game.physics.p2.updateBoundsCollisionGroup();
-		//this.game.physics.setBoundsToWorld();
+		// this.game.physics.setBoundsToWorld();
 
 		// IMAGES
 		this.bg3 = addImage(this, 0, 0, 'background3', this.world.width, this.world.height);

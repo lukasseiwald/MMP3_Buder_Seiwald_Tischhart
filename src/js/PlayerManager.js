@@ -87,7 +87,7 @@ export default class PlayerManager {
 	}
 
 	setNewDeviceID(oldDeviceId, newDeviceId) {
-		let player = this.getPlayer(oldDeviceId);
+		const player = this.getPlayer(oldDeviceId);
 
 		this.removePlayer(oldDeviceId);
 		this.addPlayer(newDeviceId);

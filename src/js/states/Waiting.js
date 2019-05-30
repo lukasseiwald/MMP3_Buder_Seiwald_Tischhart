@@ -10,9 +10,7 @@ export default class extends Phaser.State {
 		this.height = window.innerHeight;
 		this.scale.setGameSize(this.width, this.height);
 	}
-
 	create () {
-
 		window.game.global.playerManager = new PlayerManager();
 		window.game.global.playerManager.setConnectedPlayers();
 

@@ -114,7 +114,7 @@ export default class Base {
 					action: 'winning'
 				});
 
-			for (let [deviceId, player] of window.game.global.playerManager.getPlayers()) {
+			for (const [deviceId, player] of window.game.global.playerManager.getPlayers()) {
 				if (deviceId !== winnerId) {
 					window.game.global.playerManager.sendMessageToPlayer(deviceId,
 						{

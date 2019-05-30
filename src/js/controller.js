@@ -1,5 +1,5 @@
 import '../scss/style.scss';
-import CSM from './ControllerStateManager';
+import CSM from './ControllerStateManager.js';
 
 const airConsole = new AirConsole({'orientation': 'landscape'});
 const csm = new CSM('stage');
@@ -27,8 +27,8 @@ const hitSound = new Audio('./assets/audio/player/hit.wav');
 const dyingSound = new Audio('./assets/audio/player/dying.wav');
 const shieldSound = new Audio('./assets/audio/player/shield.wav');
 const basedSoulSound = new Audio('./assets/audio/extras/based_soul.wav');
-const slashingSound = new Audio('./assets/audio/player/throw1.wav')
-const burbSound = new Audio('./assets/audio/extras/burb.wav')
+const slashingSound = new Audio('./assets/audio/player/throw1.wav');
+const burbSound = new Audio('./assets/audio/extras/burb.wav');
 
 airConsole.onReady = function() {
 	const name = document.getElementsByClassName('waiting__info')[0];
@@ -174,7 +174,6 @@ function sendToScreen(data) {
 
 function setUpController() {
 	const directionButtons = document.getElementsByClassName('controller__direction')[0];
-	const controller = document.getElementsByClassName('controller')[0];
 	const buttonLeft = document.getElementsByClassName('button--left')[0];
 	const buttonRight = document.getElementsByClassName('button--right')[0];
 	const buttonShoot = document.getElementsByClassName('button--shoot')[0];
@@ -387,18 +386,19 @@ function setUpEmotes() {
 			const emoteType = button.dataset.emote;
 
 			switch(emoteType) {
-				case 'emote1':
-					slashingSound.play();
-					break;
-				case 'emote2':
-					dyingSound.play();
-					break;
-				case 'emote3':
-					burbSound.play();
-					break;
-				case 'emote4':
-					hurtSound.play();
-					break;
+			case 'emote1':
+				slashingSound.play();
+				break;
+			case 'emote2':
+				dyingSound.play();
+				break;
+			case 'emote3':
+				burbSound.play();
+				break;
+			case 'emote4':
+				hurtSound.play();
+				break;
+			default:
 			}
 
 			airConsole.message(AirConsole.SCREEN, {
@@ -415,7 +415,7 @@ function setUpEmotes() {
 	// Ready Button Only For Master
 	const deviceId = airConsole.getDeviceId();
 	const masterId = airConsole.getMasterControllerDeviceId();
-	console.log(deviceId, masterId);
+
 	if(deviceId === masterId) {
 		const readyButton = document.getElementById('button--ready');
 
@@ -440,26 +440,26 @@ function changeToRestartButton() {
 
 function playSound(sound) {
 	switch(sound) {
-		case 'jump':
-			jumpSound.play();
-			break;
-		case 'hit':
-			hurtSound.play();
-			hitSound.play();
-			break;
-		case 'collectedSoul':
-			selectSound.play();
-			break;
-		case 'shield':
-			shieldSound.play();
-			break;
-		case 'dying':
-			dyingSound.play();
-			break;
-		case 'basedSoul':
-			basedSoulSound.play();
-			break;
-		default:
-			break;
+	case 'jump':
+		jumpSound.play();
+		break;
+	case 'hit':
+		hurtSound.play();
+		hitSound.play();
+		break;
+	case 'collectedSoul':
+		selectSound.play();
+		break;
+	case 'shield':
+		shieldSound.play();
+		break;
+	case 'dying':
+		dyingSound.play();
+		break;
+	case 'basedSoul':
+		basedSoulSound.play();
+		break;
+	default:
+		break;
 	}
 }

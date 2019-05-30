@@ -371,7 +371,7 @@ export default class Player {
 		// Style of Respawn Counter
 		const style = {font: 3 * this.unit + 'px Bungee', fill: '#FFFFFF', align: 'center'};
 		let counter = 5;
-		const text = window.game.add.text(this.spawnX, this.spawnY - 0.25 * this.unit, '', style);
+		const text = window.game.add.text(this.spawnX - 0.95 * this.unit, this.spawnY - 0.25 * this.unit, '', style);
 		const respawnTimer = setInterval(() => {
 			text.setText(counter);
 			if(counter < 1) {

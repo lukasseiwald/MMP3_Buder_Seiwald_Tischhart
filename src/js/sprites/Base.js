@@ -62,7 +62,7 @@ export default class Base {
 				}
 			}
 
-			if(base.sprite.collectedSouls.length > 3) {
+			if(base.sprite.collectedSouls.length > 1) {
 				this.winning();
 			}
 		}

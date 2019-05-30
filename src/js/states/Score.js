@@ -196,7 +196,9 @@ export default class extends Phaser.State {
 				});
 				that.headline.setText('GET READY TO FIGHT!');
 				const style = { font: '45px Bungee', fill: '#111111', align: 'center' };
-				const text = window.game.add.text(that.world.width / 2 - 20, that.world.height / 14, '', style);
+				const text = window.game.add.text(that.world.width / 2, that.world.height * 0.11, '', style);
+
+				text.anchor.setTo(0.5, 0.5);
 				const startGameTimer = setInterval(() => {
 					if(counter === 3) {
 						window.game.global.countdownAudio.play();

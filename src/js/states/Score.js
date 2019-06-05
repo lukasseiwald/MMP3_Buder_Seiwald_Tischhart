@@ -38,6 +38,8 @@ export default class extends Phaser.State {
 		this.headline = this.add.text(this.world.centerX, this.world.height * 0.3, '', headlineStyling);
 		this.headline.anchor.setTo(0.5, 0.5);
 
+		this.characters = new Map();
+
 		const playerSettings = [
 			{
 				deviceId: null,
@@ -60,8 +62,6 @@ export default class extends Phaser.State {
 				x: window.game.world.centerX + this.unit * 20
 			}
 		];
-
-		this.characters = new Map();
 
 		function getPlayers() {
 			let index = 0;
@@ -225,5 +225,43 @@ export default class extends Phaser.State {
 		}
 
 		getPlayers();
+
+		const disconnectedPlayers = [];
+
+		window.game.global.airConsole.onDisconnect = function(deviceId) {
+			disconnectedPlayers.push(deviceId);
+			const masterId = window.game.global.playerManager.getMaster();
+
+			window.game.global.playerManager.sendMessageToPlayer(masterId, {
+				screen: 'emotes',
+				action: 'player_disconnected'
+			});
+		};
+		window.game.global.airConsole.onConnect = function(deviceId) {
+			let length = disconnectedPlayers.length;
+
+			if(length > 0) {
+				const oldDeviceId = disconnectedPlayers[length - 1];
+
+				if (oldDeviceId !== deviceId) {
+					window.game.global.playerManager.setNewDeviceID(oldDeviceId, deviceId);
+				}
+				disconnectedPlayers.pop();
+				window.game.global.playerManager.sendMessageToPlayer(deviceId, {
+					screen: 'emotes',
+					action: 'reconnected'
+				});
+			}
+
+			length = disconnectedPlayers.length;
+			const masterId = window.game.global.playerManager.getMaster();
+
+			if (length === 0) {
+				window.game.global.playerManager.sendMessageToPlayer(masterId, {
+					screen: 'emotes',
+					action: 'all_players_connected'
+				});
+			}
+		};
 	}
 }

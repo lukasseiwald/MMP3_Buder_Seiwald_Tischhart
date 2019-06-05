@@ -125,8 +125,30 @@ function handleCharacterSelection(data) {
 	}
 }
 
+function notReady() {
+	const button = document.getElementById('button--ready');
+
+	button.classList.add('button--grey');
+}
+
+function ready() {
+	const button = document.getElementById('button--ready');
+
+	button.classList.remove('button--grey');
+}
+
 function handleEmotes(data) {
 	switch (data.action) {
+	case 'all_players_connected':
+		ready();
+		break;
+	case 'player_disconnected':
+		notReady();
+		break;
+	case 'reconnected':
+		csm.startState('emotes');
+		setUpEmotes();
+		break;
 	case 'new_game_button':
 		changeToRestartButton();
 		break;

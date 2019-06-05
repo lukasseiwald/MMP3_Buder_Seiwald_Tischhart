@@ -20,6 +20,12 @@
 		opacity: 1 !important;
 		pointer-events: all !important;
 	}
+
+	.button--grey {
+		pointer-events: none !important;
+		-webkit-filter: grayscale(100%);
+	  filter: grayscale(100%);
+	}
 }
 
 .emotes__button__wrapper {

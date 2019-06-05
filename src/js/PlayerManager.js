@@ -116,4 +116,8 @@ export default class PlayerManager {
 	broadcast(data) {
 		window.game.global.airConsole.broadcast(data);
 	}
+
+	message(deviceId, data) {
+		window.game.global.airConsole.message(deviceId, data);
+	}
 }

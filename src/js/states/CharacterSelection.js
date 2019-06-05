@@ -114,14 +114,23 @@ export default class extends Phaser.State {
 			if(character !== null) {
 				switch(data.action) {
 				case 'character_selected':
-					window.game.global.playerManager.setSkin(deviceId, data.selectedCharacter);
-					getPlayers('select', deviceId, data.selectedCharacter);
-					window.game.global.playerManager.broadcast({
-						screen: 'characterSelection',
-						action: 'selected_character',
-						selectedCharacter: data.selectedCharacter
-					});
-					takenSkins.push(data.selectedCharacter);
+					if(!takenSkins.includes(data.selectedCharacter)) {
+						window.game.global.playerManager.setSkin(deviceId, data.selectedCharacter);
+						getPlayers('select', deviceId, data.selectedCharacter);
+						window.game.global.playerManager.broadcast({
+							screen: 'characterSelection',
+							action: 'selected_character',
+							selectedCharacter: data.selectedCharacter
+						});
+						takenSkins.push(data.selectedCharacter);
+					}
+					else {
+						window.game.global.playerManager.message(deviceId, {
+							screen: 'characterSelection',
+							action: 'misselected_character',
+							selectedCharacter: data.selectedCharacter
+						});
+					}
 					break;
 				case 'character_deselected':
 					const selectedCharacter = data.selectedCharacter;

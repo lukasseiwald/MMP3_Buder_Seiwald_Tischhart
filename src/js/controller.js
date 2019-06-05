@@ -100,6 +100,10 @@ function handleCharacterSelection(data) {
 		takenSkins.splice(takenSkins.indexOf(data.selectedCharacter), 1);
 		checkIfSkinTaken(data.selectedCharacter);
 		break;
+	case 'misselected_character':
+		selectedCharacter = '';
+		checkIfSkinTaken(data.selectedCharacter);
+		break;
 	case 'reconnected':
 		takenSkins = data.skins;
 		selectedCharacter = '';
@@ -293,6 +297,7 @@ function setUpCharacterSelection() {
 		characters[index].classList.remove('character--invisible');
 		characters[index].id = 'character--selected';
 		name.innerText = characters[index].dataset.name;
+
 	});
 	document.querySelector('#selection__button--right').addEventListener('touchstart', (e) => {
 		clickSound.play();
@@ -312,15 +317,12 @@ function setUpCharacterSelection() {
 	document.querySelector('#button--select').addEventListener('touchstart', (e) => {
 		selectSound.play();
 		if(selectedCharacter === '') {
+			selectedCharacter = document.getElementById('character--selected').dataset.character;
 			airConsole.message(AirConsole.SCREEN, {
 				screen: 'character_selection',
 				action: 'character_selected',
 				selectedCharacter: document.getElementById('character--selected').dataset.character
 			});
-			selectedCharacter = document.getElementById('character--selected').dataset.character;
-			e.currentTarget.innerHTML = 'DESELECT';
-			document.getElementById('selection__button--left').classList.add('button--invisible');
-			document.getElementById('selection__button--right').classList.add('button--invisible');
 		}
 		else {
 			airConsole.message(AirConsole.SCREEN, {
@@ -329,27 +331,33 @@ function setUpCharacterSelection() {
 				selectedCharacter: document.getElementById('character--selected').dataset.character
 			});
 			selectedCharacter = '';
-			e.currentTarget.innerHTML = 'SELECT';
-			document.getElementById('selection__button--left').classList.remove('button--invisible');
-			document.getElementById('selection__button--right').classList.remove('button--invisible');
 		}
 	});
 }
 
 function checkIfSkinTaken(skinName) {
-	console.log(takenSkins)
+	// console.log(takenSkins)
 	if(selectedCharacter !== '') {
 		document.getElementById('button--select').classList.remove('selection__character_inactive');
 		document.getElementsByClassName(skinName)[0].classList.remove('selection__character_inactive');
+		document.getElementById('button--select').innerHTML = 'DESELECT';
+		document.getElementById('selection__button--left').classList.add('button--invisible');
+		document.getElementById('selection__button--right').classList.add('button--invisible');
 	}
 	else {
 		if(takenSkins.includes(currentlyViewedCharakter)) {
 			document.getElementById('button--select').classList.add('selection__character_inactive');
 			document.getElementsByClassName(skinName)[0].classList.add('selection__character_inactive');
+			document.getElementById('button--select').innerHTML = 'SELECT';
+			document.getElementById('selection__button--left').classList.remove('button--invisible');
+			document.getElementById('selection__button--right').classList.remove('button--invisible');
 		}
 		else {
 			document.getElementById('button--select').classList.remove('selection__character_inactive');
 			document.getElementsByClassName(skinName)[0].classList.remove('selection__character_inactive');
+			document.getElementById('button--select').innerHTML = 'SELECT';
+			document.getElementById('selection__button--left').classList.remove('button--invisible');
+			document.getElementById('selection__button--right').classList.remove('button--invisible');
 		}
 	}
 }

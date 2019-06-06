@@ -549,7 +549,6 @@ export default class Player {
 
 		switch (collectedItem) {
 		case 'health_item':
-			window.game.global.healthAudio.play();
 			player.sprite.health = 1;
 			player.sprite.stuckBullets.forEach((bullet) => {
 				bullet.kill();

@@ -13,6 +13,13 @@ export default class extends Phaser.State {
 	}
 
 	preload() {
+		this.logo = this.add.sprite(window.game.world.width * 0.5, window.game.world.height * 0.3, 'preloadLogo');
+		this.preloadingBar = this.add.sprite(window.game.world.width * 0.5, window.game.world.height * 0.45, 'preloadingBar');
+		this.logo.anchor.setTo(0.5, 0.5);
+		this.preloadingBar.anchor.setTo(0.5, 0.5);
+
+		this.load.setPreloadSprite(this.preloadingBar);
+
 		// this.game.world.setBounds(0, 0, this.game.world.width, this.game.world.bounds.bottom+150);
 
 		// LOAD BACKGROUND
@@ -26,11 +33,8 @@ export default class extends Phaser.State {
 		this.load.audio('lava', 'assets/audio/background_music/lava.wav');
 		this.load.audio('countdown', 'assets/audio/extras/countdown.wav');
 		this.load.audio('hell', 'assets/audio/extras/hell.wav');
-		this.load.audio('tutorial', 'assets/audio/extras/tutorial.wav');
-		this.load.audio('basedSoul', 'assets/audio/extras/based_soul.wav');
 		this.load.audio('fireworks', 'assets/audio/extras/fireworks.wav');
 		this.load.audio('impact', 'assets/audio/player/impact.wav');
-		this.load.audio('health', 'assets/audio/player/health.wav');
 		this.load.audio('throw1', 'assets/audio/player/throw1.wav');
 		this.load.audio('throw2', 'assets/audio/player/throw2.wav');
 		this.load.audio('throw3', 'assets/audio/player/throw3.wav');
@@ -101,6 +105,11 @@ export default class extends Phaser.State {
 				active: this.fontsLoaded
 			});
 		}
+	}
+
+	create() {
+		//	Once the load has finished we disable the crop because we're going to sit in the update loop for a short while as the music decodes
+		this.preloadingBar.cropEnabled = false;
 	}
 
 	render() {

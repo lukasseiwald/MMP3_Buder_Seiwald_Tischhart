@@ -131,8 +131,8 @@ export default class Base {
 			const test = window.game.add.text(window.game.world.centerX, window.game.world.centerY - this.unit * 2, winningText, style);
 
 			test.anchor.setTo(0.5, 0.5);
-			test.stroke = '#fdd94b';
-			test.strokeThickness = 8;
+			test.stroke = '#e6bd6c';
+			test.strokeThickness = 15;
 			this.pauseGame();
 		}
 		else {

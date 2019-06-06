@@ -139,8 +139,8 @@ export default class extends Phaser.State {
 		this.steamParticles = new Particle('smoke', 150, 8000, 100);
 		this.steamParticles.startEmitter();
 
-		this.lavaParticles = new Particle('lava', 0, 4000, 1);
-		this.lavaParticles.startEmitter();
+		// this.lavaParticles = new Particle('lava', 0, 4000, 1);
+		// this.lavaParticles.startEmitter();
 
 		// Tiles
 		this.tiles = this.game.add.group();
@@ -215,7 +215,7 @@ export default class extends Phaser.State {
 
 	update() {
 		// particle visibility (fading in and out)
-		this.glowingParticles.updateVisibility();
+		// this.glowingParticles.updateVisibility();
 		if(window.game.global.dev) {
 			this.updatePlayer();
 			this.updatePlayer2();

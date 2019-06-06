@@ -416,8 +416,8 @@ export default class Player {
 			}
 
 			shootTime = shootTime * 2;
-			if(shootTime < 500) {
-				shootTime = 500;
+			if(shootTime < 800) {
+				shootTime = 800;
 			}
 			else if(shootTime > 1500) {
 				shootTime = 2500;

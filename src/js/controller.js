@@ -237,8 +237,11 @@ function setUpController() {
 			else if(previousTarget === buttonLeft) {
 				buttonLeft.classList.remove('button__left--active');
 			}
-			else {
-				previousTarget && previousTarget.classList.remove('button--active');
+			else if(previousTarget === buttonJump) {
+				buttonJump.classList.remove('button__jump--active');
+			}
+			else if(previousTarget === buttonShoot) {
+				buttonShoot.classList.remove('button__shoot--active');
 			}
 
 			if(currentTarget === buttonRight) {
@@ -247,9 +250,13 @@ function setUpController() {
 			else if(currentTarget === buttonLeft) {
 				buttonLeft.classList.add('button__left--active');
 			}
-			else {
-				currentTarget.classList.add('button--active');
+			else if(currentTarget === buttonJump) {
+				buttonJump.classList.add('button__jump--active');
 			}
+			else if(currentTarget === buttonShoot) {
+				buttonShoot.classList.add('button__shoot--active');
+			}
+
 			previousTarget = currentTarget;
 			sendToScreen({action: currentTarget.dataset.direction});
 		}
@@ -285,11 +292,13 @@ function setUpController() {
 	let endTime;
 
 	function prepareShoot() {
+		buttonShoot.classList.add('button__shoot--active');
 		startTime = new Date();
 		buttonShoot.classList.add('button--active');
 	}
 
 	function launchShoot() {
+		buttonShoot.classList.remove('button__shoot--active');
 		endTime = new Date();
 		const shootTime = endTime - startTime;
 
@@ -301,10 +310,12 @@ function setUpController() {
 	buttonShoot.addEventListener('touchend', launchShoot);
 
 	buttonJump.addEventListener('touchstart', function(event) {
+		buttonJump.classList.add('button__jump--active');
 		sendToScreen({action: buttonJump.dataset.direction});
 		buttonJump.classList.add('button--active');
 	}, {passive: true});
 	buttonJump.addEventListener('touchend', function(event) {
+		buttonJump.classList.remove('button__jump--active');
 		buttonJump.classList.remove('button--active');
 	}, {passive: true});
 }

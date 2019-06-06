@@ -5,18 +5,30 @@
 	flex-direction: row;
 }
 
+.test {
+	display: flex;
+	transform: rotate(-45deg);
+}
+
+.test2 {
+	display: flex;
+	transform: rotate(45deg);
+}
+
 .controller__direction {
 	flex: 1;
-	min-width: 60vw;
+	min-width: 50vw;
 	min-height: 60vw;
 	display: flex;
+	overflow: hidden;
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
-	transform: rotate(45deg);
 	background-image: url('../assets/images/controller/buttons-neu/button-test.svg');
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
+	z-index: 1;
+	position: relative;
 }
 
 .button {
@@ -44,25 +56,26 @@
 }
 
 .controller__interaction {
-	flex: 1;
+	flex: 2;
+	width: 50vw;
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
-	transform: rotate(-45deg);
-	margin-left:-10vw;
-	min-width: 60vw;
-	min-height: 60vw
+	z-index: 2;
+	overflow: hidden;
+	position: relative;
 }
 
 .button--shoot {
-	height:90vh;
+	height:108vh;;
 	width: 30vw;
 	border-radius: 0;
 	overflow:hidden;
 	background-image: url('../assets/images/controller/button-shoot.svg');
 	background-repeat: no-repeat;
-	background-size: 100% 100%;
+	background-size: contain;
+	background-position-x: right;
 }
 
 .button__right--active {
@@ -82,13 +95,13 @@
 }
 
 .button--jump {
-	height:90vh;
+	height:108vh;;
 	width: 30vw;
 	border-radius: 0;
 	overflow:hidden;
 	background-image: url('../assets/images/controller/button-jump.svg');
 	background-repeat: no-repeat;
-	background-size: 100% 100%;
+	background-size: contain;
 }
 
 .button--left {

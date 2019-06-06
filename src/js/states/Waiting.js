@@ -125,7 +125,7 @@ export default class extends Phaser.State {
 
 		function updateScreen() {
 			numberOfPlayers.text = window.game.global.playerManager.getConnectedPlayerNum() + '/4 players connected';
-			playerNames.text = window.game.global.playerManager.getAllNicknames().toString();
+			playerNames.text = window.game.global.playerManager.getAllNicknames();
 		}
 	}
 

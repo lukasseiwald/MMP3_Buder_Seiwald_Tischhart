@@ -97,12 +97,12 @@ export default class PlayerManager {
 	}
 
 	getAllNicknames() {
-		const names = new Array();
+		let names = '';
 
 		for (const [deviceId, player] of this.players) {
-			names.push(player.nickname);
+			names += player.nickname + '      ';
 		}
-		return names;
+		return names.slice(0, names.length - 2);
 	}
 
 	getConnectedPlayerNum() {

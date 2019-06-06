@@ -363,6 +363,7 @@ export default class Player {
 		const style = {font: 3 * this.unit + 'px Bungee', fill: '#FFFFFF', align: 'center'};
 		let counter = 5;
 		const text = window.game.add.text(this.spawnX - 0.95 * this.unit, this.spawnY - 0.25 * this.unit, '', style);
+		this.bringCharactersToTop();
 		const respawnTimer = setInterval(() => {
 			text.setText(counter);
 			if(counter < 1) {
@@ -416,8 +417,8 @@ export default class Player {
 			}
 
 			shootTime = shootTime * 2;
-			if(shootTime < 500) {
-				shootTime = 500;
+			if(shootTime < 800) {
+				shootTime = 800;
 			}
 			else if(shootTime > 1500) {
 				shootTime = 2500;
@@ -557,10 +558,24 @@ export default class Player {
 			break;
 		default:
 			this.player.activeItem = collectedItem;
+			window.game.time.events.add(Phaser.Timer.SECOND * 15, this.deactivateItem, this);
 		}
 	}
 
 	resetImpactTile(bullet) {
 		bullet.data.impactTile = false;
+	}
+
+	deactivateItem() {
+		this.player.activeItem = '';
+	}
+
+	bringCharactersToTop() {
+		for (const [deviceId, player] of window.game.global.playerManager.getPlayers()) {
+			if(player.character.player.obtainedSoul != null) {
+				window.game.world.bringToTop(player.character.player.obtainedSoul.sprite);
+			}
+			window.game.world.bringToTop(player.character.player);
+		}
 	}
 }

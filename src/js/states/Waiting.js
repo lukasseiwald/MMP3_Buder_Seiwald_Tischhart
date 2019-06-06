@@ -53,7 +53,7 @@ export default class extends Phaser.State {
 
 		// FUNCTIONS & LISTENERS
 
-		let playerNum = window.game.global.playerManager.getConnectedPlayerNum();
+		const playerNum = window.game.global.playerManager.getConnectedPlayerNum();
 
 		updateScreen();
 		if (playerNum === 4) {

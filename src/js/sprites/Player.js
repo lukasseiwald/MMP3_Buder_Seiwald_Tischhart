@@ -292,8 +292,6 @@ export default class Player {
 	}
 
 	hit(hitTarget) {
-		const unit = window.game.global.unit;
-
 		if(hitTarget) {
 			if (hitTarget.sprite.bulletAsset) {
 				if(hitTarget.sprite.alive) {

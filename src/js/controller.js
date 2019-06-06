@@ -344,7 +344,6 @@ function setUpCharacterSelection() {
 		characters[index].classList.remove('character--invisible');
 		characters[index].id = 'character--selected';
 		name.innerText = characters[index].dataset.name;
-
 	});
 	document.querySelector('#selection__button--right').addEventListener('touchstart', (e) => {
 		clickRightSound.play();
@@ -391,21 +390,19 @@ function checkIfSkinTaken(skinName) {
 		document.getElementById('selection__button--left').classList.add('button--invisible');
 		document.getElementById('selection__button--right').classList.add('button--invisible');
 	}
+	else if(takenSkins.includes(currentlyViewedCharakter)) {
+		document.getElementById('button--select').classList.add('selection__character_inactive');
+		document.getElementsByClassName(skinName)[0].classList.add('selection__character_inactive');
+		document.getElementById('button--select').innerHTML = 'SELECT';
+		document.getElementById('selection__button--left').classList.remove('button--invisible');
+		document.getElementById('selection__button--right').classList.remove('button--invisible');
+	}
 	else {
-		if(takenSkins.includes(currentlyViewedCharakter)) {
-			document.getElementById('button--select').classList.add('selection__character_inactive');
-			document.getElementsByClassName(skinName)[0].classList.add('selection__character_inactive');
-			document.getElementById('button--select').innerHTML = 'SELECT';
-			document.getElementById('selection__button--left').classList.remove('button--invisible');
-			document.getElementById('selection__button--right').classList.remove('button--invisible');
-		}
-		else {
-			document.getElementById('button--select').classList.remove('selection__character_inactive');
-			document.getElementsByClassName(skinName)[0].classList.remove('selection__character_inactive');
-			document.getElementById('button--select').innerHTML = 'SELECT';
-			document.getElementById('selection__button--left').classList.remove('button--invisible');
-			document.getElementById('selection__button--right').classList.remove('button--invisible');
-		}
+		document.getElementById('button--select').classList.remove('selection__character_inactive');
+		document.getElementsByClassName(skinName)[0].classList.remove('selection__character_inactive');
+		document.getElementById('button--select').innerHTML = 'SELECT';
+		document.getElementById('selection__button--left').classList.remove('button--invisible');
+		document.getElementById('selection__button--right').classList.remove('button--invisible');
 	}
 }
 

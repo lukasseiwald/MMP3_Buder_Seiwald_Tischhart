@@ -94,6 +94,7 @@ export default class extends Phaser.State {
 				plateau.x = character.x + character.width / 2;
 				plateau.y = character.bottom - character.height / 6.1;
 				const nickname = that.add.text(character.x + character.width / 2, character.bottom + character.height / 7, value.nickname, subheadlineStyling);
+
 				test[value.deviceId] = nickname;
 
 				const score = that.add.text(character.x + character.width / 2, character.bottom + character.height / 4, value.score, subheadlineStyling);

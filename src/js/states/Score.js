@@ -63,6 +63,8 @@ export default class extends Phaser.State {
 			}
 		];
 
+		let test = [];
+
 		function getPlayers() {
 			let index = 0;
 			const players = window.game.global.playerManager.getPlayers();
@@ -92,6 +94,8 @@ export default class extends Phaser.State {
 				plateau.x = character.x + character.width / 2;
 				plateau.y = character.bottom - character.height / 6.1;
 				const nickname = that.add.text(character.x + character.width / 2, character.bottom + character.height / 7, value.nickname, subheadlineStyling);
+				test[value.deviceId] = nickname;
+
 				const score = that.add.text(character.x + character.width / 2, character.bottom + character.height / 4, value.score, subheadlineStyling);
 
 				plateau.anchor.setTo(0.5, 0.5);
@@ -236,6 +240,8 @@ export default class extends Phaser.State {
 				screen: 'emotes',
 				action: 'player_disconnected'
 			});
+			test[deviceId].text = 'disconnected';
+			test[deviceId].addColor('#d51c1c', 0);
 		};
 		window.game.global.airConsole.onConnect = function(deviceId) {
 			let length = disconnectedPlayers.length;
@@ -251,7 +257,12 @@ export default class extends Phaser.State {
 					screen: 'emotes',
 					action: 'reconnected'
 				});
+
+				test[deviceId] = test[oldDeviceId];
 			}
+
+			test[deviceId].text = window.game.global.playerManager.getNickname(deviceId);
+			test[deviceId].addColor('#000000', 0);
 
 			length = disconnectedPlayers.length;
 			const masterId = window.game.global.playerManager.getMaster();

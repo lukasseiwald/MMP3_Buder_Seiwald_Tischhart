@@ -1,16 +1,22 @@
 .controller {
 	display: flex;
-	align-items: flex-end;
+	align-items: center;
+  justify-content: center;
 	flex-direction: row;
 }
 
 .controller__direction {
 	flex: 1;
+	min-width: 60vw;
+	min-height: 60vw;
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
 	transform: rotate(45deg);
+	background-image: url('../assets/images/controller/buttons-neu/button-test.svg');
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
 }
 
 .button {
@@ -30,6 +36,7 @@
 	background-image: url('../assets/images/controller/button-right.svg');
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
+	display:hidden;
 }
 
 .controller__button span {
@@ -44,6 +51,8 @@
 	align-items: center;
 	transform: rotate(-45deg);
 	margin-left:-10vw;
+	min-width: 60vw;
+	min-height: 60vw
 }
 
 .button--shoot {
@@ -90,4 +99,5 @@
 	background-image: url('../assets/images/controller/button-left.svg');
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
+	display: hidden;
 }

@@ -364,6 +364,7 @@ function setUpCharacterSelection() {
 		selectSound.play();
 		if(selectedCharacter === '') {
 			selectedCharacter = document.getElementById('character--selected').dataset.character;
+			console.log("Message sent to screen");
 			airConsole.message(AirConsole.SCREEN, {
 				screen: 'character_selection',
 				action: 'character_selected',

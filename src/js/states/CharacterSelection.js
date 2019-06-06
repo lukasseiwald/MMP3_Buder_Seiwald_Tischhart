@@ -142,7 +142,7 @@ export default class extends Phaser.State {
 						action: 'deselected_character',
 						selectedCharacter: selectedCharacter
 					});
-					takenSkins.splice(takenSkins.indexOf(selectedCharacter, 1));
+					takenSkins.splice(takenSkins.indexOf(selectedCharacter), 1);
 					break;
 				case '':
 					break;

@@ -363,6 +363,7 @@ export default class Player {
 		const style = {font: 3 * this.unit + 'px Bungee', fill: '#FFFFFF', align: 'center'};
 		let counter = 5;
 		const text = window.game.add.text(this.spawnX - 0.95 * this.unit, this.spawnY - 0.25 * this.unit, '', style);
+
 		this.bringCharactersToTop();
 		const respawnTimer = setInterval(() => {
 			text.setText(counter);
@@ -417,6 +418,9 @@ export default class Player {
 			}
 
 			shootTime = shootTime * 2;
+			if(this.player.activeItem === 'rapidfire_item') {
+				shootTime = 1450;
+			}
 			if(shootTime < 800) {
 				shootTime = 800;
 			}
@@ -446,7 +450,12 @@ export default class Player {
 					bullet.body.moveRight(bullet.speed);
 				}
 				bullet.lifespan = 1000;
-				this.player.nextFire = window.game.time.now + 900;
+				if(this.player.activeItem === 'rapidfire_item') {
+					this.player.nextFire = 0;
+				}
+				else {
+					this.player.nextFire = window.game.time.now + 900;
+				}
 			}
 		}
 	}
@@ -556,9 +565,24 @@ export default class Player {
 			player.sprite.shield.scale.setTo(this.scale, this.scale);
 			player.sprite.shield.enableBody = true;
 			break;
+		case 'rapidfire_item':
+			this.player.activeItem = collectedItem;
+			this.player.tint = 0xFFAAAA;
+			window.game.time.events.add(Phaser.Timer.SECOND * 5, this.deactivateItem, this);
+			break;
+		case 'jump_item':
+			this.player.activeItem = collectedItem;
+			this.player.tint = 0xBBFFBB;
+			window.game.time.events.add(Phaser.Timer.SECOND * 15, this.deactivateItem, this);
+			break;
+		case 'speed_item':
+			this.player.activeItem = collectedItem;
+			this.player.tint = 0xBBBBFF;
+			window.game.time.events.add(Phaser.Timer.SECOND * 15, this.deactivateItem, this);
+			break;
 		default:
 			this.player.activeItem = collectedItem;
-			window.game.time.events.add(Phaser.Timer.SECOND * 15, this.deactivateItem, this);
+			break;
 		}
 	}
 
@@ -567,6 +591,7 @@ export default class Player {
 	}
 
 	deactivateItem() {
+		this.player.tint = 0xFFFFFF;
 		this.player.activeItem = '';
 	}
 

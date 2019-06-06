@@ -149,7 +149,7 @@ export default class extends Phaser.State {
 
 		// create Items ever x seconds
 		this.game.global.itemPositions = this.shuffle(map.itemPositions);
-		this.game.time.events.repeat(Phaser.Timer.SECOND * 17, 100, this.createItems, this);
+		this.game.time.events.repeat(Phaser.Timer.SECOND * 15, 100, this.createItems, this);
 
 		if(window.game.global.dev) {
 			const playersDev = new Array();

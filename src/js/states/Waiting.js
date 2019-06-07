@@ -34,6 +34,8 @@ export default class extends Phaser.State {
 		this.lavaParticles = new Particle('lava', 0, 4000, 1);
 		this.lavaParticles.startEmitter();
 
+		let logo =  addImage(this, this.world.width - 110, this.world.height - 110, 'fhlogo', 100, 100);
+
 		// TEXT ELEMENTS
 
 		this.headline = this.add.text(this.world.centerX, this.world.height * 0.3, 'Waiting for players to join the game!', headlineStyling);

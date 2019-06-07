@@ -23,11 +23,13 @@ const selectSound = new Audio('./assets/audio/extras/select.wav');
 const winSound = new Audio('./assets/audio/extras/win.wav');
 const jumpSound = new Audio('./assets/audio/player/jump.wav');
 const hurtSound = new Audio('./assets/audio/player/hurt.wav');
+const thinkingSound = new Audio('./assets/audio/player/thinking.wav');
 const hitSound = new Audio('./assets/audio/player/hit.wav');
 const dyingSound = new Audio('./assets/audio/player/dying.wav');
 const shieldSound = new Audio('./assets/audio/player/shield.wav');
 const basedSoulSound = new Audio('./assets/audio/extras/based_soul.wav');
 const slashingSound = new Audio('./assets/audio/player/throw1.wav');
+const slapSound = new Audio('./assets/audio/player/slap.wav');
 const burbSound = new Audio('./assets/audio/extras/burb.wav');
 
 airConsole.onReady = function() {
@@ -419,7 +421,7 @@ function setUpEmotes() {
 
 			switch(emoteType) {
 			case 'emote1':
-				slashingSound.play();
+				slapSound.play();
 				break;
 			case 'emote2':
 				dyingSound.play();
@@ -428,7 +430,7 @@ function setUpEmotes() {
 				burbSound.play();
 				break;
 			case 'emote4':
-				hurtSound.play();
+				thinkingSound.play();
 				break;
 			default:
 			}

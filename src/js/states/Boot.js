@@ -13,8 +13,8 @@ export default class extends Phaser.State {
 	}
 
 	preload() {
-		this.logo = this.add.sprite(window.game.world.width * 0.5, window.game.world.height * 0.3, 'preloadLogo');
-		this.preloadingBar = this.add.sprite(window.game.world.width * 0.5, window.game.world.height * 0.45, 'preloadingBar');
+		this.logo = this.add.sprite(window.game.world.width * 0.5, window.game.world.height * 0.25, 'preloadLogo');
+		this.preloadingBar = this.add.sprite(window.game.world.width * 0.5, window.game.world.height * 0.35, 'preloadingBar');
 		this.logo.anchor.setTo(0.5, 0.5);
 		this.preloadingBar.anchor.setTo(0.5, 0.5);
 
@@ -87,9 +87,9 @@ export default class extends Phaser.State {
 		this.load.image('shield_character', '../../assets/items/shield2.png');
 
 		// LOAD EMOTES
-		this.load.spritesheet('curseEmote', '../../assets/images/emotes/curseEmote.png', 50, 50, 10);
-		this.load.spritesheet('meatEmote', '../../assets/images/emotes/meatEmote.png', 50, 50, 10);
-		this.load.spritesheet('fingerEmote', '../../assets/images/emotes/fingerEmote.png', 50, 50, 10);
+		this.load.spritesheet('curseEmote', '../../assets/images/emotes/explorerEmote.png', 50, 50, 10);
+		this.load.spritesheet('meatEmote', '../../assets/images/emotes/slapEmote.png', 50, 50, 10);
+		this.load.spritesheet('fingerEmote', '../../assets/images/emotes/raptorEmote.png', 50, 50, 10);
 		this.load.spritesheet('frogEmote', '../../assets/images/emotes/frogEmote.png', 50, 50, 10);
 
 		// LOAD EXTRAS

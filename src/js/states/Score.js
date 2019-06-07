@@ -141,7 +141,7 @@ export default class extends Phaser.State {
 
 			switch(emoteType) {
 			case 'emote1':
-				player.animations.play('slash');
+				player.animations.play('throw');
 				player.animations.currentAnim.onComplete.add(function() {
 					player.animations.play('idle');
 				}, this);
@@ -159,10 +159,6 @@ export default class extends Phaser.State {
 				playSpeechEmote(player, 'curseEmote');
 				break;
 			case 'emote4':
-				player.animations.play('throw');
-				player.animations.currentAnim.onComplete.add(function() {
-					player.animations.play('idle');
-				}, this);
 				playSpeechEmote(player, 'fingerEmote');
 				break;
 			default:
